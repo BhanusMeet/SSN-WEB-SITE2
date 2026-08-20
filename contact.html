@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — SSN ELITE</title>
+  <meta name="description" content="Get in touch with SSN ELITE. Reach our team directly via email, phone, or WhatsApp for product inquiries and customer support.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/contact.css">
+  <link rel="stylesheet" href="css/dna-canvas.css">
+</head>
+<body>
+  <!-- 3D WebGL DNA Canvas Background -->
+  <canvas id="dna-canvas" data-theme="blue"></canvas>
+
+  <!-- Navigation -->
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-brand" aria-label="SSN Elite Home">SSN <span>ELITE</span></a>
+    <div class="nav-links">
+      <a href="products.html" class="nav-link" id="nav-products">Products</a>
+      <a href="about.html" class="nav-link" id="nav-about">About</a>
+      <a href="contact.html" class="nav-link active" id="nav-contact">Contact</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+    <a href="index.html" class="nav-mobile-link">Home</a>
+    <a href="products.html" class="nav-mobile-link">Products</a>
+    <a href="about.html" class="nav-mobile-link">About</a>
+    <a href="contact.html" class="nav-mobile-link">Contact</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="contact-hero" id="contact-hero">
+    <div class="container">
+      <span class="label-blue reveal">Direct Communication</span>
+      <h1 class="reveal reveal-delay-1">Contact SSN Elite</h1>
+      <p class="body-lg reveal reveal-delay-2">
+        Have a question about our formulations, products, or brand? Connect directly with our team through any of our official channels below.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Options Section -->
+  <section class="contact-section" id="contact-options">
+    <div class="container">
+      <div class="contact-grid">
+        
+        <!-- Email Card -->
+        <div class="contact-card reveal reveal-delay-1">
+          <div class="contact-card-icon">✉</div>
+          <h3 class="contact-card-title">Email Us</h3>
+          <p class="contact-card-value" data-config="contact.email">hr@esninternational.com</p>
+          <p class="contact-card-desc">For general inquiries, product information, and brand support. We respond within 24 hours.</p>
+          <a href="mailto:hr@esninternational.com" data-config-href="contact.email" data-config-href-prefix="mailto:" class="contact-action-btn" id="contact-email-btn">
+            Send Email
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <!-- Phone Card -->
+        <div class="contact-card reveal reveal-delay-2">
+          <div class="contact-card-icon">📞</div>
+          <h3 class="contact-card-title">Call Us</h3>
+          <p class="contact-card-value" data-config="contact.phone">+91 97690 92673</p>
+          <p class="contact-card-desc">Direct phone line for immediate support during business hours (Mon–Sat, 09:00–18:00 IST).</p>
+          <a href="tel:+919769092673" data-config-href="contact.phoneRaw" data-config-href-prefix="tel:" class="contact-action-btn" id="contact-phone-btn">
+            Call Direct
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <!-- WhatsApp Card -->
+        <div class="contact-card reveal reveal-delay-3">
+          <div class="contact-card-icon">💬</div>
+          <h3 class="contact-card-title">WhatsApp Support</h3>
+          <p class="contact-card-value" data-config="contact.whatsapp">+91 97690 92673</p>
+          <p class="contact-card-desc">Chat directly with our team on WhatsApp for quick inquiries and product guidance.</p>
+          <a href="https://wa.me/919769092673" data-config-href="contact.whatsappRaw" data-config-href-prefix="https://wa.me/" class="contact-action-btn" id="contact-whatsapp-btn">
+            Chat on WhatsApp
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Secondary Info Banner -->
+      <div class="contact-info-banner reveal">
+        <div class="contact-info-grid">
+          <div class="contact-info-item">
+            <h4 class="h4">Corporate Address</h4>
+            <p class="body-sm" data-config="contact.address">
+              Parmeshwar Industrial Estate, 401 - 404, Off New Link Rd, next to Grand Hometel Hotel, Malad, Ram Nagar, Malad West, Mumbai, Maharashtra 400064
+            </p>
+          </div>
+          <div class="contact-info-item">
+            <h4 class="h4">Operating Hours</h4>
+            <p class="body-sm" data-config="contact.hours">
+              Monday – Saturday: 09:00 – 18:00 IST
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">SSN <span>ELITE</span></div>
+          <p class="footer-description">
+            Performance nutrition engineered with purpose. Premium sports supplements for athletes and active professionals.
+          </p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Products</h4>
+          <div class="footer-links">
+            <a href="performance-whey.html" class="footer-link">Performance Whey</a>
+            <a href="anabolic-monster-mass.html" class="footer-link">Anabolic Monster Mass</a>
+            <a href="tri-creatine.html" class="footer-link">Tri Creatine</a>
+            <a href="eaa-bcaa-glutamine.html" class="footer-link">EAA + BCAA + Glutamine</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <div class="footer-links">
+            <a href="about.html" class="footer-link">About SSN Elite</a>
+            <a href="products.html" class="footer-link">All Products</a>
+            <a href="contact.html" class="footer-link">Contact Us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-legal">&copy; 2025 SSN Elite. All rights reserved.</span>
+        <span class="footer-legal">Performance Nutrition, Engineered with Purpose.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/dna-scene.js"></script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSN ELITE — Performance Nutrition, Engineered with Purpose</title>
+  <meta name="description" content="SSN ELITE is a premium sports nutrition brand delivering performance whey protein, mass gainers, creatine and amino acid supplements. Engineered with purpose for athletes and active professionals.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/home.css">
+  <link rel="stylesheet" href="css/dna-canvas.css">
+</head>
+<body>
+  <!-- 3D WebGL DNA Canvas Background -->
+  <canvas id="dna-canvas" data-theme="blue"></canvas>
+
+  <!-- ═══════════════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════════════ -->
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-brand" aria-label="SSN Elite Home">SSN <span>ELITE</span></a>
+    <div class="nav-links">
+      <a href="products.html" class="nav-link" id="nav-products">Products</a>
+      <a href="about.html" class="nav-link" id="nav-about">About</a>
+      <a href="contact.html" class="nav-link" id="nav-contact">Contact</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+    <a href="products.html" class="nav-mobile-link">Products</a>
+    <a href="about.html" class="nav-mobile-link">About</a>
+    <a href="contact.html" class="nav-mobile-link">Contact</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <span class="label-blue reveal">SSN ELITE SERIES</span>
+        <h1 class="hero-tagline reveal reveal-delay-1">
+          Performance Nutrition,<br>
+          <em>Engineered with Purpose.</em>
+        </h1>
+        <p class="hero-subtitle reveal reveal-delay-2">
+          Premium sports nutrition supplements formulated for athletes, gym users, and active professionals who demand precision in their performance nutrition.
+        </p>
+        <div class="hero-cta-row reveal reveal-delay-3">
+          <a href="products.html" class="cta-button" id="hero-cta-products">
+            Explore Products
+            <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="about.html" class="cta-button-outline" id="hero-cta-about">
+            Our Story
+          </a>
+        </div>
+      </div>
+      <div class="hero-product reveal scale-in reveal-delay-2">
+        <div class="hero-product-glow"></div>
+        <img 
+          src="assets/images/products/performance-whey.png" 
+          alt="SSN Elite Performance Whey 3KG" 
+          class="hero-product-image float-animation" 
+          width="450" 
+          height="560"
+        >
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       BRAND PILLARS
+       ═══════════════════════════════════════════ -->
+  <section class="brand-pillars" id="pillars">
+    <div class="container">
+      <div class="pillars-grid">
+        <div class="pillar-item reveal reveal-delay-1">
+          <span class="pillar-number">01</span>
+          <div class="pillar-line"></div>
+          <span class="pillar-name">Performance</span>
+        </div>
+        <div class="pillar-item reveal reveal-delay-2">
+          <span class="pillar-number">02</span>
+          <div class="pillar-line"></div>
+          <span class="pillar-name">Precision</span>
+        </div>
+        <div class="pillar-item reveal reveal-delay-3">
+          <span class="pillar-number">03</span>
+          <div class="pillar-line"></div>
+          <span class="pillar-name">Transparency</span>
+        </div>
+        <div class="pillar-item reveal reveal-delay-4">
+          <span class="pillar-number">04</span>
+          <div class="pillar-line"></div>
+          <span class="pillar-name">Formulation</span>
+        </div>
+        <div class="pillar-item reveal reveal-delay-5">
+          <span class="pillar-number">05</span>
+          <div class="pillar-line"></div>
+          <span class="pillar-name">Quality</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       PRODUCT SHOWCASE
+       ═══════════════════════════════════════════ -->
+  <section class="showcase-section section" id="products-showcase">
+    <div class="container">
+      <div class="showcase-header reveal">
+        <span class="label-blue">The Collection</span>
+        <h2>Four Products.<br>One Standard.</h2>
+      </div>
+
+      <!-- PRODUCT 01 — Performance Whey -->
+      <div class="product-card reveal" id="showcase-whey">
+        <div class="product-image-wrap">
+          <div class="product-glow"></div>
+          <img src="assets/images/products/performance-whey.png" alt="SSN Elite Performance Whey" loading="lazy" width="380" height="460">
+        </div>
+        <div class="product-card-info">
+          <span class="product-card-number">PRODUCT 01</span>
+          <span class="product-card-series">SSN Elite Series</span>
+          <h3 class="product-card-name">Performance<br>Whey</h3>
+          <div class="product-card-meta">
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Size</span>
+              <span class="product-card-meta-value">3 KG</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Protein / Serving</span>
+              <span class="product-card-meta-value">24 G</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Category</span>
+              <span class="product-card-meta-value">Performance Whey</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">MRP</span>
+              <span class="product-card-meta-value">₹10,499</span>
+            </div>
+          </div>
+          <a href="performance-whey.html" class="text-link" id="showcase-whey-link">
+            Explore Product
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- PRODUCT 02 — Anabolic Monster Mass -->
+      <div class="product-card reverse reveal" id="showcase-mass">
+        <div class="product-image-wrap">
+          <div class="product-glow"></div>
+          <img src="assets/images/products/anabolic-monster-mass.png" alt="SSN Elite Anabolic Monster Mass" loading="lazy" width="380" height="460">
+        </div>
+        <div class="product-card-info">
+          <span class="product-card-number">PRODUCT 02</span>
+          <span class="product-card-series">SSN Elite Series</span>
+          <h3 class="product-card-name">Anabolic<br>Monster Mass</h3>
+          <div class="product-card-meta">
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Size</span>
+              <span class="product-card-meta-value">4 KG</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Category</span>
+              <span class="product-card-meta-value">Mass Gainer</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">MRP</span>
+              <span class="product-card-meta-value">₹6,999</span>
+            </div>
+          </div>
+          <a href="anabolic-monster-mass.html" class="text-link" id="showcase-mass-link">
+            Explore Product
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- PRODUCT 03 — Tri Creatine -->
+      <div class="product-card reveal" id="showcase-creatine">
+        <div class="product-image-wrap">
+          <div class="product-glow"></div>
+          <img src="assets/images/products/tri-creatine.png" alt="SSN Elite Tri Creatine" loading="lazy" width="320" height="420">
+        </div>
+        <div class="product-card-info">
+          <span class="product-card-number">PRODUCT 03</span>
+          <span class="product-card-series">SSN Elite Series</span>
+          <h3 class="product-card-name">Tri<br>Creatine</h3>
+          <div class="product-card-meta">
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Size</span>
+              <span class="product-card-meta-value">300 G</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Category</span>
+              <span class="product-card-meta-value">Creatine / Performance</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">MRP</span>
+              <span class="product-card-meta-value">₹2,499</span>
+            </div>
+          </div>
+          <a href="tri-creatine.html" class="text-link" id="showcase-creatine-link">
+            Explore Product
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- PRODUCT 04 — EAA + BCAA + Glutamine -->
+      <div class="product-card reverse reveal" id="showcase-eaa">
+        <div class="product-image-wrap">
+          <div class="product-glow"></div>
+          <img src="assets/images/products/eaa-bcaa-glutamine.png" alt="SSN Elite EAA + BCAA + Glutamine" loading="lazy" width="320" height="420">
+        </div>
+        <div class="product-card-info">
+          <span class="product-card-number">PRODUCT 04</span>
+          <span class="product-card-series">SSN Elite Series</span>
+          <h3 class="product-card-name">EAA + BCAA<br>+ Glutamine</h3>
+          <div class="product-card-meta">
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Size</span>
+              <span class="product-card-meta-value">300 G</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">Category</span>
+              <span class="product-card-meta-value">Amino Acid Support</span>
+            </div>
+            <div class="product-card-meta-item">
+              <span class="product-card-meta-label">MRP</span>
+              <span class="product-card-meta-value">₹2,799</span>
+            </div>
+          </div>
+          <a href="eaa-bcaa-glutamine.html" class="text-link" id="showcase-eaa-link">
+            Explore Product
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       BRAND STATEMENT
+       ═══════════════════════════════════════════ -->
+  <section class="brand-statement" id="statement">
+    <div class="container">
+      <p class="brand-statement-text reveal">
+        Performance<br>
+        Without<br>
+        <em>Compromise.</em>
+      </p>
+    </div>
+  </section>
+
+
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">SSN <span>ELITE</span></div>
+          <p class="footer-description">
+            Performance nutrition engineered with purpose. Premium sports supplements for athletes and active professionals.
+          </p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Products</h4>
+          <div class="footer-links">
+            <a href="performance-whey.html" class="footer-link">Performance Whey</a>
+            <a href="anabolic-monster-mass.html" class="footer-link">Anabolic Monster Mass</a>
+            <a href="tri-creatine.html" class="footer-link">Tri Creatine</a>
+            <a href="eaa-bcaa-glutamine.html" class="footer-link">EAA + BCAA + Glutamine</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <div class="footer-links">
+            <a href="about.html" class="footer-link">About SSN Elite</a>
+            <a href="products.html" class="footer-link">All Products</a>
+            <a href="contact.html" class="footer-link">Contact Us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-legal">&copy; 2025 SSN Elite. All rights reserved.</span>
+        <span class="footer-legal">Performance Nutrition, Engineered with Purpose.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/dna-scene.js"></script>
+</body>
+</html>

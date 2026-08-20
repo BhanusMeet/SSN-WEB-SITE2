@@ -1,0 +1,162 @@
+/* ============================================
+   SSN ELITE — 3D DNA Canvas & Node Callout Overlay Styles
+   ============================================ */
+
+#dna-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background: transparent;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+/* Ensure content sits above WebGL Canvas */
+body {
+  position: relative;
+}
+
+.hero, .section, .product-section, .category-section, .footer, .brand-pillars, .brand-statement {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Node Callout Overlay Container ── */
+#dna-overlay-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Floating 3D Node Marker ── */
+.dna-node-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out), visibility 0.4s;
+  will-change: transform, opacity;
+}
+
+.dna-node-marker.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Pulsing Node Reticle */
+.dna-node-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ssn-blue);
+  box-shadow: 0 0 16px var(--ssn-blue), 0 0 32px var(--ssn-blue-glow-strong);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dna-node-dot::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border: 1.5px solid var(--ssn-blue);
+  border-radius: 50%;
+  animation: dna-node-pulse 2s infinite var(--ease-in-out);
+}
+
+@keyframes dna-node-pulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Glass Callout Tag */
+.dna-node-tag {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(10, 47, 255, 0.25);
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  box-shadow: 0 8px 24px rgba(10, 47, 255, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.dna-node-tag-code {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--ssn-blue);
+  text-transform: uppercase;
+}
+
+.dna-node-tag-title {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+/* Variant Accents */
+.dna-node-marker[data-theme="purple"] .dna-node-dot {
+  background: #7C3AED;
+  box-shadow: 0 0 16px #7C3AED, 0 0 32px rgba(124, 58, 237, 0.4);
+}
+.dna-node-marker[data-theme="purple"] .dna-node-dot::after {
+  border-color: #7C3AED;
+}
+.dna-node-marker[data-theme="purple"] .dna-node-tag {
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+}
+.dna-node-marker[data-theme="purple"] .dna-node-tag-code {
+  color: #7C3AED;
+}
+
+.dna-node-marker[data-theme="green"] .dna-node-dot {
+  background: #059669;
+  box-shadow: 0 0 16px #059669, 0 0 32px rgba(5, 150, 105, 0.4);
+}
+.dna-node-marker[data-theme="green"] .dna-node-dot::after {
+  border-color: #059669;
+}
+.dna-node-marker[data-theme="green"] .dna-node-tag {
+  border-color: rgba(5, 150, 105, 0.3);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.15);
+}
+.dna-node-marker[data-theme="green"] .dna-node-tag-code {
+  color: #059669;
+}
+
+.dna-node-marker[data-theme="amber"] .dna-node-dot {
+  background: #D97706;
+  box-shadow: 0 0 16px #D97706, 0 0 32px rgba(217, 119, 6, 0.4);
+}
+.dna-node-marker[data-theme="amber"] .dna-node-dot::after {
+  border-color: #D97706;
+}
+.dna-node-marker[data-theme="amber"] .dna-node-tag {
+  border-color: rgba(217, 119, 6, 0.3);
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
+}
+.dna-node-marker[data-theme="amber"] .dna-node-tag-code {
+  color: #D97706;
+}

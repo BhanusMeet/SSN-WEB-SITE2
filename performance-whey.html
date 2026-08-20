@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance Whey — SSN ELITE</title>
+  <meta name="description" content="SSN Elite Performance Whey: 24g protein per 43g serving from Whey Protein Concentrate. With BCAA + Silk Amino Acid Blend, EAAs, Glutamine, and Digestive Enzymes. 3KG, 70 servings.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/product-detail.css">
+  <link rel="stylesheet" href="css/dna-canvas.css">
+</head>
+<body>
+  <!-- 3D WebGL DNA Canvas Background -->
+  <canvas id="dna-canvas" data-theme="blue"></canvas>
+
+  <!-- Navigation -->
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-brand">SSN <span>ELITE</span></a>
+    <div class="nav-links">
+      <a href="products.html" class="nav-link active">Products</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+    <a href="index.html" class="nav-mobile-link">Home</a>
+    <a href="products.html" class="nav-mobile-link">Products</a>
+    <a href="about.html" class="nav-mobile-link">About</a>
+    <a href="contact.html" class="nav-mobile-link">Contact</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       01 — PRODUCT OVERVIEW (HERO)
+       ═══════════════════════════════════════════ -->
+  <section class="product-hero" id="overview">
+    <div class="container">
+      <div class="product-hero-grid">
+        <div class="product-hero-info">
+          <span class="product-hero-series reveal">SSN Elite Series</span>
+          <h1 class="product-hero-name reveal reveal-delay-1">Performance<br>Whey</h1>
+          <div class="product-hero-specs reveal reveal-delay-2">
+            <span class="product-spec-badge">3 KG</span>
+            <span class="product-spec-badge">70 Servings</span>
+            <span class="product-spec-badge">24g Protein / Serving</span>
+            <span class="product-spec-badge">Gluten Free</span>
+          </div>
+          <div class="reveal reveal-delay-3">
+            <span class="product-hero-price-label">MRP</span>
+            <div class="product-hero-price">₹10,499</div>
+          </div>
+          <div class="reveal reveal-delay-3" style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2);">
+            <span class="tag">Strength Training</span>
+            <span class="tag">Sports</span>
+            <span class="tag">Active Lifestyle</span>
+          </div>
+        </div>
+        <div class="product-hero-image-wrap reveal scale-in">
+          <div class="product-hero-glow blue"></div>
+          <img src="assets/images/products/performance-whey.png" alt="SSN Elite Performance Whey" width="460" height="560">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       02 — WHAT IS PERFORMANCE WHEY?
+       ═══════════════════════════════════════════ -->
+  <section class="product-section" id="what-is-it">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">02</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">What Is Performance Whey?</h2>
+      <div class="mt-8 reveal">
+        <span class="label-source editorial">Educational</span>
+        <p class="body-lg">
+          Performance Whey is a whey protein-based nutritional supplement designed to help you meet your daily protein requirements. Protein is an essential macronutrient that supports muscle repair, recovery, and growth — especially important for people who train regularly or lead active lifestyles.
+        </p>
+        <p class="body mt-4">
+          Rather than relying solely on whole food sources to meet elevated protein needs, a whey protein supplement provides a convenient, measured way to ensure consistent protein intake. Each serving is formulated to deliver a known quantity of protein in a form that can be easily mixed and consumed.
+        </p>
+        <p class="body mt-4">
+          SSN Elite Performance Whey uses <strong>Whey Protein Concentrate (WPC)</strong> as its primary protein source, complemented by a BCAA + Silk Amino Acid Blend, additional EAAs, glutamine, and a digestive enzyme blend to support absorption.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       03 — KEY STAT: 24G PROTEIN
+       ═══════════════════════════════════════════ -->
+  <section class="product-section bg-off-white" id="protein-stat">
+    <div class="container">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">03</span>
+        <span class="product-section-line"></span>
+      </div>
+      <div class="big-stat reveal">
+        <div>
+          <span class="big-stat-value">24</span><span class="big-stat-unit">G</span>
+        </div>
+        <div class="big-stat-label">Protein Per Serving</div>
+        <div class="big-stat-sublabel">Per 43g serving</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       04 — THE PROTEIN SOURCE
+       ═══════════════════════════════════════════ -->
+  <section class="product-section" id="protein-source">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">04</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">The Protein Source</h2>
+      <div class="mt-6 reveal">
+        <div class="tag mb-4">Whey Protein Concentrate</div>
+      </div>
+      <div class="mt-4 reveal">
+        <span class="label-source editorial">Educational</span>
+        <p class="body-lg">
+          Whey Protein Concentrate (WPC) is derived from milk during the cheese-making process. When milk is processed, it separates into curds (used for cheese) and a liquid called whey. This liquid whey is then filtered and dried to create whey protein concentrate.
+        </p>
+        <p class="body mt-4">
+          WPC retains more of the naturally occurring nutrients found in whey compared to more heavily processed forms. It typically contains a high percentage of protein along with small amounts of fat, carbohydrates, and bioactive compounds that are naturally present in whey.
+        </p>
+        <p class="body mt-4">
+          As a protein source, WPC provides a complete amino acid profile — meaning it contains all nine essential amino acids that the body cannot produce on its own and must obtain through diet.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       05 — AMINO ACID PROFILE
+       ═══════════════════════════════════════════ -->
+  <section class="product-section bg-off-white" id="amino-acids">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">05</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">The Amino Acid Profile</h2>
+      <div class="mt-4 reveal">
+        <span class="label-source from-packaging">From Packaging</span>
+      </div>
+      <p class="body mt-4 reveal">
+        Performance Whey includes a BCAA + Silk Amino Acid Blend along with additional essential amino acids and glutamine. The following amino acids are listed on the product packaging:
+      </p>
+
+      <div class="mt-8 reveal">
+        <h4 class="h4 mb-6">BCAA + Silk Amino Acid Blend</h4>
+        <div class="ingredient-grid">
+          <div class="ingredient-item">
+            <div class="ingredient-category">BCAA</div>
+            L-Leucine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">BCAA</div>
+            L-Isoleucine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">BCAA</div>
+            L-Valine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">Amino Acid</div>
+            L-Glycine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">Amino Acid</div>
+            L-Alanine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">Amino Acid</div>
+            L-Serine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">Amino Acid</div>
+            L-Threonine
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 reveal">
+        <h4 class="h4 mb-6">Additional Components</h4>
+        <div class="ingredient-grid">
+          <div class="ingredient-item">
+            <div class="ingredient-category">Recovery</div>
+            Glutamine
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">Amino Acids</div>
+            Additional EAAs
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-category">Specialty</div>
+            Silk Amino Acids
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       06 — WHAT'S INSIDE (INGREDIENTS)
+       ═══════════════════════════════════════════ -->
+  <section class="product-section" id="ingredients">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">06</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">What's Inside</h2>
+      <div class="mt-4 reveal">
+        <span class="label-source from-packaging">From Product Label</span>
+        <p class="body mt-4">
+          The complete ingredient list as stated on the SSN Elite Performance Whey packaging. Information is presented exactly as listed on the product label.
+        </p>
+      </div>
+
+      <div class="mt-8">
+        <!-- Primary Protein -->
+        <div class="expandable reveal" id="exp-protein">
+          <div class="expandable-header">
+            <span class="expandable-title">Whey Protein Concentrate</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <p>The primary protein source in Performance Whey. Whey Protein Concentrate provides a complete amino acid profile and is derived from milk during cheese production. It serves as the foundation of each serving's 24g protein content.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BCAA + Silk Amino Acid Blend -->
+        <div class="expandable reveal" id="exp-bcaa">
+          <div class="expandable-header">
+            <span class="expandable-title">BCAA + Silk Amino Acid Blend</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <p>A blend of Branched-Chain Amino Acids and Silk Amino Acids containing:</p>
+              <ul style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px;">
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Leucine</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Isoleucine</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Valine</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Glycine</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Alanine</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Serine</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> L-Threonine</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flavour & Additives -->
+        <div class="expandable reveal" id="exp-flavour-additives">
+          <div class="expandable-header">
+            <span class="expandable-title">Flavour &amp; Additives</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <ul style="display: flex; flex-direction: column; gap: 6px;">
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> Flavour</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> Cocoa Powder (where applicable)</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> Sucralose (INS955)</li>
+                <li style="padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--ssn-blue);">·</span> Permitted Colour (where applicable)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Digestive Enzyme Blend -->
+        <div class="expandable reveal" id="exp-enzymes">
+          <div class="expandable-header">
+            <span class="expandable-title">Digestive Enzyme Blend</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <p>A digestive enzyme blend is included to support the breakdown and absorption of protein. Digestive enzymes may help improve the bioavailability of nutrients and reduce digestive discomfort that some users experience with protein supplements.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Glutamine -->
+        <div class="expandable reveal" id="exp-glutamine">
+          <div class="expandable-header">
+            <span class="expandable-title">Glutamine</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <p>Glutamine is the most abundant amino acid in the body. It plays a role in muscle recovery and immune function, and is included as an additional amino acid component in this formula.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Silk Amino Acids -->
+        <div class="expandable reveal" id="exp-silk">
+          <div class="expandable-header">
+            <span class="expandable-title">Silk Amino Acids</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <p>Silk Amino Acids are part of the BCAA + Silk Amino Acid Blend included in this formula, as stated on the product packaging.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       07 — NUTRITION PANEL
+       ═══════════════════════════════════════════ -->
+  <section class="product-section bg-off-white" id="nutrition">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">07</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">Key Nutrition</h2>
+      <div class="mt-4 reveal">
+        <span class="label-source from-packaging">From Product Label</span>
+      </div>
+
+      <div class="mt-8 grid-2 reveal" style="gap: var(--space-6);">
+        <div class="nutrition-highlight">
+          <div class="nutrition-highlight-value">138.04</div>
+          <div class="nutrition-highlight-label">kcal per serving</div>
+        </div>
+        <div class="nutrition-highlight">
+          <div class="nutrition-highlight-value">24<span style="font-size: 0.5em; opacity: 0.6;">g</span></div>
+          <div class="nutrition-highlight-label">Protein per serving</div>
+        </div>
+      </div>
+
+      <div class="mt-8 reveal">
+        <table class="nutrition-panel">
+          <thead>
+            <tr>
+              <th>Nutrient</th>
+              <th>Per 43g Serving</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Energy</td>
+              <td>138.04 kcal</td>
+            </tr>
+            <tr>
+              <td>Protein</td>
+              <td>24 g</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- View Full Nutrition -->
+      <div class="mt-6">
+        <div class="expandable reveal" id="exp-full-nutrition">
+          <div class="expandable-header">
+            <span class="expandable-title">View Full Nutrition Information</span>
+            <span class="expandable-icon"></span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-content-inner">
+              <div class="placeholder-block">
+                <div class="placeholder-title">Full Nutrition Panel</div>
+                <p>Complete nutrition information will be updated with all values from the actual product label. The values shown above (Energy: 138.04 kcal, Protein: 24g per 43g serving) are confirmed from the product packaging.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="body-sm mt-6 reveal" style="color: var(--text-tertiary);">
+        Serving size: 43g (approximately 1 scoop). Nutritional values are as stated on the product label. Only confirmed values are displayed.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       08 — FLAVOUR EXPERIENCE
+       ═══════════════════════════════════════════ -->
+  <section class="product-section" id="flavours">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">08</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">Flavour Experience</h2>
+      <p class="body mt-4 reveal">
+        Performance Whey is available in six flavours. Select a flavour to explore.
+      </p>
+
+      <div class="mt-8 reveal">
+        <div class="flavour-selector" id="flavour-selector">
+          <button class="flavour-pill active" data-flavour="Chocolate Brownie" data-description="Rich chocolate brownie flavour profile.">Chocolate Brownie</button>
+          <button class="flavour-pill" data-flavour="Mawa Kulfi" data-description="Traditional Indian mawa kulfi inspired flavour.">Mawa Kulfi</button>
+          <button class="flavour-pill" data-flavour="Cookies &amp; Cream" data-description="Classic cookies and cream flavour combination.">Cookies &amp; Cream</button>
+          <button class="flavour-pill" data-flavour="Coffee Latte" data-description="Smooth coffee latte flavour profile.">Coffee Latte</button>
+          <button class="flavour-pill" data-flavour="Strawberry Ice Cream" data-description="Strawberry ice cream inspired flavour.">Strawberry Ice Cream</button>
+          <button class="flavour-pill" data-flavour="Blueberry Ice Cream" data-description="Blueberry ice cream inspired flavour.">Blueberry Ice Cream</button>
+        </div>
+      </div>
+
+      <div class="flavour-display mt-8 reveal">
+        <div class="flavour-active-name">Chocolate Brownie</div>
+        <p class="flavour-active-desc body-sm mt-4" style="color: var(--text-tertiary);">Rich chocolate brownie flavour profile.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       09 — HOW TO USE
+       ═══════════════════════════════════════════ -->
+  <section class="product-section bg-off-white" id="how-to-use">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">09</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">How to Use</h2>
+      <div class="mt-4 reveal">
+        <span class="label-source from-packaging">From Packaging</span>
+      </div>
+
+      <div class="usage-steps mt-8 reveal">
+        <div class="usage-step">
+          <div class="usage-step-number">01</div>
+          <h4 class="usage-step-title">Measure</h4>
+          <p class="usage-step-text">Take approximately <strong>43g (1 scoop)</strong> of Performance Whey powder.</p>
+        </div>
+        <div class="usage-step">
+          <div class="usage-step-number">02</div>
+          <h4 class="usage-step-title">Mix</h4>
+          <p class="usage-step-text">Add to <strong>180–200 ml</strong> of cold water, milk, or another beverage of your choice.</p>
+        </div>
+        <div class="usage-step">
+          <div class="usage-step-number">03</div>
+          <h4 class="usage-step-title">Shake</h4>
+          <p class="usage-step-text">Shake or stir until fully dissolved, approximately <strong>30 seconds</strong>.</p>
+        </div>
+      </div>
+
+      <p class="body-sm mt-8 reveal" style="color: var(--text-tertiary);">
+        Usage instructions are as stated on the product packaging. The product label includes post-workout usage guidance. This product is a dietary supplement and is not intended to diagnose, treat, cure, or prevent any disease. Consult a healthcare professional before use.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       10 — WHO IS IT FOR?
+       ═══════════════════════════════════════════ -->
+  <section class="product-section" id="who-is-it-for">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">10</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">Who Is It For?</h2>
+      <p class="body mt-4 reveal">
+        As stated on the packaging, Performance Whey is formulated for strength training, sports, and active lifestyle use.
+      </p>
+
+      <div class="audience-grid mt-8 reveal">
+        <div class="audience-item">
+          <div class="audience-icon">🏋️</div>
+          <div class="audience-label">Strength Training</div>
+        </div>
+        <div class="audience-item">
+          <div class="audience-icon">⚡</div>
+          <div class="audience-label">Sports &amp; Athletics</div>
+        </div>
+        <div class="audience-item">
+          <div class="audience-icon">🏃</div>
+          <div class="audience-label">Active Lifestyle</div>
+        </div>
+        <div class="audience-item">
+          <div class="audience-icon">🎯</div>
+          <div class="audience-label">Daily Protein Goals</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+  <!-- ═══════════════════════════════════════════
+       12 — STORAGE & WARNINGS
+       ═══════════════════════════════════════════ -->
+  <section class="product-section" id="storage">
+    <div class="container-narrow">
+      <div class="product-section-header reveal">
+        <span class="product-section-number">12</span>
+        <span class="product-section-line"></span>
+      </div>
+      <h2 class="product-section-title reveal">Storage &amp; Important Information</h2>
+
+      <div class="warning-grid mt-8 reveal">
+        <div class="warning-card">
+          <h4 class="warning-card-title">Storage</h4>
+          <p class="warning-card-text">
+            Store in a cool, dry place away from direct sunlight. Keep the container tightly closed after use. Keep away from children.
+          </p>
+        </div>
+        <div class="warning-card">
+          <h4 class="warning-card-title">Important Notice</h4>
+          <p class="warning-card-text">
+            This product is a dietary supplement and is not intended to be a substitute for a varied diet. Consult a healthcare professional before use, especially if you have a medical condition or are taking medication.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">SSN <span>ELITE</span></div>
+          <p class="footer-description">Performance nutrition engineered with purpose.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Products</h4>
+          <div class="footer-links">
+            <a href="performance-whey.html" class="footer-link">Performance Whey</a>
+            <a href="anabolic-monster-mass.html" class="footer-link">Anabolic Monster Mass</a>
+            <a href="tri-creatine.html" class="footer-link">Tri Creatine</a>
+            <a href="eaa-bcaa-glutamine.html" class="footer-link">EAA + BCAA + Glutamine</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <div class="footer-links">
+            <a href="about.html" class="footer-link">About SSN Elite</a>
+            <a href="products.html" class="footer-link">All Products</a>
+            <a href="contact.html" class="footer-link">Contact Us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-legal">&copy; 2025 SSN Elite. All rights reserved.</span>
+        <span class="footer-legal">Performance Nutrition, Engineered with Purpose.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/siteConfig.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/expandable.js"></script>
+  <script src="js/flavour-selector.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/dna-scene.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+/* ============================================
+   SSN ELITE — Animations
+   Scroll-triggered reveals, transitions, parallax
+   ============================================ */
+
+/* ── Scroll Reveal: Fade Up ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity var(--duration-slower) var(--ease-out),
+              transform var(--duration-slower) var(--ease-out);
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Staggered Delays ── */
+.reveal-delay-1 { transition-delay: 80ms; }
+.reveal-delay-2 { transition-delay: 160ms; }
+.reveal-delay-3 { transition-delay: 240ms; }
+.reveal-delay-4 { transition-delay: 320ms; }
+.reveal-delay-5 { transition-delay: 400ms; }
+
+/* ── Fade In (no movement) ── */
+.fade-in {
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+.fade-in.revealed {
+  opacity: 1;
+}
+
+/* ── Scale In ── */
+.scale-in {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity var(--duration-slow) var(--ease-out),
+              transform var(--duration-slow) var(--ease-out);
+}
+
+.scale-in.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Slide In from Left ── */
+.slide-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity var(--duration-slower) var(--ease-out),
+              transform var(--duration-slower) var(--ease-out);
+}
+
+.slide-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Slide In from Right ── */
+.slide-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity var(--duration-slower) var(--ease-out),
+              transform var(--duration-slower) var(--ease-out);
+}
+
+.slide-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Hero Product Float ── */
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.float-animation {
+  animation: float-subtle 6s var(--ease-in-out) infinite;
+}
+
+/* ── Slow Pulse Glow ── */
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 40px var(--ssn-blue-glow), 0 0 80px rgba(10, 47, 255, 0.05); 
+  }
+  50% { 
+    box-shadow: 0 0 60px var(--ssn-blue-glow-strong), 0 0 120px rgba(10, 47, 255, 0.08); 
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 4s var(--ease-in-out) infinite;
+}
+
+/* ── Dot Grid Pattern Animation ── */
+@keyframes dot-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 24px 24px; }
+}
+
+/* ── Line Draw ── */
+@keyframes line-draw {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.line-draw {
+  position: relative;
+}
+
+.line-draw::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 0;
+  background: var(--ssn-blue);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+.line-draw.revealed::after {
+  width: 100%;
+}
+
+/* ── Counter Animation ── */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Flavour Crossfade ── */
+.flavour-crossfade-enter {
+  animation: flavour-in 300ms var(--ease-out) forwards;
+}
+
+@keyframes flavour-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Reduce Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .fade-in,
+  .scale-in,
+  .slide-left,
+  .slide-right {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .float-animation,
+  .pulse-glow {
+    animation: none;
+  }
+
+  .line-draw::after {
+    width: 100%;
+    transition: none;
+  }
+}

@@ -1,0 +1,331 @@
+/* ============================================
+   SSN ELITE — Homepage Styles
+   ============================================ */
+
+/* ── Hero ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-white);
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  align-items: center;
+  width: 100%;
+  max-width: var(--container-max);
+  padding: var(--nav-height) var(--container-padding) var(--space-16);
+  min-height: 100vh;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.hero-tagline {
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.02;
+  color: var(--text-primary);
+}
+
+.hero-tagline em {
+  font-style: normal;
+  color: var(--ssn-blue);
+}
+
+.hero-subtitle {
+  font-size: var(--text-body-lg);
+  color: var(--text-secondary);
+  max-width: 440px;
+  line-height: 1.7;
+}
+
+.hero-cta-row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.hero-product {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-product-image {
+  max-height: 580px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.10));
+  position: relative;
+  z-index: 2;
+}
+
+.hero-product-glow {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(ellipse, var(--ssn-blue-glow-strong) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: 1;
+}
+
+/* Dot pattern background */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background-image: radial-gradient(circle, var(--border-subtle) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* ── Brand Pillars ── */
+.brand-pillars {
+  padding: var(--space-16) 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-off-white);
+  position: relative;
+  z-index: 1;
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-6);
+  text-align: center;
+}
+
+.pillar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  position: relative;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.pillar-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: var(--border-subtle);
+}
+
+.pillar-number {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ssn-blue);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+}
+
+.pillar-name {
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.pillar-line {
+  width: 24px;
+  height: 2px;
+  background: var(--ssn-blue);
+  border-radius: var(--radius-full);
+}
+
+/* ── Products Showcase ── */
+.showcase-section {
+  padding: var(--space-24) 0;
+}
+
+.showcase-header {
+  text-align: center;
+  margin-bottom: var(--space-16);
+}
+
+.showcase-header .label-blue {
+  margin-bottom: var(--space-4);
+  display: block;
+}
+
+/* ── Brand Statement ── */
+.brand-statement {
+  padding: var(--space-32) 0;
+  text-align: center;
+  background: var(--surface-dark);
+  color: var(--text-on-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-statement-text {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.brand-statement-text em {
+  font-style: normal;
+  color: var(--ssn-blue-light);
+}
+
+.brand-statement::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(10, 47, 255, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .pillars-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+  }
+
+  .pillar-item {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .pillar-name {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (max-width: 768px) {
+  .brand-pillars {
+    padding: var(--space-12) 0;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-top: calc(var(--nav-height) + var(--space-12));
+    min-height: auto;
+  }
+
+  .hero-text {
+    align-items: center;
+  }
+
+  .hero-subtitle {
+    margin: 0 auto;
+  }
+
+  .hero-cta-row {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-product-image {
+    max-height: 400px;
+  }
+
+  .hero::before {
+    width: 100%;
+    opacity: 0.3;
+  }
+
+  /* One single vertical standing line */
+  .pillars-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .pillar-item {
+    width: 100%;
+    max-width: 280px;
+    padding: var(--space-4) 0;
+    position: relative;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .pillar-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+    width: 40px;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+
+  .pillar-number {
+    font-size: 0.75rem;
+  }
+
+  .pillar-name {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-pillars {
+    padding: var(--space-10) 0;
+  }
+
+  .pillars-grid {
+    gap: var(--space-5);
+  }
+
+  .pillar-item {
+    padding: var(--space-3) 0;
+  }
+
+  .pillar-number {
+    font-size: 0.7rem;
+  }
+
+  .pillar-name {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .pillar-line {
+    width: 20px;
+    height: 2px;
+  }
+
+  .hero-tagline {
+    font-size: 2.2rem;
+  }
+}

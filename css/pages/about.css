@@ -1,0 +1,241 @@
+/* ============================================
+   SSN ELITE — About Page Styles
+   ============================================ */
+
+.about-hero {
+  padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-16);
+  text-align: center;
+  background: var(--surface-off-white);
+  position: relative;
+}
+
+.about-hero .label-blue {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.about-hero h1 {
+  margin-bottom: var(--space-6);
+}
+
+.about-hero .body-lg {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ── Values Grid ── */
+.values-section {
+  padding: var(--space-20) 0;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-6);
+}
+
+.value-card {
+  padding: var(--space-8);
+  text-align: center;
+  background: var(--surface-off-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  transition: border-color var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
+}
+
+.value-card:hover {
+  border-color: var(--ssn-blue);
+  transform: translateY(-4px);
+}
+
+.value-number {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-quaternary);
+  letter-spacing: var(--tracking-widest);
+  margin-bottom: var(--space-4);
+}
+
+.value-icon {
+  font-size: var(--text-h2);
+  margin-bottom: var(--space-4);
+  line-height: 1;
+}
+
+.value-name {
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.value-description {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Mission Section ── */
+.mission-section {
+  padding: var(--space-20) 0;
+  background: var(--surface-dark);
+  color: var(--text-on-dark);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-section::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(10, 47, 255, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.mission-text {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: var(--weight-semibold);
+  line-height: 1.4;
+  max-width: 800px;
+  margin: 0 auto;
+  letter-spacing: var(--tracking-tight);
+}
+
+.mission-text em {
+  font-style: normal;
+  color: var(--ssn-blue-light);
+}
+
+/* ── Philosophy Section ── */
+.philosophy-section {
+  padding: var(--space-20) 0;
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+}
+
+.philosophy-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.philosophy-content h2 {
+  margin-bottom: var(--space-2);
+}
+
+.philosophy-points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.philosophy-point {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.philosophy-point-marker {
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  background: var(--ssn-blue);
+  border-radius: 50%;
+  margin-top: 8px;
+}
+
+.philosophy-point-text {
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.philosophy-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-off-white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-12);
+  position: relative;
+  overflow: hidden;
+}
+
+.philosophy-visual::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, var(--border-subtle) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.6;
+}
+
+.philosophy-stat {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.philosophy-stat-value {
+  font-size: var(--text-display);
+  font-weight: var(--weight-bold);
+  color: var(--ssn-blue);
+  line-height: 1;
+}
+
+.philosophy-stat-label {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  margin-top: var(--space-3);
+}
+
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .values-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .values-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .value-card {
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .philosophy-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 480px) {
+  .values-grid {
+    gap: var(--space-4);
+  }
+
+  .value-card {
+    padding: var(--space-6) var(--space-4);
+  }
+}

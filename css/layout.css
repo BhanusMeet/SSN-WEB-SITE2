@@ -1,0 +1,211 @@
+/* ============================================
+   SSN ELITE — Layout System
+   Containers, grids, and responsive structure
+   ============================================ */
+
+/* ── Containers ── */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.container-text {
+  width: 100%;
+  max-width: var(--container-text);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* ── Section Spacing ── */
+.section {
+  padding-top: var(--space-24);
+  padding-bottom: var(--space-24);
+}
+
+.section-sm {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+.section-lg {
+  padding-top: var(--space-32);
+  padding-bottom: var(--space-32);
+}
+
+/* ── Page Top Offset (for sticky nav) ── */
+.page-content {
+  padding-top: var(--nav-height);
+}
+
+/* ── Grid Systems ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+.grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-6);
+}
+
+/* ── Flex Utilities ── */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-start {
+  display: flex;
+  align-items: flex-start;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+.gap-12 { gap: var(--space-12); }
+
+/* ── Spacing Utilities ── */
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+.mt-12 { margin-top: var(--space-12); }
+.mt-16 { margin-top: var(--space-16); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+.mb-12 { margin-bottom: var(--space-12); }
+
+/* ── Text Alignment ── */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* ── Background Alternation ── */
+.bg-white { background-color: var(--surface-white); }
+.bg-off-white { background-color: var(--surface-off-white); }
+.bg-light { background-color: var(--surface-light); }
+.bg-dark { background-color: var(--surface-dark); color: var(--text-on-dark); }
+.bg-blue-surface { background-color: var(--ssn-blue-surface); }
+
+/* ── Responsive ── */
+
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .section {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+
+  .section-lg {
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --container-padding: var(--space-5);
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .grid-3 {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
+  }
+
+  .section-sm {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+
+  .section-lg {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --container-padding: var(--space-4);
+  }
+
+  .grid-5 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
