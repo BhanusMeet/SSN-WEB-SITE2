@@ -16,17 +16,21 @@ function initNavigation() {
   const mobileMenu = document.querySelector('.nav-mobile-menu');
   const mobileLinks = document.querySelectorAll('.nav-mobile-link');
 
-  // Scroll behavior — add shadow on scroll
+  // Scroll behavior — add shadow on scroll with rAF throttling
   if (nav) {
-    let lastScroll = 0;
+    let ticking = false;
     window.addEventListener('scroll', () => {
-      const currentScroll = window.pageYOffset;
-      if (currentScroll > 20) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.pageYOffset > 20) {
+            nav.classList.add('scrolled');
+          } else {
+            nav.classList.remove('scrolled');
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
-      lastScroll = currentScroll;
     }, { passive: true });
   }
 

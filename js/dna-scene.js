@@ -30,6 +30,12 @@ class SSNDNAScene {
     this.scrollProgress = 0;
     this.targetScrollProgress = 0;
 
+    // Visibility & performance optimization state
+    this.isVisible = true;
+    this.isDocumentVisible = !document.hidden;
+    this.isAnimating = false;
+    this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Node Callout Definitions
     this.nodes = [
       { id: 'wpc', labelCode: 'MOL-01 // SOURCE', labelTitle: 'WHEY PROTEIN CONCENTRATE', strandIndex: 6, step: 0.15 },
@@ -43,7 +49,8 @@ class SSNDNAScene {
     this.buildDNAStructure();
     this.buildNodeMarkers();
     this.bindEvents();
-    this.animate();
+    this.setupVisibilityObserver();
+    this.startAnimationLoop();
   }
 
   initScene() {
@@ -54,7 +61,9 @@ class SSNDNAScene {
       antialias: true,
       powerPreference: 'high-performance'
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const isMobile = window.innerWidth <= 768;
+    const maxDpr = isMobile ? 1.0 : 1.5;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     // 2. Camera Setup
@@ -83,6 +92,33 @@ class SSNDNAScene {
     // Dynamic stage group
     this.dnaGroup = new THREE.Group();
     this.scene.add(this.dnaGroup);
+  }
+
+  setupVisibilityObserver() {
+    if ('IntersectionObserver' in window) {
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          this.isVisible = entry.isIntersecting;
+          if (this.isVisible && this.isDocumentVisible && !this.isAnimating) {
+            this.startAnimationLoop();
+          }
+        });
+      }, { threshold: 0 });
+      this.observer.observe(this.canvas);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      this.isDocumentVisible = !document.hidden;
+      if (this.isDocumentVisible && this.isVisible && !this.isAnimating) {
+        this.startAnimationLoop();
+      }
+    }, { passive: true });
+  }
+
+  startAnimationLoop() {
+    if (this.isAnimating) return;
+    this.isAnimating = true;
+    this.animate();
   }
 
   buildDNAStructure() {
@@ -243,24 +279,30 @@ class SSNDNAScene {
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
+    const isMobile = window.innerWidth <= 768;
+    const maxDpr = isMobile ? 1.0 : 1.5;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   animate() {
+    if (!this.isVisible || !this.isDocumentVisible) {
+      this.isAnimating = false;
+      return;
+    }
+
     requestAnimationFrame(() => this.animate());
 
     // Smooth scroll interpolation (Lerp)
-    this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * 0.06;
+    this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * (this.prefersReducedMotion ? 1.0 : 0.06);
 
     const p = this.scrollProgress;
 
     // ── SCROLL-DRIVEN CAMERA MOTION PATH ──
-    // Continuous dynamic 3D journey through the structure
     const isMobile = window.innerWidth <= 768;
 
-    // Orbital distance, height, and side movement along scroll
     const radius = isMobile ? (14 + Math.sin(p * Math.PI * 2) * 4) : (11 + Math.sin(p * Math.PI * 3) * 3);
-    const cameraAngle = p * Math.PI * 4; // 2 full revolutions as user scrolls top to bottom
+    const cameraAngle = p * Math.PI * 4;
     const cameraY = (0.5 - p) * 36 + Math.sin(p * Math.PI * 2) * 4;
     const cameraX = Math.cos(cameraAngle) * radius + (Math.sin(p * Math.PI) * (isMobile ? 1 : 4));
     const cameraZ = Math.sin(cameraAngle) * radius;
@@ -270,11 +312,13 @@ class SSNDNAScene {
     this.camera.lookAt(this.cameraTarget);
 
     // ── DNA GROUP ROTATION & FLEX ──
-    this.dnaGroup.rotation.y = p * Math.PI * 3;
-    this.dnaGroup.rotation.z = Math.sin(p * Math.PI * 2) * 0.2;
+    if (!this.prefersReducedMotion) {
+      this.dnaGroup.rotation.y = p * Math.PI * 3;
+      this.dnaGroup.rotation.z = Math.sin(p * Math.PI * 2) * 0.2;
 
-    if (this.particles) {
-      this.particles.rotation.y = p * 0.5;
+      if (this.particles) {
+        this.particles.rotation.y = p * 0.5;
+      }
     }
 
     // ── UPDATE NODE MARKER PROJECTIONS ──
@@ -291,32 +335,30 @@ class SSNDNAScene {
       const nodeData = item.data;
       const el = item.element;
 
-      // Select corresponding 3D node mesh from strand
       const targetMesh = this.strand1Nodes[nodeData.strandIndex];
       if (!targetMesh) return;
 
-      // Get world position of 3D node
       targetMesh.getWorldPosition(tempVec);
 
-      // Check distance to scroll keyframe step
       const stepDiff = Math.abs(this.scrollProgress - nodeData.step);
       const isVisibleStep = stepDiff < 0.12;
 
-      // Project 3D coordinate to 2D screen coordinate
       tempVec.project(this.camera);
 
-      // Verify node is inside front frustum clip plane (-1 to 1)
       const isInsideView = tempVec.z < 1 && Math.abs(tempVec.x) < 1.1 && Math.abs(tempVec.y) < 1.1;
 
       if (isVisibleStep && isInsideView) {
         const x = (tempVec.x * 0.5 + 0.5) * window.innerWidth;
         const y = (-tempVec.y * 0.5 + 0.5) * window.innerHeight;
 
-        el.style.left = `${x}px`;
-        el.style.top = `${y}px`;
-        el.classList.add('active');
+        el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%)`;
+        if (!el.classList.contains('active')) {
+          el.classList.add('active');
+        }
       } else {
-        el.classList.remove('active');
+        if (el.classList.contains('active')) {
+          el.classList.remove('active');
+        }
       }
     });
   }

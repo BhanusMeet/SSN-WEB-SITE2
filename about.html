@@ -3,9 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About — SSN ELITE</title>
+  <title>About SSN Elite | Science-Backed Performance Nutrition</title>
   <meta name="description" content="SSN ELITE: Performance nutrition engineered with purpose. Learn about our commitment to performance, precision, transparency, formulation, and quality.">
-  <link rel="icon" type="image/png" href="assets/images/logo.png">
+  <link rel="canonical" href="https://ssnelite.com/about.html">
+  <meta name="theme-color" content="#0A2FFF">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ssnelite.com/about.html">
+  <meta property="og:title" content="About SSN Elite | Performance Nutrition Engineered with Purpose">
+  <meta property="og:description" content="Learn about our commitment to performance, precision, transparency, formulation, and quality.">
+  <meta property="og:image" content="https://ssnelite.com/assets/images/logo.webp">
+  <meta property="og:site_name" content="SSN Elite">
+
+  <link rel="icon" type="image/webp" href="assets/images/logo.webp">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +31,16 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/pages/about.css">
   <link rel="stylesheet" href="css/dna-canvas.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About SSN Elite",
+    "url": "https://ssnelite.com/about.html",
+    "description": "Information about SSN Elite's commitment to performance nutrition."
+  }
+  </script>
 </head>
 <body>
   <!-- 3D WebGL DNA Canvas Background -->
@@ -26,7 +48,7 @@
 
   <!-- Navigation -->
   <nav class="nav" id="main-nav" aria-label="Main navigation">
-    <a href="index.html" class="nav-brand" aria-label="SSN Elite Home"><img src="assets/images/logo.png" alt="SSN ELITE" class="nav-logo"></a>
+    <a href="index.html" class="nav-brand" aria-label="SSN Elite Home"><img src="assets/images/logo.webp" alt="SSN ELITE" class="nav-logo" width="160" height="40"></a>
     <div class="nav-links">
       <a href="products.html" class="nav-link">Products</a>
       <a href="index.html#shop-by-goal" class="nav-link">Shop By Goal</a>
@@ -38,7 +60,7 @@
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
   </nav>
   <div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
-    <div class="nav-mobile-logo-wrap"><img src="assets/images/logo.png" alt="SSN ELITE" class="mobile-logo"></div>
+    <div class="nav-mobile-logo-wrap"><img src="assets/images/logo.webp" alt="SSN ELITE" class="mobile-logo" width="140" height="35"></div>
     <a href="index.html" class="nav-mobile-link">Home</a>
     <a href="products.html" class="nav-mobile-link">Products</a>
     <a href="lab-reports.html" class="nav-mobile-link">Lab Reports</a>
@@ -195,7 +217,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
-        <div><a href="index.html" class="footer-brand" aria-label="SSN Elite Home"><img src="assets/images/logo.png" alt="SSN ELITE" class="footer-logo"></a><p class="footer-description">Performance nutrition engineered with purpose.</p></div>
+        <div><a href="index.html" class="footer-brand" aria-label="SSN Elite Home"><img src="assets/images/logo.webp" alt="SSN ELITE" class="footer-logo" width="160" height="40" loading="lazy"></a><p class="footer-description">Performance nutrition engineered with purpose.</p></div>
         <div><h4 class="footer-heading">Products</h4><div class="footer-links"><a href="performance-whey.html" class="footer-link">Performance Whey</a><a href="anabolic-monster-mass.html" class="footer-link">Anabolic Monster Mass</a><a href="tri-creatine.html" class="footer-link">Tri Creatine</a><a href="eaa-bcaa-glutamine.html" class="footer-link">EAA + BCAA + Glutamine</a></div></div>
         <div><h4 class="footer-heading">Company</h4><div class="footer-links"><a href="about.html" class="footer-link">About SSN Elite</a><a href="products.html" class="footer-link">All Products</a><a href="contact.html" class="footer-link">Contact Us</a></div></div>
       </div>
@@ -203,9 +225,9 @@
     </div>
   </footer>
 
-  <script src="js/siteConfig.js"></script>
-  <script src="js/main.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/dna-scene.js"></script>
+  <script src="js/siteConfig.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="js/dna-scene.js" defer></script>
 </body>
 </html>
