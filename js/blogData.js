@@ -83,6 +83,21 @@ const SSN_BLOG_POSTS = [
   }
 ];
 
+let SSN_REMOTE_BLOG_POSTS = [];
+
+async function loadBlogPosts() {
+  try {
+    const response = await fetch('content/blog-posts.json', { cache: 'no-store' });
+    if (response.ok) {
+      const posts = await response.json();
+      SSN_REMOTE_BLOG_POSTS = Array.isArray(posts) ? posts : [];
+    }
+  } catch (error) {
+    SSN_REMOTE_BLOG_POSTS = [];
+  }
+  return SSN_REMOTE_BLOG_POSTS;
+}
+
 /**
  * Returns merged list of articles, filtering out user-deleted posts
  */
@@ -90,10 +105,11 @@ function getCombinedBlogPosts() {
   try {
     const customPosts = JSON.parse(localStorage.getItem('ssn_custom_blog_posts') || '[]');
     const deletedIds = JSON.parse(localStorage.getItem('ssn_deleted_blog_ids') || '[]');
-    const all = [...customPosts, ...SSN_BLOG_POSTS];
-    return all.filter(post => !deletedIds.includes(post.id));
+    const all = [...SSN_REMOTE_BLOG_POSTS, ...customPosts, ...SSN_BLOG_POSTS];
+    const unique = all.filter((post, index, posts) => posts.findIndex(item => item.id === post.id) === index);
+    return unique.filter(post => !deletedIds.includes(post.id));
   } catch (e) {
-    return SSN_BLOG_POSTS;
+    return [...SSN_REMOTE_BLOG_POSTS, ...SSN_BLOG_POSTS];
   }
 }
 

@@ -477,7 +477,7 @@
   <script src="js/dna-scene.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      renderHomepageBlog('homepage-blog-grid', 3);
+      loadBlogPosts().then(() => renderHomepageBlog('homepage-blog-grid', 3));
     });
   </script>
 </body>

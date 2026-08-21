@@ -134,17 +134,15 @@
   <script src="js/dna-scene.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      renderBlogGrid('blog-page-grid', 'ALL');
+      loadBlogPosts().then(() => {
+        renderBlogGrid('blog-page-grid', 'ALL');
 
-      // Check URL hash for article deep linking
-      const hash = window.location.hash.replace('#', '');
-      if (hash) {
-        const allPosts = getCombinedBlogPosts();
-        const matchingPost = allPosts.find(p => p.slug === hash);
-        if (matchingPost) {
-          openBlogPostModal(matchingPost.id);
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+          const matchingPost = getCombinedBlogPosts().find(p => p.slug === hash);
+          if (matchingPost) openBlogPostModal(matchingPost.id);
         }
-      }
+      });
     });
 
     function filterBlogCategory(cat, btn) {

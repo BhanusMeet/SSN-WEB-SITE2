@@ -144,6 +144,27 @@
       color: white;
       border-color: #EF4444;
     }
+    .auth-gate {
+      max-width: 560px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .auth-gate p {
+      color: var(--text-secondary);
+      margin: var(--space-4) 0 var(--space-6);
+    }
+    .publisher-user {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      color: var(--text-secondary);
+      font-size: var(--text-xs);
+    }
+    .publisher-user img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
   </style>
 </head>
 <body>
@@ -159,6 +180,14 @@
 
   <main class="publisher-layout">
     <div class="container">
+      <div id="auth-gate" class="publisher-card auth-gate">
+        <span class="label-blue">Protected publishing</span>
+        <h1 style="font-size: 2rem; font-weight: 700; margin-top: 6px;">Sign in to publish</h1>
+        <p>Use the authorized GitHub account to write articles and publish them to the live Journal.</p>
+        <a class="cta-button" href="/api/auth/login">Sign in with GitHub</a>
+      </div>
+
+      <div id="publisher-app" hidden>
       <div style="margin-bottom: var(--space-8); display: flex; justify-content: space-between; align-items: flex-end;">
         <div>
           <span class="label-blue">SSN Elite CMS Portal</span>
@@ -258,13 +287,21 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
   </main>
 
   <script src="js/siteConfig.js"></script>
   <script src="js/blogData.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      const sessionResponse = await fetch('/api/auth/session');
+      if (!sessionResponse.ok) return;
+
+      const session = await sessionResponse.json();
+      document.getElementById('auth-gate').hidden = true;
+      document.getElementById('publisher-app').hidden = false;
+      await loadBlogPosts();
       loadAllPostsManager();
     });
 
@@ -294,7 +331,7 @@
       `).join('');
     }
 
-    function handlePublish(e) {
+    async function handlePublish(e) {
       e.preventDefault();
       const editingId = document.getElementById('editing-post-id').value;
       const title = document.getElementById('post-title').value;
@@ -308,62 +345,32 @@
       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-      let customPosts = JSON.parse(localStorage.getItem('ssn_custom_blog_posts') || '[]');
-
-      if (editingId) {
-        // Edit existing post
-        const existingIdx = customPosts.findIndex(p => p.id === editingId);
-        if (existingIdx !== -1) {
-          customPosts[existingIdx] = {
-            id: editingId,
-            slug: slug,
-            title: title,
-            excerpt: excerpt,
-            category: category,
-            date: today,
-            author: author,
-            authorRole: 'Published Author',
-            readTime: readTime,
-            gradient: gradient,
-            content: content
-          };
-        } else {
-          // If editing a default system post, save it as an updated custom post
-          customPosts.unshift({
-            id: editingId,
-            slug: slug,
-            title: title,
-            excerpt: excerpt,
-            category: category,
-            date: today,
-            author: author,
-            authorRole: 'Published Author',
-            readTime: readTime,
-            gradient: gradient,
-            content: content
-          });
-        }
-      } else {
-        // Add new post
-        const newPost = {
-          id: 'post-custom-' + Date.now(),
-          slug: slug,
-          title: title,
-          excerpt: excerpt,
-          category: category,
-          date: today,
-          author: author,
-          authorRole: 'Published Author',
-          readTime: readTime,
-          gradient: gradient,
-          content: content
-        };
-        customPosts.unshift(newPost);
+      const post = {
+        id: editingId || 'post-custom-' + Date.now(),
+        slug,
+        title,
+        excerpt,
+        category,
+        date: today,
+        author,
+        authorRole: 'Published Author',
+        readTime,
+        gradient,
+        content
+      };
+      const response = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'save', post })
+      });
+      if (!response.ok) {
+        alert((await response.json()).error || 'The article could not be published.');
+        return;
       }
 
-      localStorage.setItem('ssn_custom_blog_posts', JSON.stringify(customPosts));
-
-      alert(`✅ Article "${title}" saved and published live!`);
+      const result = await response.json();
+      SSN_REMOTE_BLOG_POSTS = result.posts;
+      alert(`Article "${title}" committed to GitHub. Vercel will deploy it shortly.`);
       resetForm();
       loadAllPostsManager();
     }
@@ -387,32 +394,28 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function deletePost(postId) {
+    async function deletePost(postId) {
       if (!confirm('Are you sure you want to remove this article from your website?')) return;
-
-      // 1. Check if it's in custom posts
-      let customPosts = JSON.parse(localStorage.getItem('ssn_custom_blog_posts') || '[]');
-      const customIdx = customPosts.findIndex(p => p.id === postId);
-      if (customIdx !== -1) {
-        customPosts.splice(customIdx, 1);
-        localStorage.setItem('ssn_custom_blog_posts', JSON.stringify(customPosts));
+      if (!postId.startsWith('post-custom-')) {
+        alert('Built-in articles are part of the site code and cannot be removed from this publisher yet.');
+        return;
       }
-
-      // 2. Also add ID to deleted list to filter out default system posts
-      let deletedIds = JSON.parse(localStorage.getItem('ssn_deleted_blog_ids') || '[]');
-      if (!deletedIds.includes(postId)) {
-        deletedIds.push(postId);
-        localStorage.setItem('ssn_deleted_blog_ids', JSON.stringify(deletedIds));
+      const response = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', postId })
+      });
+      if (!response.ok) {
+        alert((await response.json()).error || 'The article could not be removed.');
+        return;
       }
-
+      SSN_REMOTE_BLOG_POSTS = (await response.json()).posts;
       loadAllPostsManager();
     }
 
     function resetAllDefaultPosts() {
       if (!confirm('Restore all default system articles?')) return;
-      localStorage.removeItem('ssn_deleted_blog_ids');
-      loadAllPostsManager();
-      alert('All default articles restored!');
+      alert('Built-in articles are already included in the site code. Published articles are managed through GitHub.');
     }
 
     function resetForm() {
