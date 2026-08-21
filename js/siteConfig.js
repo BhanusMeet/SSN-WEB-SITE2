@@ -3,7 +3,7 @@
    Single source of truth for all public brand details.
    ============================================ */
 
-const SSN_CONFIG = Object.freeze({
+const SSN_CONFIG = {
   brandName: 'SSN ELITE',
   tagline: 'Performance Nutrition, Engineered with Purpose',
   companyName: 'SSN Elite Nutrition Inc.',
@@ -27,7 +27,7 @@ const SSN_CONFIG = Object.freeze({
     triCreatine: '₹2,499',
     eaaBcaaGlutamine: '₹2,799'
   })
-});
+};
 
 /**
  * Automatically injects centralized configuration values into HTML DOM elements.
