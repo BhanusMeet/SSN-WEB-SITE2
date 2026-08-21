@@ -3,11 +3,16 @@
 # Compatible with Apache 2.2, 2.4 & LiteSpeed
 # ============================================
 
-# Enforce HTTPS Redirect
+# Enforce HTTPS Redirect & Clean URLs
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Clean Extensionless URLs (/lab-reports -> lab-reports.html, /blog -> blog.html)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.*)$ $1.html [L]
 </IfModule>
 
 # Security Headers

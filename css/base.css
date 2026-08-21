@@ -8,7 +8,7 @@ body {
   font-size: var(--text-body);
   font-weight: var(--weight-regular);
   color: var(--text-primary);
-  background-color: var(--surface-white);
+  background: transparent;
   letter-spacing: var(--tracking-normal);
   overflow-x: hidden;
 }

@@ -1,0 +1,470 @@
+/* ============================================
+   SSN ELITE — Lab Reports Page Styles (/lab-reports)
+   Scientific, clean visual style with transparent backgrounds for 3D DNA Canvas
+   ============================================ */
+
+.lab-hero {
+  padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-16);
+  background: transparent;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.lab-hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.lab-hero-title {
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+}
+
+.lab-hero-lead {
+  font-size: var(--text-body-lg);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ── Filter Bar ── */
+.lab-controls-section {
+  padding: var(--space-8) 0;
+  background: transparent;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 1;
+}
+
+.lab-controls-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.lab-filter-pills {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.lab-filter-pill {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.lab-filter-pill:hover {
+  border-color: var(--ssn-blue);
+  color: var(--ssn-blue);
+}
+
+.lab-filter-pill.active {
+  background: var(--ssn-blue);
+  color: var(--text-on-blue);
+  border-color: var(--ssn-blue);
+}
+
+.lab-search-box {
+  position: relative;
+  width: 280px;
+}
+
+.lab-search-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: var(--text-small);
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.lab-search-input:focus {
+  border-color: var(--ssn-blue);
+  box-shadow: 0 0 0 3px var(--ssn-blue-glow);
+}
+
+.lab-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+
+/* ── Reports Grid ── */
+.lab-reports-section {
+  padding: var(--space-16) 0 var(--space-24);
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.lab-reports-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-8);
+}
+
+.lab-report-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.lab-report-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--ssn-blue-glow-strong);
+}
+
+.lab-report-header {
+  padding: var(--space-6);
+  background: rgba(245, 245, 250, 0.7);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lab-report-img-box {
+  width: 90px;
+  height: 90px;
+  background: var(--surface-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+}
+
+.lab-report-img-box img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.lab-report-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-4);
+  background: rgba(5, 150, 105, 0.1);
+  border: 1px solid rgba(5, 150, 105, 0.25);
+  border-radius: var(--radius-full);
+  color: #059669;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #059669;
+  box-shadow: 0 0 8px #059669;
+}
+
+.lab-report-body {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex-grow: 1;
+}
+
+.lab-report-category {
+  font-size: var(--text-label);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--ssn-blue);
+}
+
+.lab-report-title {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.lab-report-meta {
+  background: rgba(245, 245, 250, 0.7);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+}
+
+.meta-label {
+  color: var(--text-tertiary);
+}
+
+.meta-val {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.lab-report-summary {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.lab-report-actions {
+  display: flex;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.btn-sm {
+  padding: var(--space-3) var(--space-5);
+  font-size: 0.75rem;
+}
+
+.lab-reports-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-16);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  border: 1.5px dashed var(--border-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-tertiary);
+}
+
+/* ── Interactive Modal ── */
+.lab-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.lab-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.lab-modal-content {
+  background: var(--surface-white);
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-off-white);
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.lab-modal-close:hover {
+  background: var(--ssn-blue);
+  color: white;
+}
+
+.lab-modal-header {
+  padding: var(--space-8) var(--space-8) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-off-white);
+}
+
+.lab-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: #059669;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wider);
+  margin-bottom: var(--space-2);
+}
+
+.lab-modal-header h2 {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.modal-sub {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  display: block;
+  margin-top: var(--space-1);
+}
+
+.lab-modal-body {
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.modal-info-card {
+  background: var(--surface-off-white);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.info-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.info-val {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.text-success {
+  color: #059669;
+}
+
+.modal-section-title {
+  font-size: var(--text-body);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.lab-metrics-table-wrap {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.lab-metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-xs);
+}
+
+.lab-metrics-table th,
+.lab-metrics-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lab-metrics-table th {
+  background: var(--surface-off-white);
+  color: var(--text-tertiary);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.metric-code {
+  font-family: var(--font-mono);
+  background: var(--surface-off-white);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+
+.badge-pass {
+  display: inline-block;
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+  font-weight: var(--weight-semibold);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.lab-modal-footer {
+  padding: var(--space-6) var(--space-8);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .lab-reports-grid,
+  .modal-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

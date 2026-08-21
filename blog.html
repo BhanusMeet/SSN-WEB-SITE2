@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSN Elite Journal — Science, Nutrition & Performance</title>
+  <meta name="description" content="Explore research-backed articles on sports science, protein timing, creatine research, and recovery strategies from the SSN Elite Science Team.">
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/blog.css">
+  <link rel="stylesheet" href="css/dna-canvas.css">
+</head>
+<body>
+  <!-- 3D WebGL DNA Canvas Background -->
+  <canvas id="dna-canvas" data-theme="blue"></canvas>
+
+  <!-- Navigation -->
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-brand" aria-label="SSN Elite Home"><img src="assets/images/logo.png" alt="SSN ELITE" class="nav-logo"></a>
+    <div class="nav-links">
+      <a href="products.html" class="nav-link">Products</a>
+      <a href="index.html#shop-by-goal" class="nav-link">Shop By Goal</a>
+      <a href="lab-reports.html" class="nav-link">Lab Reports</a>
+      <a href="blog.html" class="nav-link active">Journal</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+    <div class="nav-mobile-logo-wrap"><img src="assets/images/logo.png" alt="SSN ELITE" class="mobile-logo"></div>
+    <a href="index.html" class="nav-mobile-link">Home</a>
+    <a href="products.html" class="nav-mobile-link">Products</a>
+    <a href="lab-reports.html" class="nav-mobile-link">Lab Reports</a>
+    <a href="blog.html" class="nav-mobile-link">Journal</a>
+    <a href="about.html" class="nav-mobile-link">About</a>
+    <a href="contact.html" class="nav-mobile-link">Contact</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="blog-hero">
+    <div class="container">
+      <div class="blog-hero-content">
+        <span class="label-blue reveal">Research & Insights</span>
+        <h1 class="blog-hero-title reveal reveal-delay-1">SSN Elite Journal</h1>
+        <p class="blog-hero-lead reveal reveal-delay-2">
+          Evidence-based articles on performance nutrition, amino acid kinetics, hypertrophy protocols, and athletic recovery.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Bar -->
+  <section class="blog-categories-bar">
+    <div class="container">
+      <div class="blog-categories-wrap">
+        <button class="blog-cat-pill active" onclick="filterBlogCategory('ALL', this)">All Articles</button>
+        <button class="blog-cat-pill" onclick="filterBlogCategory('Nutrition Science', this)">Nutrition Science</button>
+        <button class="blog-cat-pill" onclick="filterBlogCategory('Performance', this)">Performance</button>
+        <button class="blog-cat-pill" onclick="filterBlogCategory('Recovery', this)">Recovery</button>
+        <button class="blog-cat-pill" onclick="filterBlogCategory('Mass & Strength', this)">Mass & Strength</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Grid -->
+  <section class="blog-grid-section">
+    <div class="container">
+      <div id="blog-page-grid" class="blog-page-grid"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="footer-brand" aria-label="SSN Elite Home"><img src="assets/images/logo.png" alt="SSN ELITE" class="footer-logo"></a>
+          <p class="footer-description">Performance nutrition engineered with purpose. Premium sports supplements for athletes and active professionals.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Products</h4>
+          <div class="footer-links">
+            <a href="performance-whey.html" class="footer-link">Performance Whey</a>
+            <a href="anabolic-monster-mass.html" class="footer-link">Anabolic Monster Mass</a>
+            <a href="tri-creatine.html" class="footer-link">Tri Creatine</a>
+            <a href="eaa-bcaa-glutamine.html" class="footer-link">EAA + BCAA + Glutamine</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Verification & Media</h4>
+          <div class="footer-links">
+            <a href="lab-reports.html" class="footer-link">Lab Reports</a>
+            <a href="blog.html" class="footer-link">SSN Journal</a>
+            <a href="blog-publisher.html" class="footer-link">Admin Blog Publisher</a>
+            <a href="verify.html" class="footer-link">Product Verification</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <div class="footer-links">
+            <a href="about.html" class="footer-link">About SSN Elite</a>
+            <a href="products.html" class="footer-link">All Products</a>
+            <a href="contact.html" class="footer-link">Contact Us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-legal">&copy; 2025 SSN Elite. All rights reserved.</span>
+        <span class="footer-legal">Performance Nutrition, Engineered with Purpose.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/blogData.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/dna-scene.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBlogGrid('blog-page-grid', 'ALL');
+
+      // Check URL hash for article deep linking
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const allPosts = getCombinedBlogPosts();
+        const matchingPost = allPosts.find(p => p.slug === hash);
+        if (matchingPost) {
+          openBlogPostModal(matchingPost.id);
+        }
+      }
+    });
+
+    function filterBlogCategory(cat, btn) {
+      document.querySelectorAll('.blog-cat-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderBlogGrid('blog-page-grid', cat);
+    }
+  </script>
+</body>
+</html>

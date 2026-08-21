@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Publisher & Admin Portal — SSN ELITE</title>
+  <meta name="description" content="SSN Elite Blog Publisher: Easily write, edit, add and remove any article from the SSN Elite Journal instantly.">
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages/blog.css">
+  <style>
+    .publisher-layout {
+      padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-20);
+      background: var(--surface-off-white);
+      min-height: 100vh;
+    }
+    .publisher-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--space-8);
+    }
+    .publisher-card {
+      background: var(--surface-white);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      box-shadow: var(--shadow-sm);
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+    }
+    .form-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      font-size: var(--text-body);
+      font-family: var(--font-primary);
+      outline: none;
+      transition: border-color var(--duration-fast);
+    }
+    .form-textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--ssn-blue);
+      box-shadow: 0 0 0 3px var(--ssn-blue-glow);
+    }
+    .code-box {
+      background: #0A0D1A;
+      color: #A5B4FC;
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .publisher-actions {
+      display: flex;
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    .all-posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    .post-manage-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4);
+      background: var(--surface-off-white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      gap: var(--space-3);
+    }
+    .post-manage-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex-grow: 1;
+    }
+    .post-manage-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .post-manage-tag {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+    }
+    .post-manage-btns {
+      display: flex;
+      gap: var(--space-2);
+    }
+    .btn-action-sm {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border-medium);
+      background: var(--surface-white);
+      transition: all var(--duration-fast);
+    }
+    .btn-action-sm:hover {
+      background: var(--ssn-blue);
+      color: white;
+      border-color: var(--ssn-blue);
+    }
+    .btn-action-danger {
+      color: #EF4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-action-danger:hover {
+      background: #EF4444;
+      color: white;
+      border-color: #EF4444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand"><img src="assets/images/logo.png" alt="SSN ELITE" class="nav-logo"></a>
+    <div class="nav-links">
+      <a href="blog.html" class="nav-link">View Journal</a>
+      <a href="blog-publisher.html" class="nav-link active">Blog Admin Publisher</a>
+      <a href="index.html" class="nav-link">Back to Website</a>
+    </div>
+  </nav>
+
+  <main class="publisher-layout">
+    <div class="container">
+      <div style="margin-bottom: var(--space-8); display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <span class="label-blue">SSN Elite CMS Portal</span>
+          <h1 style="font-size: 2.25rem; font-weight: 700; margin-top: 6px;">Blog Manager & Publisher</h1>
+          <p style="color: var(--text-secondary); margin-top: 4px;">Add, edit, or remove any article from the SSN Elite Journal anytime.</p>
+        </div>
+        <button class="cta-button-outline btn-sm" onclick="resetAllDefaultPosts()">
+          🔄 Restore All Default Articles
+        </button>
+      </div>
+
+      <div class="publisher-grid">
+        <!-- Editor Form -->
+        <div class="publisher-card">
+          <h3 id="form-heading" style="font-size: 1.25rem; font-weight: 700; margin-bottom: var(--space-6);">Write / Edit Article</h3>
+          
+          <form id="blog-form" onsubmit="handlePublish(event)">
+            <input type="hidden" id="editing-post-id" value="">
+
+            <div class="form-group">
+              <label class="form-label" for="post-title">Article Title</label>
+              <input type="text" id="post-title" class="form-input" placeholder="e.g. Advanced Electrolyte Protocols for Endurance Athletes" required>
+            </div>
+
+            <div class="grid-2" style="gap: var(--space-4); display: grid; grid-template-columns: 1fr 1fr;">
+              <div class="form-group">
+                <label class="form-label" for="post-category">Category</label>
+                <select id="post-category" class="form-select" required>
+                  <option value="Nutrition Science">Nutrition Science</option>
+                  <option value="Performance">Performance</option>
+                  <option value="Recovery">Recovery</option>
+                  <option value="Mass & Strength">Mass & Strength</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="post-readtime">Estimated Read Time</label>
+                <input type="text" id="post-readtime" class="form-input" placeholder="e.g. 5 min read" value="5 min read" required>
+              </div>
+            </div>
+
+            <div class="grid-2" style="gap: var(--space-4); display: grid; grid-template-columns: 1fr 1fr;">
+              <div class="form-group">
+                <label class="form-label" for="post-author">Author Name</label>
+                <input type="text" id="post-author" class="form-input" placeholder="e.g. Dr. Marcus Vance, Ph.D." value="SSN Elite Science Team" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="post-theme">Card Color Theme</label>
+                <select id="post-theme" class="form-select">
+                  <option value="linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)">SSN Blue Accent</option>
+                  <option value="linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)">Purple Performance</option>
+                  <option value="linear-gradient(135deg, #059669 0%, #064E3B 100%)">Emerald Recovery</option>
+                  <option value="linear-gradient(135deg, #D97706 0%, #78350F 100%)">Amber Energy</option>
+                  <option value="linear-gradient(135deg, #1E293B 0%, #0F172A 100%)">Dark Onyx</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="post-excerpt">Short Summary / Excerpt</label>
+              <textarea id="post-excerpt" class="form-textarea" style="min-height: 70px;" placeholder="Brief 1-2 sentence overview shown on blog cards..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="post-content">Full Article Body (HTML / Paragraphs)</label>
+              <textarea id="post-content" class="form-textarea" placeholder="<p>Write your detailed article text here. Supports <h4>headings</h4> and <p>paragraphs</p>...</p>" required></textarea>
+            </div>
+
+            <div class="publisher-actions">
+              <button type="submit" class="cta-button" id="submit-btn">
+                ⚡ Save & Publish Live
+              </button>
+              <button type="button" class="cta-button-outline" onclick="resetForm()">
+                Clear Form
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- All Active Posts Manager -->
+        <div>
+          <div class="publisher-card" style="margin-bottom: var(--space-6);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+              <h3 style="font-size: 1.15rem; font-weight: 700;">Manage Active Articles</h3>
+              <span id="post-count-badge" class="post-category-tag" style="background: var(--ssn-blue-surface); color: var(--ssn-blue);">0 Articles</span>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-3);">Click <strong>Edit</strong> to modify or <strong>Remove</strong> to delete any article from your site instantly.</p>
+            
+            <div id="all-posts-container" class="all-posts-list"></div>
+          </div>
+
+          <div class="publisher-card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: var(--space-4);">Generated JS Data Code</h3>
+            <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-3);">Copy code snippet for <code>js/blogData.js</code>:</p>
+            <pre id="code-output" class="code-box">// Fill form and click 'Save & Publish Live' or generate code</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/siteConfig.js"></script>
+  <script src="js/blogData.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAllPostsManager();
+    });
+
+    function loadAllPostsManager() {
+      const container = document.getElementById('all-posts-container');
+      const countBadge = document.getElementById('post-count-badge');
+      const activePosts = getCombinedBlogPosts();
+
+      countBadge.textContent = `${activePosts.length} Active Articles`;
+
+      if (activePosts.length === 0) {
+        container.innerHTML = '<p style="font-size: 13px; color: var(--text-tertiary); text-align: center; padding: 20px 0;">No active articles available.</p>';
+        return;
+      }
+
+      container.innerHTML = activePosts.map(post => `
+        <div class="post-manage-item">
+          <div class="post-manage-meta">
+            <span class="post-manage-title">${post.title}</span>
+            <span class="post-manage-tag">${post.category} • ${post.date}</span>
+          </div>
+          <div class="post-manage-btns">
+            <button class="btn-action-sm" onclick="editPost('${post.id}')">✏️ Edit</button>
+            <button class="btn-action-sm btn-action-danger" onclick="deletePost('${post.id}')">🗑️ Remove</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handlePublish(e) {
+      e.preventDefault();
+      const editingId = document.getElementById('editing-post-id').value;
+      const title = document.getElementById('post-title').value;
+      const category = document.getElementById('post-category').value;
+      const readTime = document.getElementById('post-readtime').value;
+      const author = document.getElementById('post-author').value;
+      const gradient = document.getElementById('post-theme').value;
+      const excerpt = document.getElementById('post-excerpt').value;
+      const content = document.getElementById('post-content').value;
+
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      let customPosts = JSON.parse(localStorage.getItem('ssn_custom_blog_posts') || '[]');
+
+      if (editingId) {
+        // Edit existing post
+        const existingIdx = customPosts.findIndex(p => p.id === editingId);
+        if (existingIdx !== -1) {
+          customPosts[existingIdx] = {
+            id: editingId,
+            slug: slug,
+            title: title,
+            excerpt: excerpt,
+            category: category,
+            date: today,
+            author: author,
+            authorRole: 'Published Author',
+            readTime: readTime,
+            gradient: gradient,
+            content: content
+          };
+        } else {
+          // If editing a default system post, save it as an updated custom post
+          customPosts.unshift({
+            id: editingId,
+            slug: slug,
+            title: title,
+            excerpt: excerpt,
+            category: category,
+            date: today,
+            author: author,
+            authorRole: 'Published Author',
+            readTime: readTime,
+            gradient: gradient,
+            content: content
+          });
+        }
+      } else {
+        // Add new post
+        const newPost = {
+          id: 'post-custom-' + Date.now(),
+          slug: slug,
+          title: title,
+          excerpt: excerpt,
+          category: category,
+          date: today,
+          author: author,
+          authorRole: 'Published Author',
+          readTime: readTime,
+          gradient: gradient,
+          content: content
+        };
+        customPosts.unshift(newPost);
+      }
+
+      localStorage.setItem('ssn_custom_blog_posts', JSON.stringify(customPosts));
+
+      alert(`✅ Article "${title}" saved and published live!`);
+      resetForm();
+      loadAllPostsManager();
+    }
+
+    function editPost(postId) {
+      const activePosts = getCombinedBlogPosts();
+      const post = activePosts.find(p => p.id === postId);
+      if (!post) return;
+
+      document.getElementById('editing-post-id').value = post.id;
+      document.getElementById('post-title').value = post.title;
+      document.getElementById('post-category').value = post.category;
+      document.getElementById('post-readtime').value = post.readTime;
+      document.getElementById('post-author').value = post.author;
+      document.getElementById('post-theme').value = post.gradient || 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)';
+      document.getElementById('post-excerpt').value = post.excerpt;
+      document.getElementById('post-content').value = post.content;
+
+      document.getElementById('form-heading').textContent = '✏️ Edit Article: ' + post.title;
+      document.getElementById('submit-btn').textContent = '💾 Save Changes Live';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deletePost(postId) {
+      if (!confirm('Are you sure you want to remove this article from your website?')) return;
+
+      // 1. Check if it's in custom posts
+      let customPosts = JSON.parse(localStorage.getItem('ssn_custom_blog_posts') || '[]');
+      const customIdx = customPosts.findIndex(p => p.id === postId);
+      if (customIdx !== -1) {
+        customPosts.splice(customIdx, 1);
+        localStorage.setItem('ssn_custom_blog_posts', JSON.stringify(customPosts));
+      }
+
+      // 2. Also add ID to deleted list to filter out default system posts
+      let deletedIds = JSON.parse(localStorage.getItem('ssn_deleted_blog_ids') || '[]');
+      if (!deletedIds.includes(postId)) {
+        deletedIds.push(postId);
+        localStorage.setItem('ssn_deleted_blog_ids', JSON.stringify(deletedIds));
+      }
+
+      loadAllPostsManager();
+    }
+
+    function resetAllDefaultPosts() {
+      if (!confirm('Restore all default system articles?')) return;
+      localStorage.removeItem('ssn_deleted_blog_ids');
+      loadAllPostsManager();
+      alert('All default articles restored!');
+    }
+
+    function resetForm() {
+      document.getElementById('blog-form').reset();
+      document.getElementById('editing-post-id').value = '';
+      document.getElementById('form-heading').textContent = 'Write / Edit Article';
+      document.getElementById('submit-btn').textContent = '⚡ Save & Publish Live';
+    }
+  </script>
+</body>
+</html>
