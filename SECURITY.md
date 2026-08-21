@@ -2,7 +2,7 @@
 
 ## 1. Security Architecture Overview
 
-**SSN ELITE** is built as a **static-first, zero-backend web application**. The browser exclusively receives static HTML, CSS, vanilla JavaScript, images, and WebGL 3D assets.
+**SSN ELITE** is built as a **static-first web application**. Public pages remain static, while the protected blog publisher uses Vercel serverless functions and GitHub OAuth to commit approved articles to the repository.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -10,14 +10,13 @@
 │                                                             │
 │  HTML5 + CSS3 + Vanilla JS + WebGL (Three.js)               │
 └──────────────────────────────┬──────────────────────────────┘
-                               │ Static CDN Assets Only
+                               │ Static assets + protected API calls
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │           Static Edge CDN (Cloudflare / Vercel)             │
 │                                                             │
-│  - No Application Server                                   │
-│  - No Database (SQL / NoSQL)                                │
-│  - No User Input Forms / API Endpoints                      │
+│  - Vercel serverless auth/content routes for admin only     │
+│  - GitHub repository is the content store                   │
 │  - Strict Security Headers & CSP Policies                   │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -26,16 +25,16 @@
 
 ## 2. Attack Surface Reduction
 
-By deliberately avoiding dynamic server infrastructure, the attack surface is reduced to the absolute physical minimum:
+Public pages avoid dynamic server infrastructure; only the protected publisher routes access GitHub:
 
 | Attack Vector | Status | Mitigation / Architectural Guarantee |
 |---|---|---|
 | **SQL Injection (SQLi)** | **N/A** | Zero database exists; no SQL queries are constructed or executed. |
-| **Cross-Site Request Forgery (CSRF)** | **N/A** | Zero user sessions, cookies, or stateful POST endpoints exist. |
+| **Cross-Site Request Forgery (CSRF)** | **Mitigated** | OAuth state validation, HttpOnly/Secure/SameSite cookies, and same-origin publishing API. |
 | **Server-Side Request Forgery (SSRF)** | **N/A** | Zero server-side HTTP clients or proxy endpoints exist. |
-| **Authentication & Privilege Escalation** | **N/A** | Zero login, registration, or user role systems exist. |
+| **Authentication & Privilege Escalation** | **Mitigated** | GitHub OAuth plus an explicit `GITHUB_ALLOWED_USER` allow-list protects publishing. |
 | **File Upload Vulnerabilities** | **N/A** | Zero file upload handlers or server storage exist. |
-| **Data Leakage / PII Exposure** | **N/A** | Zero customer data is collected, stored, or processed. |
+| **Data Leakage / PII Exposure** | **Mitigated** | The API stores published article content in the configured GitHub repository; OAuth tokens remain server-side in HttpOnly cookies. |
 | **Cross-Site Scripting (XSS)** | **Mitigated** | All content is trusted static HTML/JS; dynamic DOM generation uses `textContent` instead of `innerHTML`; strict CSP blocks inline script injection. |
 | **Clickjacking** | **Mitigated** | Restricted via `X-Frame-Options: DENY` and CSP `frame-ancestors 'none'`. |
 | **MIME Sniffing** | **Mitigated** | Restricted via `X-Content-Type-Options: nosniff`. |
@@ -74,7 +73,13 @@ Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.clo
 
 ---
 
-## 5. Centralized Public Information Model
+## 5. Blog Publishing Architecture
+
+The admin publisher at `/blog-publisher.html` authenticates with GitHub. Vercel routes under `/api/auth/` handle OAuth and `/api/content` reads or updates `content/blog-posts.json`. Every successful publish creates a Git commit, which triggers the normal Vercel deployment.
+
+Required Vercel environment variables are documented in `.env.example`. Set `GITHUB_ALLOWED_USER` to the exact GitHub username that should be able to publish.
+
+## 6. Centralized Public Information Model
 
 All public brand contact details, social URLs, and product MRPs are isolated in a single configuration file:
 - File: [js/siteConfig.js](js/siteConfig.js)
@@ -83,7 +88,7 @@ All public brand contact details, social URLs, and product MRPs are isolated in 
 
 ---
 
-## 6. Hosting & Deployment Requirements
+## 7. Hosting & Deployment Requirements
 
 1. **Cloudflare Pages / Netlify**:
    - Commit `_headers` to the repository root. Edge headers apply automatically.
@@ -96,9 +101,9 @@ All public brand contact details, social URLs, and product MRPs are isolated in 
 
 ---
 
-## 7. Security Model Limitations & Remaining Risks
+## 8. Security Model Limitations & Remaining Risks
 
-While the static architecture eliminates server-side vulnerabilities, static sites remain subject to operational edge risks:
+The static public architecture reduces the attack surface, but the publishing integration adds operational risks:
 
 1. **Edge CDN / Hosting Account Compromise**: Strong passwords and Multi-Factor Authentication (MFA) must be enabled on hosting provider accounts (Cloudflare, Vercel, Netlify, domain registrars).
 2. **DNS Tampering / Hijacking**: Ensure DNSSEC is activated at your domain registrar.
@@ -106,7 +111,7 @@ While the static architecture eliminates server-side vulnerabilities, static sit
 
 ---
 
-## 8. Recommended Periodic Checks
+## 9. Recommended Periodic Checks
 
 - Audit domain registration and SSL certificate expiration dates.
 - Review hosting provider access logs for anomaly detection.
