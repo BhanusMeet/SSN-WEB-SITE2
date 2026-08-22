@@ -186,10 +186,13 @@
               const isReverse = index % 2 !== 0 ? 'reverse' : '';
               const catLower = (p.category || '').toLowerCase();
               const tagClass = catLower.includes('muscle') ? 'protein' : catLower.includes('mass') ? 'mass' : catLower.includes('amino') ? 'amino' : 'strength';
+              const matchingFallback = FALLBACK_PRODUCTS.find(product => product.slug === p.slug || product.name === p.name);
+              const fallbackImage = matchingFallback?.image_url || FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length].image_url;
+              const imageSrc = p.image_url || fallbackImage;
               
               const imgHtml = `
                 <div class="category-image-wrap reveal scale-in">
-                  <img src="${p.image_url || 'assets/images/logo.webp'}" alt="${p.name || 'Product'}" loading="lazy" decoding="async" width="300" height="380">
+                  <img src="${imageSrc}" alt="${p.name || 'Product'}" onerror="this.onerror=null;this.src='${fallbackImage}'" loading="lazy" decoding="async" width="300" height="380">
                 </div>
               `;
               const contentHtml = `
