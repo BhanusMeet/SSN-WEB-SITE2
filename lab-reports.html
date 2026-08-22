@@ -86,6 +86,27 @@
     </div>
   </section>
 
+  <!-- Batch Dropdown Selector -->
+  <section class="lab-batch-selector-section">
+    <div class="container">
+      <div class="lab-batch-selector-wrap reveal">
+        <div class="lab-batch-selector-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 002.25 2.25h.75"/>
+          </svg>
+          <h3>Look Up Your Batch Certificate</h3>
+        </div>
+        <p class="lab-batch-selector-desc">Select your product's Batch / Lot Code to view the specific lab analysis certificate for your product.</p>
+        <div class="lab-batch-dropdown-wrap">
+          <select id="batch-dropdown" class="lab-batch-dropdown" onchange="handleBatchSelect(this.value)">
+            <option value="">Select Your Batch / Lot Code</option>
+          </select>
+        </div>
+        <div id="batch-result" class="lab-batch-result" style="display: none;"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- Controls & Search -->
   <section class="lab-controls-section">
     <div class="container">
@@ -156,7 +177,9 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="js/siteConfig.js" defer></script>
+  <script src="js/supabaseClient.js" defer></script>
   <script src="js/labReportsData.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
@@ -165,8 +188,15 @@
     let currentCategory = 'ALL';
     let currentSearch = '';
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load from DB if available
+      await loadLabReportsFromDB();
+
+      // Render reports grid
       renderLabReports('lab-reports-grid', currentCategory, currentSearch);
+
+      // Populate batch dropdown
+      populateBatchDropdown();
     });
 
     function setLabFilter(category, btn) {
@@ -179,6 +209,67 @@
     function handleLabSearch(val) {
       currentSearch = val;
       renderLabReports('lab-reports-grid', currentCategory, currentSearch);
+    }
+
+    function populateBatchDropdown() {
+      const dropdown = document.getElementById('batch-dropdown');
+      if (!dropdown) return;
+      const batches = getAllBatchNumbers();
+      batches.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.batchNo;
+        opt.textContent = `${b.batchNo} — ${b.productName}`;
+        dropdown.appendChild(opt);
+      });
+    }
+
+    function handleBatchSelect(batchNo) {
+      const resultDiv = document.getElementById('batch-result');
+      if (!resultDiv) return;
+      if (!batchNo) {
+        resultDiv.style.display = 'none';
+        return;
+      }
+      const report = getLabReportByBatch(batchNo);
+      if (!report) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<p class="lab-batch-no-result">No lab report found for this batch code.</p>';
+        return;
+      }
+      const imagesHtml = (report.reportImages && report.reportImages.length > 0)
+        ? `<div class="lab-batch-images">${report.reportImages.map(img => `<img src="${img}" alt="Lab Certificate Scan" class="lab-batch-scan-img" loading="lazy">`).join('')}</div>`
+        : '';
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <div class="lab-batch-result-card">
+          <div class="lab-batch-result-header">
+            <div class="lab-batch-result-badge"><span class="status-dot"></span> ${report.status}</div>
+            <h4>${report.name}</h4>
+          </div>
+          <div class="lab-batch-result-meta">
+            <div class="meta-row"><span class="meta-label">Batch / Lot No:</span><span class="meta-val font-mono">${report.batchNo}</span></div>
+            <div class="meta-row"><span class="meta-label">Test Date:</span><span class="meta-val">${report.testDate}</span></div>
+            <div class="meta-row"><span class="meta-label">Accredited Lab:</span><span class="meta-val">${report.labName}</span></div>
+            <div class="meta-row"><span class="meta-label">Purity Status:</span><span class="meta-val text-success">${report.purityScore}</span></div>
+          </div>
+          <div class="lab-metrics-table-wrap">
+            <table class="lab-metrics-table">
+              <thead><tr><th>Test Parameter</th><th>Measured Value</th><th>Result</th></tr></thead>
+              <tbody>
+                ${report.metrics.map(m => `
+                  <tr>
+                    <td><strong>${m.label}</strong></td>
+                    <td><code class="metric-code">${m.value}</code></td>
+                    <td><span class="badge-pass">${m.status}</span></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          ${imagesHtml}
+        </div>
+      `;
     }
   </script>
 </body>

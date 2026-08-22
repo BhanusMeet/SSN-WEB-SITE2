@@ -106,39 +106,35 @@
        HERO BANNER
        ═══════════════════════════════════════════ -->
   <section class="hero-banner-section" id="hero">
+    <!-- Full Width Background Image -->
+    <img src="assets/images/banner-new-people.png"
+         width="1920" height="1080"
+         fetchpriority="high"
+         decoding="async"
+         alt="SSN Elite Series Hero Banner"
+         class="hero-banner-bg-img">
+    <div class="hero-banner-overlay"></div>
+
     <div class="hero-banner-container">
-      <div class="hero-banner-grid">
-        <div class="hero-banner-content">
-          <span class="hero-banner-tag reveal">SSN ELITE SERIES</span>
-          <h1 class="hero-banner-title reveal reveal-delay-1">
-            Performance Nutrition,<br>
-            <span>Engineered With Purpose.</span>
-          </h1>
-          <p class="hero-banner-subtitle reveal reveal-delay-2">
-            Premium sports nutrition supplements designed for athletes, gym users and active individuals who demand quality and performance.
-          </p>
-          <div class="hero-banner-cta-group reveal reveal-delay-3">
-            <a href="#shop-by-goal" class="cta-button" id="hero-cta-explore">
-              Explore Products
-              <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </a>
-            <a href="#why-ssn" class="cta-button-outline" id="hero-cta-learn">
-              Learn More
-            </a>
-          </div>
-        </div>
-        <div class="hero-banner-media reveal scale-in reveal-delay-2">
-          <div class="hero-banner-media-glow"></div>
-          <img src="assets/images/hero-banner.webp"
-               srcset="assets/images/hero-banner-mobile.webp 800w, assets/images/hero-banner.webp 1672w"
-               sizes="(max-width: 768px) 100vw, 50vw"
-               width="1672" height="941"
-               fetchpriority="high"
-               decoding="async"
-               alt="SSN Elite Series Hero Banner"
-               class="hero-banner-img">
+      <div class="hero-banner-content">
+        <span class="hero-banner-tag reveal">SSN ELITE SERIES</span>
+        <h1 class="hero-banner-title reveal reveal-delay-1">
+          Performance Nutrition,<br>
+          <span>Engineered With Purpose.</span>
+        </h1>
+        <p class="hero-banner-subtitle reveal reveal-delay-2">
+          Premium sports nutrition supplements designed for athletes, gym users and active individuals who demand quality and performance.
+        </p>
+        <div class="hero-banner-cta-group reveal reveal-delay-3">
+          <a href="#shop-by-goal" class="cta-button" id="hero-cta-explore">
+            Explore Products
+            <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#why-ssn" class="cta-button-outline" id="hero-cta-learn">
+            Learn More
+          </a>
         </div>
       </div>
     </div>
@@ -160,7 +156,7 @@
       <!-- 5 Cards in 1 Single Line on Laptop -->
       <div class="goal-cards-grid">
         <!-- 1. LEAN MUSCLE -->
-        <a href="performance-whey.html" class="goal-card goal-card-item reveal" id="goal-lean-muscle">
+        <a href="products.html?category=lean-muscle" class="goal-card goal-card-item reveal" id="goal-lean-muscle">
           <div class="goal-card-image-wrap">
             <img src="assets/images/categories/lean-muscle.webp"
                  srcset="assets/images/categories/lean-muscle-sm.webp 500w, assets/images/categories/lean-muscle.webp 1000w"
@@ -178,7 +174,6 @@
               <span class="goal-products-label">Recommended Products:</span>
               <div class="goal-products-pills">
                 <span class="product-pill">Whey Protein</span>
-                <span class="product-pill">BCAA</span>
                 <span class="product-pill">EAA</span>
                 <span class="product-pill">Tri Creatine</span>
               </div>
@@ -193,7 +188,7 @@
         </a>
 
         <!-- 2. FAT LOSS -->
-        <a href="performance-whey.html" class="goal-card goal-card-item reveal reveal-delay-1" id="goal-fat-loss">
+        <a href="products.html?category=fat-loss" class="goal-card goal-card-item reveal reveal-delay-1" id="goal-fat-loss">
           <div class="goal-card-image-wrap">
             <img src="assets/images/categories/fat-loss.webp"
                  srcset="assets/images/categories/fat-loss-sm.webp 500w, assets/images/categories/fat-loss.webp 1000w"
@@ -223,7 +218,7 @@
         </a>
 
         <!-- 3. HYDRATION -->
-        <a href="eaa-bcaa-glutamine.html" class="goal-card goal-card-item reveal reveal-delay-2" id="goal-hydration">
+        <a href="products.html?category=hydration" class="goal-card goal-card-item reveal reveal-delay-2" id="goal-hydration">
           <div class="goal-card-image-wrap">
             <img src="assets/images/categories/hydration.webp"
                  srcset="assets/images/categories/hydration-sm.webp 500w, assets/images/categories/hydration.webp 1000w"
@@ -253,7 +248,7 @@
         </a>
 
         <!-- 4. LIFESTYLE & PERFORMANCE -->
-        <a href="tri-creatine.html" class="goal-card goal-card-item reveal" id="goal-lifestyle">
+        <a href="products.html?category=lifestyle" class="goal-card goal-card-item reveal" id="goal-lifestyle">
           <div class="goal-card-image-wrap">
             <img src="assets/images/categories/lifestyle-performance.webp"
                  srcset="assets/images/categories/lifestyle-performance-sm.webp 500w, assets/images/categories/lifestyle-performance.webp 1000w"
@@ -285,7 +280,7 @@
         </a>
 
         <!-- 5. SIZE & STRENGTH -->
-        <a href="anabolic-monster-mass.html" class="goal-card goal-card-item reveal reveal-delay-1" id="goal-size-strength">
+        <a href="products.html?category=size-strength" class="goal-card goal-card-item reveal reveal-delay-1" id="goal-size-strength">
           <div class="goal-card-image-wrap">
             <img src="assets/images/categories/size-strength.webp"
                  srcset="assets/images/categories/size-strength-sm.webp 500w, assets/images/categories/size-strength.webp 1000w"
@@ -302,8 +297,9 @@
             <div class="goal-card-products">
               <span class="goal-products-label">Recommended Products:</span>
               <div class="goal-products-pills">
-                <span class="product-pill">Tri Creatine</span>
                 <span class="product-pill">Monster Mass</span>
+                <span class="product-pill">Whey Protein</span>
+                <span class="product-pill">Tri Creatine</span>
               </div>
             </div>
             <div class="goal-card-footer">
@@ -380,9 +376,7 @@
               View Lab Reports
               <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
-            <a href="#shop-by-goal" class="cta-button" id="why-btn-shop-now">
-              Shop Now
-            </a>
+
             <a href="products.html" class="cta-button-outline" id="why-btn-view-products">
               View Our Products
             </a>
@@ -555,6 +549,140 @@
     </div>
   </footer>
 
+  <!-- ═══════════════════════════════════════════
+       CONNECT NOW POPUP
+       ═══════════════════════════════════════════ -->
+  <style>
+    .connect-fab {
+      position: fixed;
+      bottom: var(--space-8, 32px);
+      right: var(--space-8, 32px);
+      background: var(--ssn-blue, #0A2FFF);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(10, 47, 255, 0.4);
+      z-index: 9999;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .connect-fab:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(10, 47, 255, 0.5);
+    }
+    .connect-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .connect-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .connect-modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 7, 18, 0.8);
+      backdrop-filter: blur(10px);
+    }
+    .connect-modal-content {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      transform: translateY(20px) scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    .connect-modal.open .connect-modal-content {
+      transform: translateY(0) scale(1);
+    }
+    .connect-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #666;
+      cursor: pointer;
+    }
+    .connect-modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #111;
+    }
+    .connect-modal-desc {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .connect-modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .connect-modal-form input,
+    .connect-modal-form textarea {
+      width: 100%;
+      background: #f7f7f8;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #111;
+    }
+    .connect-modal-form .cta-button {
+      margin-top: 8px;
+      justify-content: center;
+      width: 100%;
+    }
+  </style>
+
+  <div class="connect-fab" id="connectFab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+    </svg>
+    <span>Connect Now</span>
+  </div>
+
+  <div class="connect-modal" id="connectModal">
+    <div class="connect-modal-backdrop" id="connectModalBackdrop"></div>
+    <div class="connect-modal-content">
+      <button class="connect-modal-close" id="connectModalClose">&times;</button>
+      <h3 class="connect-modal-title">Connect With Us</h3>
+      <p class="connect-modal-desc">Have a question? Send us a message and we'll get back to you shortly.</p>
+      <form class="connect-modal-form" onsubmit="event.preventDefault(); alert('Message Sent Successfully!'); document.getElementById('connectModal').classList.remove('open');">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea placeholder="How can we help?" rows="4" required></textarea>
+        <button type="submit" class="cta-button">Send Message</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Scripts (Deferred for Performance) -->
   <script src="js/siteConfig.js" defer></script>
   <script src="js/labReportsData.js" defer></script>
@@ -565,6 +693,18 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       loadBlogPosts().then(() => renderHomepageBlog('homepage-blog-grid', 3));
+
+      // Connect Popup Logic
+      const connectFab = document.getElementById('connectFab');
+      const connectModal = document.getElementById('connectModal');
+      const connectModalClose = document.getElementById('connectModalClose');
+      const connectModalBackdrop = document.getElementById('connectModalBackdrop');
+
+      if (connectFab && connectModal) {
+        connectFab.addEventListener('click', () => connectModal.classList.add('open'));
+        connectModalClose.addEventListener('click', () => connectModal.classList.remove('open'));
+        connectModalBackdrop.addEventListener('click', () => connectModal.classList.remove('open'));
+      }
     });
   </script>
 </body>

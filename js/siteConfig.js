@@ -26,6 +26,14 @@ const SSN_CONFIG = {
     anabolicMonsterMass: '₹6,999',
     triCreatine: '₹2,499',
     eaaBcaaGlutamine: '₹2,799'
+  }),
+  /* ── Supabase Backend Configuration ──
+     Replace these with your Supabase project credentials.
+     SUPABASE_URL: Your project URL (e.g., https://xxxx.supabase.co)
+     SUPABASE_ANON_KEY: Your project anon/public key */
+  supabase: Object.freeze({
+    url: '',
+    anonKey: ''
   })
 };
 

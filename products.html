@@ -95,7 +95,7 @@
           <span class="category-tag performance">Performance</span>
           <h2>Performance Whey</h2>
           <p class="category-description">
-            A whey protein concentrate-based supplement designed to support daily protein intake. Each 43g serving delivers 24g of protein along with a BCAA + Silk Amino Acid Blend, additional EAAs, glutamine, and a digestive enzyme blend. Formulated for strength training, sports, and active lifestyles.
+            A whey protein concentrate-based supplement designed to support daily protein intake. Each scoop delivers 24g of protein along with a BCAA + Silk Amino Acid Blend, additional EAAs, glutamine, and a digestive enzyme blend. Formulated for strength training, sports, and active lifestyles.
           </p>
           <div class="category-meta">
             <div class="category-meta-item">
@@ -280,5 +280,52 @@
   <script src="js/main.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="js/dna-scene.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      
+      if (category) {
+        // Define the mapping of categories to product section IDs
+        const categoryMapping = {
+          'lean-muscle': ['performance-whey', 'eaa-bcaa-glutamine', 'tri-creatine'],
+          'fat-loss': ['performance-whey'],
+          'hydration': ['eaa-bcaa-glutamine'],
+          'lifestyle': ['performance-whey', 'eaa-bcaa-glutamine', 'tri-creatine'],
+          'size-strength': ['anabolic-monster-mass', 'performance-whey', 'tri-creatine']
+        };
+
+        const allowedProducts = categoryMapping[category];
+
+        if (allowedProducts) {
+          // Hide all category sections first
+          const allProductSections = document.querySelectorAll('.category-section');
+          allProductSections.forEach(section => {
+            if (!allowedProducts.includes(section.id)) {
+              section.style.display = 'none';
+            }
+          });
+
+          // Update page title to reflect the category
+          const titleMap = {
+            'lean-muscle': 'Lean Muscle Collection',
+            'fat-loss': 'Fat Loss Collection',
+            'hydration': 'Hydration Collection',
+            'lifestyle': 'Lifestyle & Performance Collection',
+            'size-strength': 'Size & Strength Collection'
+          };
+          const heroTitle = document.querySelector('.products-hero h1');
+          const heroSubtitle = document.querySelector('.products-hero .body-lg');
+          const heroTag = document.querySelector('.products-hero .label-blue');
+          
+          if (heroTitle && titleMap[category]) {
+            heroTitle.textContent = titleMap[category];
+            heroTag.textContent = 'Shop By Goal';
+            heroSubtitle.textContent = `Explore our curated selection of products specifically formulated for ${titleMap[category].replace(' Collection', '')}.`;
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
