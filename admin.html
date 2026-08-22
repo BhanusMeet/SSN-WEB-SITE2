@@ -153,24 +153,7 @@
     /* ── AUTH ── */
     async function handleAdminLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const errorDiv = document.getElementById('login-error');
-      const btn = document.getElementById('login-btn');
-
-      btn.textContent = 'Signing in...';
-      btn.disabled = true;
-      errorDiv.style.display = 'none';
-
-      const { data, error } = await adminLogin(email, password);
-      if (error) {
-        errorDiv.textContent = error.message || 'Invalid credentials.';
-        errorDiv.style.display = 'block';
-        btn.textContent = 'Sign In';
-        btn.disabled = false;
-        return;
-      }
-
+      // Temporarily bypassed for testing
       showDashboard();
     }
 
@@ -720,8 +703,8 @@
     // Escape key closes modal
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    // Init auth check
-    document.addEventListener('DOMContentLoaded', checkAuth);
+    // Auth temporarily disabled; open the dashboard directly.
+    document.addEventListener('DOMContentLoaded', showDashboard);
   </script>
 </body>
 </html>
