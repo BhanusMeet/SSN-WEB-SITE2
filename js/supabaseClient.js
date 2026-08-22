@@ -36,7 +36,12 @@ function getSupabaseClient() {
 
 async function adminLogin(email, password) {
   const sb = getSupabaseClient();
-  if (!sb) return { error: { message: 'Supabase not configured.' } };
+  if (!sb) {
+    if (typeof window.supabase === 'undefined') {
+      return { error: { message: 'Supabase library failed to load (CDN blocked?).' } };
+    }
+    return { error: { message: 'Supabase not configured. Config is missing.' } };
+  }
 
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   return { data, error };
