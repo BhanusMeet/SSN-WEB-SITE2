@@ -255,7 +255,12 @@ function openLabReportModal(productId) {
           </div>
         </div>
 
-        <h4 class="modal-section-title">Assay Parameters & Verification Findings</h4>
+        ${reportImagesHtml ? `
+        <h4 class="modal-section-title" style="margin-top: 24px;">Scanned Certificate</h4>
+        ${reportImagesHtml}
+        ` : ''}
+
+        <h4 class="modal-section-title" style="margin-top: 24px;">Assay Parameters & Verification Findings</h4>
         <div class="lab-metrics-table-wrap">
           <table class="lab-metrics-table">
             <thead>
@@ -276,8 +281,6 @@ function openLabReportModal(productId) {
             </tbody>
           </table>
         </div>
-
-        ${reportImagesHtml}
       </div>
 
       <div class="lab-modal-footer">
