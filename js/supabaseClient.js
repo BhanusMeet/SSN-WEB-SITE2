@@ -120,11 +120,21 @@ async function uploadFileToStorage(folder, file) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${folder}/${baseName}-${Date.now()}.${fileExt}`;
   
-  const { data, error } = await sb.storage
+  // Try ssn-uploads bucket first
+  let res = await sb.storage
     .from('ssn-uploads')
     .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
-  if (error) return { error };
+  if (res.error) {
+    // If ssn-uploads fails or does not exist, try folder-specific bucket
+    const altBucket = folder.startsWith('products') ? 'product-images' : folder.startsWith('blogs') ? 'blog-images' : 'lab-report-images';
+    const altRes = await sb.storage.from(altBucket).upload(fileName, file, { cacheControl: '3600', upsert: false });
+    if (!altRes.error) {
+      const { data: urlData } = sb.storage.from(altBucket).getPublicUrl(fileName);
+      return { publicUrl: urlData.publicUrl, error: null };
+    }
+    return { error: res.error };
+  }
   
   const { data: urlData } = sb.storage.from('ssn-uploads').getPublicUrl(fileName);
   return { publicUrl: urlData.publicUrl, error: null };
@@ -136,12 +146,21 @@ async function uploadFileToStorage(folder, file) {
 
 async function getProducts() {
   const sb = getSupabaseClient();
-  if (!sb) return [];
+  if (!sb) return { data: [], error: { message: 'Supabase client not initialized.' } };
 
   const { data, error } = await sb
     .from('products')
-    .select('*')
+    .select('*, product_variants(*)')
     .order('created_at', { ascending: false });
+
+  // If select with relation failed (e.g. variants table missing), try standard select
+  if (error && error.message && error.message.includes('product_variants')) {
+    const fallbackRes = await sb
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+    return fallbackRes;
+  }
 
   return { data, error };
 }
@@ -154,39 +173,40 @@ async function saveProduct(product) {
   
   const productData = {
     name: product.name,
-    category: product.category,
+    category: product.category || 'Lean Muscle',
     price: product.price || product.selling_price || '',
     mrp: product.mrp || '',
     selling_price: product.selling_price || product.price || '',
     discount: product.discount || '',
-    image_url: product.image_url,
-    short_description: product.short_description,
-    full_description: product.full_description,
-    ingredients: product.ingredients,
-    benefits: product.benefits,
-    usage_instruction: product.usage_instruction,
+    image_url: product.image_url || '',
+    short_description: product.short_description || '',
+    full_description: product.full_description || '',
+    ingredients: product.ingredients || '',
+    benefits: product.benefits || '',
+    usage_instruction: product.usage_instruction || '',
     faq: product.faq || [],
-    serving_size: product.serving_size,
+    serving_size: product.serving_size || '',
     status: product.status || 'Active',
     seo_title: product.seo_title || '',
     seo_description: product.seo_description || '',
-    slug: product.slug || null
+    slug: product.slug || (product.name ? product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : null)
   };
 
   if (productId) {
-    const { error } = await sb.from('products').update(productData).eq('id', productId);
+    const { data, error } = await sb.from('products').update(productData).eq('id', productId).select();
     if (error) return { error };
   } else {
     const { data, error } = await sb.from('products').insert([productData]).select();
     if (error) return { error };
-    productId = data[0].id;
+    if (data && data[0]) {
+      productId = data[0].id;
+    }
   }
 
-  // Handle variants only if the table exists (commented out to prevent errors)
-  /*
-  if (product.variants && Array.isArray(product.variants)) {
-    await sb.from('product_variants').delete().eq('product_id', productId);
-    if (product.variants.length > 0) {
+  // Handle variants if table exists
+  if (product.variants && Array.isArray(product.variants) && product.variants.length > 0 && productId) {
+    try {
+      await sb.from('product_variants').delete().eq('product_id', productId);
       const variantsToInsert = product.variants.map(v => ({
         product_id: productId,
         variant_name: v.variant_name,
@@ -194,17 +214,22 @@ async function saveProduct(product) {
         price_override: v.price_override || ''
       }));
       await sb.from('product_variants').insert(variantsToInsert);
+    } catch (variantErr) {
+      console.warn('[SSN] Note on product variants sync:', variantErr);
     }
   }
-  */
 
-  // Refetch the updated product
   return await sb.from('products').select('*').eq('id', productId).single();
 }
 
 async function deleteProduct(id) {
   const sb = getSupabaseClient();
   if (!sb) return { error: { message: 'Database not available.' } };
+
+  // Try to delete variants first if applicable
+  try {
+    await sb.from('product_variants').delete().eq('product_id', id);
+  } catch (e) {}
 
   const { error } = await sb
     .from('products')

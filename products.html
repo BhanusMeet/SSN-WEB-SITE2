@@ -182,8 +182,11 @@
 
       console.log('productData', allProducts);
 
-      // Filter active products
-      const products = allProducts.filter(p => (p.status || 'Active').toLowerCase() !== 'inactive');
+      // Filter active products only
+      const products = allProducts.filter(p => {
+        const s = (p.status || 'Active').toLowerCase();
+        return s === 'active' || s === 'published' || (!p.status && s !== 'draft' && s !== 'archived' && s !== 'inactive');
+      });
       console.log('products', products);
 
       if (products.length > 0) {

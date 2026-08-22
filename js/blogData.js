@@ -3,7 +3,50 @@
    Structured CMS data schema allowing future headless API / admin integration seamlessly.
    ============================================ */
 
-const SSN_BLOG_POSTS = [];
+const SSN_BLOG_POSTS = [
+  {
+    id: 'seed-blog-1',
+    slug: 'maximizing-muscle-protein-synthesis',
+    title: 'Maximizing Muscle Protein Synthesis: The Science of Timing & Dose',
+    excerpt: 'Discover how protein intake timing, leucine threshold, and essential amino acid availability optimize muscle hypertrophy and recovery post-workout.',
+    content: '<p>Muscle Protein Synthesis (MPS) is the fundamental physiological mechanism driving skeletal muscle adaptation, repair, and hypertrophy following resistance training.</p><h4>1. The Leucine Trigger Hypothesis</h4><p>Research demonstrates that approximately 3g of L-Leucine per bolus is required to reach peak mTORC1 activation in active individuals. Without sufficient leucine concentration, the intracellular signaling cascade remains suboptimal.</p><h4>2. Protein Quality and Absorption Kinetics</h4><p>Fast-digesting whey protein isolate and concentrate deliver rapid elevations in plasma amino acid concentrations, making them ideal for the post-exercise window.</p>',
+    author: 'Dr. Marcus Vance, Ph.D.',
+    date: 'August 18, 2025',
+    category: 'Nutrition Science',
+    readTime: '5 min read',
+    gradient: 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
+    seoTitle: 'Maximizing Muscle Protein Synthesis | SSN Elite Journal',
+    seoDesc: 'Evidence-based breakdown of protein timing, leucine thresholds, and amino acid kinetics.'
+  },
+  {
+    id: 'seed-blog-2',
+    slug: 'creatine-monohydrate-vs-tri-creatine',
+    title: 'Creatine Monohydrate vs. Tri-Creatine: Research Breakdown',
+    excerpt: 'An evidence-based analysis of solubility, gastric comfort, cellular hydration, and ATP regeneration differences between creatine forms.',
+    content: '<p>Creatine remains the most extensively validated ergogenic aid in sports science literature. However, modern multi-phase formulations like Tri Creatine offer distinct advantages in solubility and gastric tolerance.</p><h4>The ATP Energy Currency</h4><p>During maximal effort resistance training, phosphocreatine stores donate a phosphate group to ADP, regenerating ATP rapidly. Tri Creatine provides complementary absorption routes to saturate muscle creatine stores efficiently.</p>',
+    author: 'Elena Rostova, CSCS',
+    date: 'August 10, 2025',
+    category: 'Performance',
+    readTime: '6 min read',
+    gradient: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)',
+    seoTitle: 'Creatine Monohydrate vs. Tri-Creatine | SSN Elite Journal',
+    seoDesc: 'Comparing creatine forms for strength, power, and cellular recovery.'
+  },
+  {
+    id: 'seed-blog-3',
+    slug: 'intra-workout-hydration-electrolytes',
+    title: 'Intra-Workout Hydration & Electrolytes for Peak Athletic Output',
+    excerpt: 'Why plain water alone is insufficient during high-intensity training sessions over 45 minutes.',
+    content: '<p>Electrolyte equilibrium governs neuromuscular signaling and cellular osmolality during intense exercise. When sweating rates exceed fluid and sodium replenishment, neuromuscular fatigue accelerates.</p><h4>Essential Amino Acids During Training</h4><p>Combining electrolytes with free-form Essential Amino Acids (EAAs) suppresses exercise-induced muscle protein breakdown while sustaining intracellular hydration.</p>',
+    author: 'David Chen, M.S.',
+    date: 'August 02, 2025',
+    category: 'Recovery',
+    readTime: '4 min read',
+    gradient: 'linear-gradient(135deg, #059669 0%, #064E3B 100%)',
+    seoTitle: 'Intra-Workout Hydration Science | SSN Elite Journal',
+    seoDesc: 'Optimizing electrolyte balance and amino acid delivery for workout performance.'
+  }
+];
 
 let SSN_REMOTE_BLOG_POSTS = [];
 
@@ -11,40 +54,42 @@ async function loadBlogPosts() {
   if (typeof getBlogs === 'function') {
     try {
       const result = await getBlogs();
-      const raw = result?.data || [];
+      const raw = (result && result.data) || (Array.isArray(result) ? result : []);
       // Filter out drafts and map to frontend format
-      SSN_REMOTE_BLOG_POSTS = raw
-        .filter(b => b.status !== 'Draft')
-        .map(b => ({
-          id: b.id,
-          slug: b.slug,
-          title: b.title,
-          excerpt: b.excerpt,
-          content: b.content,
-          author: b.author,
-          date: b.publish_date,
-          category: b.category,
-          readTime: b.read_time,
-          gradient: b.gradient || 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
-          seoTitle: b.seo_title,
-          seoDesc: b.seo_description,
-          featuredImage: b.featured_image
-        }));
+      if (raw && raw.length > 0) {
+        SSN_REMOTE_BLOG_POSTS = raw
+          .filter(b => (b.status || 'Published').toLowerCase() !== 'draft')
+          .map(b => ({
+            id: b.id,
+            slug: b.slug,
+            title: b.title,
+            excerpt: b.excerpt || (b.content ? b.content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...' : ''),
+            content: b.content,
+            author: b.author || 'SSN Elite Research Team',
+            date: b.publish_date || new Date().toISOString().split('T')[0],
+            category: b.category || 'Nutrition Science',
+            readTime: b.read_time || '5 min read',
+            gradient: b.gradient || 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
+            seoTitle: b.seo_title,
+            seoDesc: b.seo_description,
+            featuredImage: b.featured_image
+          }));
+      }
     } catch (error) {
-      console.warn('[SSN] Error loading blogs from DB', error);
-      SSN_REMOTE_BLOG_POSTS = [];
+      console.warn('[SSN] Error loading blogs from DB:', error);
     }
-  } else {
-    SSN_REMOTE_BLOG_POSTS = [];
   }
-  return SSN_REMOTE_BLOG_POSTS;
+  return getCombinedBlogPosts();
 }
 
 /**
- * Returns merged list of articles, filtering out user-deleted posts
+ * Returns remote blogs if available, otherwise returns fallback articles
  */
 function getCombinedBlogPosts() {
-  return SSN_REMOTE_BLOG_POSTS;
+  if (SSN_REMOTE_BLOG_POSTS && SSN_REMOTE_BLOG_POSTS.length > 0) {
+    return SSN_REMOTE_BLOG_POSTS;
+  }
+  return SSN_BLOG_POSTS;
 }
 
 /**

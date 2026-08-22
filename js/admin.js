@@ -1,5 +1,6 @@
 /* ============================================
    SSN ELITE — Admin Dashboard Logic
+   Unified CMS management for Products, Blogs, Lab Reports & Submissions
    ============================================ */
 
 let currentSession = null;
@@ -13,32 +14,42 @@ let allSubmissions = [];
 
 // Escaper for HTML
 function esc(str) {
-  if (!str) return '';
+  if (str === null || str === undefined) return '';
   const div = document.createElement('div');
-  div.textContent = str;
+  div.textContent = String(str);
   return div.innerHTML;
 }
 
 // ── Auth Guard ──
 async function checkAuth() {
-  currentSession = await checkAdminAuth();
+  try {
+    currentSession = typeof checkAdminAuth === 'function' ? await checkAdminAuth() : null;
+  } catch (e) {
+    console.warn('[SSN Admin] Session check warning:', e);
+    currentSession = null;
+  }
+
+  const loginScreen = document.getElementById('admin-login-screen');
+  const sidebar = document.getElementById('admin-sidebar');
+  const main = document.getElementById('admin-main');
+
   if (currentSession) {
-    document.getElementById('admin-login-screen').style.display = 'none';
-    document.getElementById('admin-sidebar').style.display = 'flex';
-    document.getElementById('admin-main').style.display = 'block';
+    if (loginScreen) loginScreen.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'flex';
+    if (main) main.style.display = 'block';
     
     initQuillEditors();
     loadDashboardData();
   } else {
-    document.getElementById('admin-login-screen').style.display = 'flex';
-    document.getElementById('admin-sidebar').style.display = 'none';
-    document.getElementById('admin-main').style.display = 'none';
+    if (loginScreen) loginScreen.style.display = 'flex';
+    if (sidebar) sidebar.style.display = 'none';
+    if (main) main.style.display = 'none';
   }
 }
 
 async function handleAdminLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('login-email').value;
+  const email = document.getElementById('login-email').value.trim();
   const pass = document.getElementById('login-password').value;
   const btn = document.getElementById('login-btn');
   const err = document.getElementById('login-error');
@@ -47,19 +58,31 @@ async function handleAdminLogin(e) {
   btn.disabled = true;
   err.style.display = 'none';
 
-  const { error } = await adminLogin(email, pass);
-  if (error) {
-    err.textContent = error.message;
+  try {
+    const { data, error } = typeof adminLogin === 'function' 
+      ? await adminLogin(email, pass)
+      : { error: { message: 'Authentication service not loaded.' } };
+
+    if (error) {
+      err.textContent = error.message || 'Invalid credentials.';
+      err.style.display = 'block';
+      btn.textContent = 'Log in';
+      btn.disabled = false;
+    } else {
+      window.location.reload();
+    }
+  } catch (ex) {
+    err.textContent = ex.message || 'Login error occurred.';
     err.style.display = 'block';
     btn.textContent = 'Log in';
     btn.disabled = false;
-  } else {
-    window.location.reload();
   }
 }
 
 async function handleAdminLogout() {
-  await adminLogout();
+  if (typeof adminLogout === 'function') {
+    await adminLogout();
+  }
   window.location.reload();
 }
 
@@ -68,7 +91,8 @@ document.addEventListener('DOMContentLoaded', checkAuth);
 // ── Tabs ──
 function switchTab(tabId, btnElement) {
   document.querySelectorAll('.admin-tab-panel').forEach(el => el.classList.remove('active'));
-  document.getElementById(`tab-${tabId}`).classList.add('active');
+  const target = document.getElementById(`tab-${tabId}`);
+  if (target) target.classList.add('active');
   
   if (btnElement) {
     document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
@@ -78,64 +102,89 @@ function switchTab(tabId, btnElement) {
 
 // ── Editors Initialization ──
 function initQuillEditors() {
-  if (quillProduct) return;
-  quillProduct = new Quill('#prod-desc-editor', {
-    theme: 'snow',
-    modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ] }
-  });
+  if (typeof Quill === 'undefined') return;
+
+  const prodElem = document.getElementById('prod-desc-editor');
+  if (prodElem && !quillProduct) {
+    quillProduct = new Quill('#prod-desc-editor', {
+      theme: 'snow',
+      modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ] }
+    });
+  }
   
-  quillBlog = new Quill('#blog-content-editor', {
-    theme: 'snow',
-    modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ] }
-  });
+  const blogElem = document.getElementById('blog-content-editor');
+  if (blogElem && !quillBlog) {
+    quillBlog = new Quill('#blog-content-editor', {
+      theme: 'snow',
+      modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ] }
+    });
+  }
 }
 
-// ── Data Loading ──
+// ── Data Loading & Synchronization ──
 async function loadDashboardData() {
-  // Load parallel
-  const [pRes, bRes, lRes, sRes] = await Promise.all([
-    getProducts(),
-    getBlogs(),
-    getLabReports ? getLabReports() : {data:[]},
-    getUserSubmissions()
-  ]);
-  
-  allProducts = pRes.data || [];
-  allBlogs = bRes.data || [];
-  allLabReports = lRes.data || [];
-  allSubmissions = sRes.data || [];
-  
-  renderProductsTable();
-  renderBlogsTable();
-  renderLabReportsTable();
-  renderSubmissionsTable(allSubmissions);
+  try {
+    const [pRes, bRes, lRes, sRes] = await Promise.all([
+      typeof getProducts === 'function' ? getProducts() : { data: [] },
+      typeof getBlogs === 'function' ? getBlogs() : { data: [] },
+      typeof getLabReports === 'function' ? getLabReports() : { data: [] },
+      typeof getUserSubmissions === 'function' ? getUserSubmissions() : { data: [] }
+    ]);
+    
+    allProducts = (pRes && pRes.data) || (Array.isArray(pRes) ? pRes : []);
+    allBlogs = (bRes && bRes.data) || (Array.isArray(bRes) ? bRes : []);
+    allLabReports = (lRes && lRes.data) || (Array.isArray(lRes) ? lRes : []);
+    allSubmissions = (sRes && sRes.data) || (Array.isArray(sRes) ? sRes : []);
+    
+    renderProductsTable();
+    renderBlogsTable();
+    renderLabReportsTable();
+    renderSubmissionsTable(allSubmissions);
+  } catch (err) {
+    console.error('[SSN Admin] Dashboard sync error:', err);
+  }
 }
 
-// ── PRODUCTS ──
+// ══════════════════════════════════════════════
+// 1. PRODUCTS MANAGEMENT
+// ══════════════════════════════════════════════
 function renderProductsTable() {
   const container = document.getElementById('products-table-container');
+  if (!container) return;
+
   if (allProducts.length === 0) {
-    container.innerHTML = '<p style="color:#637381;">No products found. Add a product to get started.</p>';
+    container.innerHTML = '<p style="color:#637381; padding: 24px 0;">No products found in database. Click "Add product" to create one.</p>';
     return;
   }
   
   let html = `<div class="admin-table-wrap"><table class="admin-table">
-    <thead><tr><th>Product</th><th>Status</th><th>Category</th><th>Price</th><th>Variants</th><th>Actions</th></tr></thead><tbody>`;
+    <thead><tr><th>Product</th><th>Status</th><th>Category</th><th>Price / MRP</th><th>Variants</th><th>Actions</th></tr></thead><tbody>`;
   
   allProducts.forEach(p => {
+    const status = p.status || 'Active';
+    const statusClass = status.toLowerCase() === 'active' ? 'active' : status.toLowerCase() === 'draft' ? 'draft' : 'archived';
+    const priceDisplay = (p.selling_price || p.price || '') + (p.mrp ? ` <span style="color:#8c9196; font-size:12px; text-decoration:line-through;">${p.mrp}</span>` : '');
+    const variantsCount = (p.product_variants && Array.isArray(p.product_variants)) ? p.product_variants.length : 0;
+    
     html += `<tr>
       <td>
         <div style="display:flex; align-items:center; gap:12px;">
-          ${p.image_url ? `<img src="${p.image_url}" class="tbl-img">` : `<div class="tbl-img" style="background:#f4f6f8;"></div>`}
-          <span style="font-weight:600;">${esc(p.name)}</span>
+          ${p.image_url ? `<img src="${p.image_url}" class="tbl-img">` : `<div class="tbl-img" style="background:#f4f6f8; display:flex; align-items:center; justify-content:center; color:#8c9196; font-size:10px;">No img</div>`}
+          <div>
+            <span style="font-weight:600; display:block;">${esc(p.name || 'Unnamed Product')}</span>
+            <span style="font-size:12px; color:#637381;">${esc(p.slug || '')}</span>
+          </div>
         </div>
       </td>
-      <td><span class="status-badge ${p.status ? p.status.toLowerCase() : 'active'}">${p.status || 'Active'}</span></td>
-      <td>${esc(p.category)}</td>
-      <td>${esc(p.selling_price || p.price)}</td>
-      <td>${p.product_variants ? p.product_variants.length : 0}</td>
+      <td><span class="status-badge ${statusClass}">${esc(status)}</span></td>
+      <td>${esc(p.category || '-')}</td>
+      <td>${priceDisplay || '-'}</td>
+      <td>${variantsCount}</td>
       <td>
-        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openProductEditor('${p.id}')">Edit</button>
+        <div style="display:flex; gap:8px;">
+          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openProductEditor('${p.id}')">Edit</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteProduct('${p.id}', '${esc(p.name)}')">Delete</button>
+        </div>
       </td>
     </tr>`;
   });
@@ -144,29 +193,31 @@ function renderProductsTable() {
 }
 
 function openProductEditor(id = null) {
-  document.getElementById('variant-list').innerHTML = ''; // clear variants
+  initQuillEditors();
+  document.getElementById('variant-list').innerHTML = '';
   
   if (id) {
     const p = allProducts.find(x => x.id === id);
-    document.getElementById('prod-id').value = p.id;
-    document.getElementById('prod-name').value = p.name;
+    if (!p) return;
+    document.getElementById('prod-id').value = p.id || '';
+    document.getElementById('prod-name').value = p.name || '';
     document.getElementById('prod-status').value = p.status || 'Active';
-    document.getElementById('prod-category').value = p.category;
+    document.getElementById('prod-category').value = p.category || 'Lean Muscle';
     document.getElementById('prod-selling').value = p.selling_price || p.price || '';
     document.getElementById('prod-mrp').value = p.mrp || '';
     document.getElementById('prod-seo-title').value = p.seo_title || '';
     document.getElementById('prod-seo-desc').value = p.seo_description || '';
     document.getElementById('prod-slug').value = p.slug || '';
     document.getElementById('prod-image-url').value = p.image_url || '';
-    quillProduct.root.innerHTML = p.full_description || '';
+    if (quillProduct) quillProduct.root.innerHTML = p.full_description || p.short_description || '';
     
     document.getElementById('prod-img-preview').innerHTML = p.image_url ? `<img src="${p.image_url}">` : '';
     
-    if (p.product_variants) {
+    if (p.product_variants && Array.isArray(p.product_variants)) {
       p.product_variants.forEach(v => addVariantField(v));
     }
     
-    document.getElementById('product-editor-title').textContent = p.name;
+    document.getElementById('product-editor-title').textContent = `Edit — ${p.name}`;
   } else {
     document.getElementById('prod-id').value = '';
     document.getElementById('prod-name').value = '';
@@ -178,7 +229,7 @@ function openProductEditor(id = null) {
     document.getElementById('prod-seo-desc').value = '';
     document.getElementById('prod-slug').value = '';
     document.getElementById('prod-image-url').value = '';
-    quillProduct.root.innerHTML = '';
+    if (quillProduct) quillProduct.root.innerHTML = '';
     document.getElementById('prod-img-preview').innerHTML = '';
     document.getElementById('product-editor-title').textContent = 'Add product';
   }
@@ -191,7 +242,10 @@ async function handleProductImageUpload(input) {
   preview.innerHTML = '<p style="color:#637381; font-size:12px;">Uploading...</p>';
   
   const { publicUrl, error } = await uploadFileToStorage('products', input.files[0]);
-  if (error) { preview.innerHTML = '<p style="color:#d82c0d;">Upload failed.</p>'; return; }
+  if (error) { 
+    preview.innerHTML = `<p style="color:#d82c0d; font-size:12px;">Upload failed: ${error.message}</p>`; 
+    return; 
+  }
   
   document.getElementById('prod-image-url').value = publicUrl;
   preview.innerHTML = `<img src="${publicUrl}">`;
@@ -205,17 +259,17 @@ function addVariantField(v = null) {
   
   const html = `
     <div class="variant-item" id="${id}">
-      <div class="admin-upload-zone" style="padding:10px; width:60px; height:60px; display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('file_${id}').click()">
-        ${vImg ? `<img src="${vImg}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" id="img_${id}">` : `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`}
+      <div class="admin-upload-zone" style="padding:8px; width:50px; height:50px; display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('file_${id}').click()">
+        ${vImg ? `<img src="${vImg}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;" id="img_${id}">` : `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`}
       </div>
       <input type="file" id="file_${id}" accept="image/*" style="display:none;" onchange="handleVariantImgUpload(this, '${id}')">
       <input type="hidden" class="v-img-val" id="val_${id}" value="${vImg}">
       
       <div style="flex:1; display:flex; gap:12px;">
-        <input type="text" class="admin-form-input v-name" placeholder="Flavour (e.g. Chocolate)" value="${vName}">
-        <input type="text" class="admin-form-input v-price" placeholder="Price (Optional)" value="${vPrice}">
+        <input type="text" class="admin-form-input v-name" placeholder="Flavour (e.g. Chocolate Brownie)" value="${vName}">
+        <input type="text" class="admin-form-input v-price" placeholder="Price Override (Optional)" value="${vPrice}">
       </div>
-      <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="document.getElementById('${id}').remove()">Trash</button>
+      <button class="admin-btn admin-btn-outline admin-btn-sm" type="button" onclick="document.getElementById('${id}').remove()">Trash</button>
     </div>
   `;
   document.getElementById('variant-list').insertAdjacentHTML('beforeend', html);
@@ -227,69 +281,117 @@ async function handleVariantImgUpload(input, id) {
   if (!error && publicUrl) {
     document.getElementById(`val_${id}`).value = publicUrl;
     const zone = input.previousElementSibling;
-    zone.innerHTML = `<img src="${publicUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">`;
+    zone.innerHTML = `<img src="${publicUrl}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;">`;
   }
 }
 
 async function saveProductData() {
   const btn = document.getElementById('save-product-btn');
+  const prodName = document.getElementById('prod-name').value.trim();
+  if (!prodName) {
+    alert('Please enter a product title.');
+    return;
+  }
+
   btn.textContent = 'Saving...';
   btn.disabled = true;
   
   const variants = [];
   document.querySelectorAll('.variant-item').forEach(el => {
-    const name = el.querySelector('.v-name').value;
+    const name = el.querySelector('.v-name').value.trim();
     if (name) {
       variants.push({
         variant_name: name,
-        price_override: el.querySelector('.v-price').value,
-        variant_image: el.querySelector('.v-img-val').value
+        price_override: el.querySelector('.v-price').value.trim(),
+        variant_image: el.querySelector('.v-img-val').value.trim()
       });
     }
   });
 
+  const fullDesc = quillProduct ? quillProduct.root.innerHTML : '';
   const product = {
     id: document.getElementById('prod-id').value || undefined,
-    name: document.getElementById('prod-name').value,
+    name: prodName,
     status: document.getElementById('prod-status').value,
     category: document.getElementById('prod-category').value,
-    selling_price: document.getElementById('prod-selling').value,
-    mrp: document.getElementById('prod-mrp').value,
-    seo_title: document.getElementById('prod-seo-title').value,
-    seo_description: document.getElementById('prod-seo-desc').value,
-    slug: document.getElementById('prod-slug').value,
-    image_url: document.getElementById('prod-image-url').value,
-    full_description: quillProduct.root.innerHTML,
+    selling_price: document.getElementById('prod-selling').value.trim(),
+    mrp: document.getElementById('prod-mrp').value.trim(),
+    seo_title: document.getElementById('prod-seo-title').value.trim(),
+    seo_description: document.getElementById('prod-seo-desc').value.trim(),
+    slug: document.getElementById('prod-slug').value.trim() || prodName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    image_url: document.getElementById('prod-image-url').value.trim(),
+    full_description: fullDesc,
+    short_description: fullDesc.replace(/<[^>]*>?/gm, '').substring(0, 160),
     variants: variants
   };
 
-  const { error } = await saveProduct(product);
-  if (error) { alert(error.message); }
-  else {
-    await loadDashboardData();
-    switchTab('products');
+  try {
+    const res = await saveProduct(product);
+    if (res && res.error) { 
+      alert(`Error saving product: ${res.error.message}`); 
+    } else {
+      await loadDashboardData();
+      switchTab('products');
+    }
+  } catch (err) {
+    alert(`Save error: ${err.message}`);
+  } finally {
+    btn.textContent = 'Save';
+    btn.disabled = false;
   }
-  btn.textContent = 'Save';
-  btn.disabled = false;
 }
 
-// ── BLOGS ──
+async function handleDeleteProduct(id, name) {
+  if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    const { error } = await deleteProduct(id);
+    if (error) {
+      alert(`Error deleting product: ${error.message}`);
+    } else {
+      await loadDashboardData();
+    }
+  } catch (err) {
+    alert(`Delete error: ${err.message}`);
+  }
+}
+
+// ══════════════════════════════════════════════
+// 2. BLOGS MANAGEMENT
+// ══════════════════════════════════════════════
 function renderBlogsTable() {
   const container = document.getElementById('blogs-table-container');
+  if (!container) return;
+
   if (allBlogs.length === 0) {
-    container.innerHTML = '<p style="color:#637381;">No blogs found. Create a post.</p>';
+    container.innerHTML = '<p style="color:#637381; padding: 24px 0;">No blog posts found. Click "Add blog post" to publish your first article.</p>';
     return;
   }
   
   let html = `<div class="admin-table-wrap"><table class="admin-table">
-    <thead><tr><th>Blog Title</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+    <thead><tr><th>Blog Title</th><th>Status</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
   
   allBlogs.forEach(b => {
+    const isPublished = (b.status || 'Published').toLowerCase() === 'published';
+    const statusBadgeClass = isPublished ? 'published' : 'draft';
+    
     html += `<tr>
-      <td><span style="font-weight:600;">${esc(b.title)}</span></td>
-      <td><span class="status-badge ${b.status ? b.status.toLowerCase() : 'published'}">${b.status || 'Published'}</span></td>
-      <td>${esc(b.publish_date)}</td>
-      <td><button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openBlogEditor('${b.id}')">Edit</button></td>
+      <td>
+        <span style="font-weight:600; display:block;">${esc(b.title)}</span>
+        <span style="font-size:12px; color:#637381;">${esc(b.slug || '')}</span>
+      </td>
+      <td><span class="status-badge ${statusBadgeClass}">${esc(b.status || 'Published')}</span></td>
+      <td>${esc(b.category || 'Nutrition')}</td>
+      <td>${esc(b.publish_date || '-')}</td>
+      <td>
+        <div style="display:flex; gap:8px;">
+          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openBlogEditor('${b.id}')">Edit</button>
+          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="handleToggleBlogStatus('${b.id}')">${isPublished ? 'Draft' : 'Publish'}</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteBlog('${b.id}', '${esc(b.title)}')">Delete</button>
+        </div>
+      </td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
@@ -297,31 +399,34 @@ function renderBlogsTable() {
 }
 
 function openBlogEditor(id = null) {
+  initQuillEditors();
+
   if (id) {
     const b = allBlogs.find(x => x.id === id);
-    document.getElementById('blog-id').value = b.id;
-    document.getElementById('blog-title').value = b.title;
+    if (!b) return;
+    document.getElementById('blog-id').value = b.id || '';
+    document.getElementById('blog-title').value = b.title || '';
     document.getElementById('blog-status').value = b.status || 'Published';
-    document.getElementById('blog-author').value = b.author;
-    document.getElementById('blog-category').value = b.category;
+    document.getElementById('blog-author').value = b.author || 'SSN Elite Science Team';
+    document.getElementById('blog-category').value = b.category || 'Nutrition Science';
     document.getElementById('blog-seo-title').value = b.seo_title || '';
     document.getElementById('blog-seo-desc').value = b.seo_description || '';
     document.getElementById('blog-slug').value = b.slug || '';
     document.getElementById('blog-featured-image').value = b.featured_image || '';
-    quillBlog.root.innerHTML = b.content || '';
+    if (quillBlog) quillBlog.root.innerHTML = b.content || '';
     document.getElementById('blog-img-preview').innerHTML = b.featured_image ? `<img src="${b.featured_image}">` : '';
-    document.getElementById('blog-editor-title').textContent = b.title;
+    document.getElementById('blog-editor-title').textContent = `Edit — ${b.title}`;
   } else {
     document.getElementById('blog-id').value = '';
     document.getElementById('blog-title').value = '';
     document.getElementById('blog-status').value = 'Published';
-    document.getElementById('blog-author').value = 'SSN Elite Team';
-    document.getElementById('blog-category').value = 'Nutrition';
+    document.getElementById('blog-author').value = 'SSN Elite Science Team';
+    document.getElementById('blog-category').value = 'Nutrition Science';
     document.getElementById('blog-seo-title').value = '';
     document.getElementById('blog-seo-desc').value = '';
     document.getElementById('blog-slug').value = '';
     document.getElementById('blog-featured-image').value = '';
-    quillBlog.root.innerHTML = '';
+    if (quillBlog) quillBlog.root.innerHTML = '';
     document.getElementById('blog-img-preview').innerHTML = '';
     document.getElementById('blog-editor-title').textContent = 'Add blog post';
   }
@@ -334,7 +439,10 @@ async function handleBlogImageUpload(input) {
   preview.innerHTML = '<p style="color:#637381; font-size:12px;">Uploading...</p>';
   
   const { publicUrl, error } = await uploadFileToStorage('blogs', input.files[0]);
-  if (error) { preview.innerHTML = '<p style="color:#d82c0d;">Upload failed.</p>'; return; }
+  if (error) { 
+    preview.innerHTML = `<p style="color:#d82c0d; font-size:12px;">Upload failed: ${error.message}</p>`; 
+    return; 
+  }
   
   document.getElementById('blog-featured-image').value = publicUrl;
   preview.innerHTML = `<img src="${publicUrl}">`;
@@ -342,84 +450,158 @@ async function handleBlogImageUpload(input) {
 
 async function saveBlogData() {
   const btn = document.getElementById('save-blog-btn');
+  const title = document.getElementById('blog-title').value.trim();
+  if (!title) {
+    alert('Please enter a blog title.');
+    return;
+  }
+
   btn.textContent = 'Saving...';
   btn.disabled = true;
   
-  const title = document.getElementById('blog-title').value;
+  const contentHtml = quillBlog ? quillBlog.root.innerHTML : '';
+  const plainText = quillBlog ? quillBlog.getText().trim() : '';
+  const excerpt = plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
+
   const blog = {
     id: document.getElementById('blog-id').value || undefined,
     title: title,
-    slug: document.getElementById('blog-slug').value || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    slug: document.getElementById('blog-slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     status: document.getElementById('blog-status').value,
-    author: document.getElementById('blog-author').value,
-    category: document.getElementById('blog-category').value,
-    seo_title: document.getElementById('blog-seo-title').value,
-    seo_description: document.getElementById('blog-seo-desc').value,
-    featured_image: document.getElementById('blog-featured-image').value,
-    content: quillBlog.root.innerHTML,
+    author: document.getElementById('blog-author').value.trim(),
+    category: document.getElementById('blog-category').value.trim(),
+    seo_title: document.getElementById('blog-seo-title').value.trim(),
+    seo_description: document.getElementById('blog-seo-desc').value.trim(),
+    featured_image: document.getElementById('blog-featured-image').value.trim(),
+    content: contentHtml,
+    excerpt: excerpt,
     publish_date: new Date().toISOString().split('T')[0]
   };
 
-  const { error } = await saveBlog(blog);
-  if (error) { alert(error.message); }
-  else {
-    await loadDashboardData();
-    switchTab('blogs');
+  try {
+    const { error } = await saveBlog(blog);
+    if (error) { 
+      alert(`Error saving blog: ${error.message}`); 
+    } else {
+      await loadDashboardData();
+      switchTab('blogs');
+    }
+  } catch (err) {
+    alert(`Save error: ${err.message}`);
+  } finally {
+    btn.textContent = 'Save';
+    btn.disabled = false;
   }
-  btn.textContent = 'Save';
-  btn.disabled = false;
 }
 
-// ── LAB REPORTS ──
+async function handleToggleBlogStatus(id) {
+  const b = allBlogs.find(x => x.id === id);
+  if (!b) return;
+  const newStatus = (b.status || 'Published').toLowerCase() === 'published' ? 'Draft' : 'Published';
+  
+  try {
+    const { error } = await saveBlog({ id: b.id, status: newStatus });
+    if (error) alert(`Error updating status: ${error.message}`);
+    else await loadDashboardData();
+  } catch (e) {
+    alert(`Update error: ${e.message}`);
+  }
+}
+
+async function handleDeleteBlog(id, title) {
+  if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+    return;
+  }
+
+  try {
+    const { error } = await deleteBlog(id);
+    if (error) {
+      alert(`Error deleting blog: ${error.message}`);
+    } else {
+      await loadDashboardData();
+    }
+  } catch (err) {
+    alert(`Delete error: ${err.message}`);
+  }
+}
+
+// ══════════════════════════════════════════════
+// 3. LAB REPORTS MANAGEMENT
+// ══════════════════════════════════════════════
 function renderLabReportsTable() {
   const container = document.getElementById('labreports-table-container');
+  if (!container) return;
+
+  populateLabProductDropdown();
+
   if (allLabReports.length === 0) {
-    container.innerHTML = '<p style="color:#637381;">No lab reports found.</p>';
-    
-    // Fill product dropdown for editor
-    populateLabProductDropdown();
+    container.innerHTML = '<p style="color:#637381; padding: 24px 0;">No lab reports found in database. Click "Add lab report" to upload certificates.</p>';
     return;
   }
   
   let html = `<div class="admin-table-wrap"><table class="admin-table">
-    <thead><tr><th>Batch No</th><th>Product</th><th>Lab</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+    <thead><tr><th>Batch No</th><th>Product</th><th>Lab Name</th><th>Test Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
   
   allLabReports.forEach(r => {
     html += `<tr>
-      <td style="font-family:monospace;">${esc(r.batch_number)}</td>
+      <td style="font-family:monospace; font-weight:600;">${esc(r.batch_number)}</td>
       <td>${esc(r.product_name)}</td>
       <td>${esc(r.lab_name)}</td>
       <td>${esc(r.test_date)}</td>
-      <td><button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openLabReportEditor('${r.id}')">Edit</button></td>
+      <td><span class="status-badge active">${esc(r.status || 'VERIFIED')}</span></td>
+      <td>
+        <div style="display:flex; gap:8px;">
+          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openLabReportEditor('${r.id}')">Edit</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteLabReport('${r.id}', '${esc(r.batch_number)}')">Delete</button>
+        </div>
+      </td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
   container.innerHTML = html;
-  populateLabProductDropdown();
 }
 
 function populateLabProductDropdown() {
   const select = document.getElementById('lr-product');
+  if (!select) return;
+  
+  const currentVal = select.value;
   select.innerHTML = '<option value="">Select a product...</option>';
-  allProducts.forEach(p => {
-    select.innerHTML += `<option value="${esc(p.name)}">${esc(p.name)}</option>`;
+  
+  const defaultProducts = [
+    'SSN Elite Performance Whey',
+    'SSN Elite Anabolic Monster Mass',
+    'SSN Elite Tri Creatine',
+    'SSN Elite EAA + BCAA + Glutamine'
+  ];
+  
+  const names = new Set(defaultProducts);
+  allProducts.forEach(p => { if (p.name) names.add(p.name); });
+  
+  names.forEach(name => {
+    const isSelected = name === currentVal ? 'selected' : '';
+    select.innerHTML += `<option value="${esc(name)}" ${isSelected}>${esc(name)}</option>`;
   });
 }
 
 function openLabReportEditor(id = null) {
+  populateLabProductDropdown();
+
   if (id) {
     const r = allLabReports.find(x => x.id === id);
-    document.getElementById('lr-id').value = r.id;
-    document.getElementById('lr-product').value = r.product_name;
-    document.getElementById('lr-batch').value = r.batch_number;
-    document.getElementById('lr-lab').value = r.lab_name;
-    document.getElementById('lr-date').value = r.test_date;
-    document.getElementById('lr-images-store').value = JSON.stringify(r.report_images || []);
+    if (!r) return;
+    document.getElementById('lr-id').value = r.id || '';
+    document.getElementById('lr-product').value = r.product_name || '';
+    document.getElementById('lr-batch').value = r.batch_number || '';
+    document.getElementById('lr-lab').value = r.lab_name || '';
+    document.getElementById('lr-date').value = r.test_date || '';
+    const images = Array.isArray(r.report_images) ? r.report_images : [];
+    document.getElementById('lr-images-store').value = JSON.stringify(images);
     
     const preview = document.getElementById('lr-img-preview');
-    preview.innerHTML = (r.report_images || []).map(u => `<img src="${u}">`).join('');
+    preview.innerHTML = images.map(u => `<img src="${u}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #dfe3e8;">`).join('');
     
-    document.getElementById('lab-editor-title').textContent = 'Edit lab report';
+    document.getElementById('lab-editor-title').textContent = `Edit Lab Report — ${r.batch_number}`;
   } else {
     document.getElementById('lr-id').value = '';
     document.getElementById('lr-product').value = '';
@@ -436,76 +618,150 @@ function openLabReportEditor(id = null) {
 async function handleLabReportImageUpload(input) {
   if (!input.files || input.files.length === 0) return;
   const preview = document.getElementById('lr-img-preview');
-  preview.innerHTML = '<p style="color:#637381; font-size:12px;">Uploading...</p>';
+  preview.innerHTML = '<p style="color:#637381; font-size:12px;">Uploading certificates...</p>';
   
-  const existing = JSON.parse(document.getElementById('lr-images-store').value || '[]');
+  let existing = [];
+  try {
+    existing = JSON.parse(document.getElementById('lr-images-store').value || '[]');
+  } catch (e) {
+    existing = [];
+  }
   
   for (const file of input.files) {
     const { publicUrl, error } = await uploadFileToStorage('lab-reports', file);
-    if (!error && publicUrl) existing.push(publicUrl);
+    if (!error && publicUrl) {
+      existing.push(publicUrl);
+    }
   }
   
   document.getElementById('lr-images-store').value = JSON.stringify(existing);
-  preview.innerHTML = existing.map(u => `<img src="${u}">`).join('');
+  preview.innerHTML = existing.map(u => `<img src="${u}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #dfe3e8;">`).join('');
 }
 
 async function saveLabReportData() {
   const btn = document.getElementById('save-lr-btn');
+  const batchNumber = document.getElementById('lr-batch').value.trim();
+  const productName = document.getElementById('lr-product').value.trim();
+
+  if (!batchNumber || !productName) {
+    alert('Please enter both Product Name and Batch Number.');
+    return;
+  }
+
   btn.textContent = 'Saving...';
   btn.disabled = true;
   
+  let reportImages = [];
+  try {
+    reportImages = JSON.parse(document.getElementById('lr-images-store').value || '[]');
+  } catch (e) {
+    reportImages = [];
+  }
+
   const report = {
     id: document.getElementById('lr-id').value || undefined,
-    batch_number: document.getElementById('lr-batch').value,
-    product_name: document.getElementById('lr-product').value,
-    lab_name: document.getElementById('lr-lab').value,
-    test_date: document.getElementById('lr-date').value,
-    report_images: JSON.parse(document.getElementById('lr-images-store').value || '[]'),
-    parameters: [], // Deprecated
+    batch_number: batchNumber,
+    product_name: productName,
+    lab_name: document.getElementById('lr-lab').value.trim() || 'ISO Accredited Testing Lab',
+    test_date: document.getElementById('lr-date').value.trim() || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    report_images: reportImages,
+    parameters: [],
     status: 'VERIFIED'
   };
 
-  if(typeof saveLabReport === 'function') {
-    const { error } = await saveLabReport(report);
-    if (error) { alert(error.message); }
-    else {
+  try {
+    const res = await saveLabReport(report);
+    if (res && res.error) {
+      alert(`Error saving lab report: ${res.error.message}`);
+    } else {
       await loadDashboardData();
       switchTab('labreports');
     }
-  } else {
-    alert("saveLabReport function missing from supabaseClient.js");
+  } catch (err) {
+    alert(`Save error: ${err.message}`);
+  } finally {
+    btn.textContent = 'Save';
+    btn.disabled = false;
   }
-  
-  btn.textContent = 'Save';
-  btn.disabled = false;
 }
 
-// ── ENQUIRIES ──
+async function handleDeleteLabReport(id, batch) {
+  if (!confirm(`Are you sure you want to delete lab report for batch "${batch}"?`)) {
+    return;
+  }
+
+  try {
+    const { error } = await deleteLabReport(id);
+    if (error) {
+      alert(`Error deleting lab report: ${error.message}`);
+    } else {
+      await loadDashboardData();
+    }
+  } catch (err) {
+    alert(`Delete error: ${err.message}`);
+  }
+}
+
+// ══════════════════════════════════════════════
+// 4. CUSTOMER ENQUIRIES
+// ══════════════════════════════════════════════
 function filterSubmissions(val) {
-  const v = val.toLowerCase();
-  const filtered = allSubmissions.filter(s => s.full_name.toLowerCase().includes(v) || s.email.toLowerCase().includes(v));
+  const v = (val || '').toLowerCase();
+  const filtered = allSubmissions.filter(s => 
+    (s.full_name && s.full_name.toLowerCase().includes(v)) || 
+    (s.email && s.email.toLowerCase().includes(v)) ||
+    (s.phone && s.phone.toLowerCase().includes(v)) ||
+    (s.address && s.address.toLowerCase().includes(v)) ||
+    (s.message && s.message.toLowerCase().includes(v))
+  );
   renderSubmissionsTable(filtered);
 }
 
 function renderSubmissionsTable(data) {
   const container = document.getElementById('submissions-table-container');
+  if (!container) return;
+
   if (data.length === 0) {
-    container.innerHTML = '<p style="color:#637381;">No customer enquiries found.</p>';
+    container.innerHTML = '<p style="color:#637381; padding: 24px 0;">No customer enquiries found.</p>';
     return;
   }
   
   let html = `<div class="admin-table-wrap"><table class="admin-table">
-    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Date</th></tr></thead><tbody>`;
+    <thead><tr><th>Customer</th><th>Contact Info</th><th>Address</th><th>Message</th><th>Date</th><th>Action</th></tr></thead><tbody>`;
   
   data.forEach(s => {
-    const d = new Date(s.created_at).toLocaleDateString();
+    const d = s.created_at ? new Date(s.created_at).toLocaleDateString() : '-';
     html += `<tr>
       <td><span style="font-weight:600;">${esc(s.full_name)}</span></td>
-      <td>${esc(s.email)}</td>
-      <td>${esc(s.phone)}</td>
-      <td>${d}</td>
+      <td>
+        <div><a href="mailto:${esc(s.email)}" style="color:#008060; text-decoration:none;">${esc(s.email)}</a></div>
+        <div style="font-size:12px; color:#637381; margin-top:2px;">${esc(s.phone)}</div>
+      </td>
+      <td style="font-size:13px; max-width:200px; word-break:break-word;">${esc(s.address || '-')}</td>
+      <td style="font-size:13px; max-width:240px; color:#454f5b;">${esc(s.message || '—')}</td>
+      <td style="font-size:13px; color:#637381;">${d}</td>
+      <td>
+        <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteSubmission('${s.id}', '${esc(s.full_name)}')">Delete</button>
+      </td>
     </tr>`;
   });
   html += `</tbody></table></div>`;
   container.innerHTML = html;
+}
+
+async function handleDeleteSubmission(id, name) {
+  if (!confirm(`Are you sure you want to delete the enquiry from "${name}"?`)) {
+    return;
+  }
+
+  try {
+    const { error } = await deleteUserSubmission(id);
+    if (error) {
+      alert(`Error deleting submission: ${error.message}`);
+    } else {
+      await loadDashboardData();
+    }
+  } catch (err) {
+    alert(`Delete error: ${err.message}`);
+  }
 }

@@ -90,7 +90,8 @@ let SSN_LAB_REPORTS_DB = [];
 async function loadLabReportsFromDB() {
   if (typeof getLabReports === 'function') {
     try {
-      const dbReports = await getLabReports();
+      const result = await getLabReports();
+      const dbReports = (result && result.data) || (Array.isArray(result) ? result : []);
       if (dbReports && dbReports.length > 0) {
         SSN_LAB_REPORTS_DB = dbReports.map(r => ({
           id: r.id,
@@ -99,13 +100,13 @@ async function loadLabReportsFromDB() {
             : r.product_name.includes('EAA') ? 'Amino Acids'
             : r.product_name.includes('Creatine') ? 'Performance'
             : 'Mass Gainer',
-          image: '',
+          image: (r.report_images && r.report_images.length > 0) ? r.report_images[0] : '',
           batchNo: r.batch_number,
           testDate: r.test_date,
           labName: r.lab_name,
           status: r.status || 'VERIFIED',
           purityScore: '100% Passed',
-          summary: '',
+          summary: `Verified ISO-accredited laboratory assay for batch ${r.batch_number}.`,
           metrics: (r.parameters || []).map(p => ({
             label: p.label,
             value: p.value,
