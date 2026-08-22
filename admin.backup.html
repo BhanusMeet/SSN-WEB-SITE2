@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSN Elite — Admin Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/webp" href="assets/images/logo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/pages/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ═══ LOGIN SCREEN ═══ -->
+  <div id="admin-login-screen" class="admin-login-screen">
+    <div class="admin-login-card">
+      <img src="assets/images/logo.webp" alt="SSN ELITE" height="36">
+      <h2>Admin Portal</h2>
+      <p>Sign in with your admin credentials to access the CMS dashboard.</p>
+      <div id="login-error" class="admin-login-error"></div>
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="admin-form-group">
+          <label class="admin-form-label">Email</label>
+          <input type="email" id="login-email" class="admin-form-input" placeholder="admin@ssnelite.com" required>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label">Password</label>
+          <input type="password" id="login-password" class="admin-form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; margin-top: 8px;" id="login-btn">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="admin-sidebar" id="admin-sidebar" style="display:none;">
+    <div class="admin-sidebar-brand">
+      <img src="assets/images/logo.webp" alt="SSN ELITE">
+      <div class="admin-badge">CMS DASHBOARD</div>
+    </div>
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" onclick="switchTab('submissions', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        User Submissions
+      </button>
+      <button class="admin-nav-item" onclick="switchTab('products', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Products
+      </button>
+      <button class="admin-nav-item" onclick="switchTab('blogs', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Blogs
+      </button>
+      <button class="admin-nav-item" onclick="switchTab('labreports', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 002.25 2.25h.75"/></svg>
+        Lab Reports
+      </button>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <button class="admin-logout-btn" onclick="handleAdminLogout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="admin-main" id="admin-main" style="display:none;">
+
+    <!-- ── SUBMISSIONS TAB ── -->
+    <div class="admin-tab-panel active" id="tab-submissions">
+      <div class="admin-topbar">
+        <h1>User Submissions</h1>
+        <div class="admin-topbar-actions">
+          <div class="admin-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+            <input type="text" placeholder="Search submissions..." oninput="filterSubmissions(this.value)">
+          </div>
+        </div>
+      </div>
+      <div id="submissions-stats" class="admin-stats-row"></div>
+      <div class="admin-card">
+        <div id="submissions-table-container"></div>
+      </div>
+    </div>
+
+    <!-- ── PRODUCTS TAB ── -->
+    <div class="admin-tab-panel" id="tab-products">
+      <div class="admin-topbar">
+        <h1>Product Manager</h1>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-primary" onclick="openProductModal()">+ Add Product</button>
+        </div>
+      </div>
+      <div id="products-stats" class="admin-stats-row"></div>
+      <div class="admin-card">
+        <div id="products-table-container"></div>
+      </div>
+    </div>
+
+    <!-- ── BLOGS TAB ── -->
+    <div class="admin-tab-panel" id="tab-blogs">
+      <div class="admin-topbar">
+        <h1>Blog Manager</h1>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-primary" onclick="openBlogModal()">+ New Article</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div id="blogs-table-container"></div>
+      </div>
+    </div>
+
+    <!-- ── LAB REPORTS TAB ── -->
+    <div class="admin-tab-panel" id="tab-labreports">
+      <div class="admin-topbar">
+        <h1>Lab Reports Manager</h1>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-primary" onclick="openLabReportModal()">+ Add Lab Report</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div id="labreports-table-container"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══ MODAL CONTAINER ═══ -->
+  <div id="admin-modal" class="admin-modal-overlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="js/siteConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script>
+    /* ═══════════════════════════════════════
+       ADMIN CMS — Complete Dashboard Logic
+       ═══════════════════════════════════════ */
+
+    let allSubmissions = [];
+    let allProducts = [];
+    let allBlogsAdmin = [];
+    let allLabReportsAdmin = [];
+
+    const CATEGORIES = ['Lean Muscle', 'Fat Loss', 'Hydration', 'Lifestyle & Performance', 'Size & Strength'];
+    const GRADIENTS = [
+      'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
+      'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)',
+      'linear-gradient(135deg, #059669 0%, #064E3B 100%)',
+      'linear-gradient(135deg, #D97706 0%, #78350F 100%)',
+      'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)'
+    ];
+
+    /* ── AUTH ── */
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const errorDiv = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        errorDiv.textContent = 'Please enter both email and password.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
+      errorDiv.style.display = 'none';
+
+      try {
+        const { data, error } = await adminLogin(email, password);
+        if (error) {
+          errorDiv.textContent = error.message || 'Invalid credentials or user not found.';
+          errorDiv.style.display = 'block';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+          return;
+        }
+
+        if (data && data.session) {
+          showDashboard();
+        } else {
+          errorDiv.textContent = 'Login successful, but no session returned. Please try again.';
+          errorDiv.style.display = 'block';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error('[SSN] Login exception:', err);
+        errorDiv.textContent = 'A network or configuration error occurred.';
+        errorDiv.style.display = 'block';
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    }
+
+    async function handleAdminLogout() {
+      await adminLogout();
+      location.reload();
+    }
+
+    async function checkAuth() {
+      const session = await checkAdminAuth();
+      if (session) {
+        showDashboard();
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('admin-login-screen').style.display = 'none';
+      document.getElementById('admin-sidebar').style.display = 'flex';
+      document.getElementById('admin-main').style.display = 'block';
+      loadAllData();
+    }
+
+    /* ── TAB SWITCHING ── */
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    /* ── DATA LOADING ── */
+    async function loadAllData() {
+      try {
+        const subs = await getUserSubmissions();
+        if (subs.error) alert('Error loading submissions: ' + subs.error.message);
+        allSubmissions = subs.data || [];
+
+        const prods = await getProducts();
+        if (prods.error) alert('Error loading products: ' + prods.error.message);
+        allProducts = prods.data || [];
+
+        const blogs = await getBlogs();
+        if (blogs.error) alert('Error loading blogs: ' + blogs.error.message);
+        allBlogsAdmin = blogs.data || [];
+
+        const labs = await getLabReports();
+        if (labs.error) alert('Error loading lab reports: ' + labs.error.message);
+        allLabReportsAdmin = labs.data || [];
+
+        renderSubmissions();
+        renderProducts();
+        renderBlogsAdmin();
+        renderLabReportsAdmin();
+      } catch (err) {
+        console.error('[SSN] Error loading dashboard data:', err);
+        alert('An unexpected error occurred while loading dashboard data.');
+      }
+    }
+
+    /* ══════════ SUBMISSIONS ══════════ */
+    function renderSubmissions(filter = '') {
+      const data = filter
+        ? allSubmissions.filter(s => (s.full_name + s.email + s.phone).toLowerCase().includes(filter.toLowerCase()))
+        : allSubmissions;
+
+      document.getElementById('submissions-stats').innerHTML = `
+        <div class="admin-stat-card"><div class="admin-stat-label">Total Submissions</div><div class="admin-stat-value">${allSubmissions.length}</div></div>
+        <div class="admin-stat-card"><div class="admin-stat-label">This Month</div><div class="admin-stat-value">${allSubmissions.filter(s => new Date(s.created_at).getMonth() === new Date().getMonth()).length}</div></div>
+        <div class="admin-stat-card"><div class="admin-stat-label">Today</div><div class="admin-stat-value">${allSubmissions.filter(s => new Date(s.created_at).toDateString() === new Date().toDateString()).length}</div></div>
+        <div class="admin-stat-card"><div class="admin-stat-label">Showing</div><div class="admin-stat-value">${data.length}</div></div>
+      `;
+
+      if (data.length === 0) {
+        document.getElementById('submissions-table-container').innerHTML = '<div class="admin-empty"><p>No user submissions yet.</p></div>';
+        return;
+      }
+
+      document.getElementById('submissions-table-container').innerHTML = `
+        <div class="admin-table-wrap"><table class="admin-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Message</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>${data.map(s => `<tr>
+            <td>${esc(s.full_name)}</td><td>${esc(s.email)}</td><td>${esc(s.phone)}</td>
+            <td title="${esc(s.address)}">${esc(s.address)}</td>
+            <td title="${esc(s.message || '')}">${esc(s.message || '—')}</td>
+            <td>${new Date(s.created_at).toLocaleDateString()}</td>
+            <td><button class="admin-btn admin-btn-danger admin-btn-sm" onclick="confirmDeleteSubmission('${s.id}')">Delete</button></td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+      `;
+    }
+
+    function filterSubmissions(val) { renderSubmissions(val); }
+
+    async function confirmDeleteSubmission(id) {
+      if (!confirm('Delete this submission?')) return;
+      await deleteUserSubmission(id);
+      allSubmissions = allSubmissions.filter(s => s.id !== id);
+      renderSubmissions();
+    }
+
+    /* ══════════ PRODUCTS ══════════ */
+    function renderProducts() {
+      document.getElementById('products-stats').innerHTML = `
+        <div class="admin-stat-card"><div class="admin-stat-label">Total Products</div><div class="admin-stat-value">${allProducts.length}</div></div>
+        ${CATEGORIES.map(c => `<div class="admin-stat-card"><div class="admin-stat-label">${c}</div><div class="admin-stat-value">${allProducts.filter(p => p.category === c).length}</div></div>`).join('')}
+      `;
+
+      if (allProducts.length === 0) {
+        document.getElementById('products-table-container').innerHTML = '<div class="admin-empty"><p>No products. Click "+ Add Product" to create one.</p></div>';
+        return;
+      }
+
+      document.getElementById('products-table-container').innerHTML = `
+        <div class="admin-table-wrap"><table class="admin-table">
+          <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Serving</th><th>Actions</th></tr></thead>
+          <tbody>${allProducts.map(p => `<tr>
+            <td>${p.image_url ? `<img src="${esc(p.image_url)}" style="height:40px;border-radius:6px;" alt="">` : '—'}</td>
+            <td><strong>${esc(p.name)}</strong></td>
+            <td>${esc(p.category)}</td>
+            <td>${esc(p.price)}</td>
+            <td>${esc(p.serving_size || '')}</td>
+            <td>
+              <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openProductModal('${p.id}')">Edit</button>
+              <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="confirmDeleteProduct('${p.id}')">Delete</button>
+            </td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+      `;
+    }
+
+    function openProductModal(editId) {
+      const product = editId ? allProducts.find(p => p.id === editId) : null;
+      const modal = document.getElementById('admin-modal');
+      modal.innerHTML = `
+        <div class="admin-modal">
+          <div class="admin-modal-header">
+            <h3>${product ? 'Edit Product' : 'Add New Product'}</h3>
+            <button class="admin-modal-close" onclick="closeModal()">&times;</button>
+          </div>
+          <div class="admin-modal-body">
+            <input type="hidden" id="prod-id" value="${product ? product.id : ''}">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Product Name</label>
+                <input class="admin-form-input" id="prod-name" value="${esc(product?.name || '')}" placeholder="SSN Elite Performance Whey">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Category</label>
+                <select class="admin-form-select" id="prod-category">
+                  ${CATEGORIES.map(c => `<option value="${c}" ${product?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Price (MRP)</label>
+                <input class="admin-form-input" id="prod-price" value="${esc(product?.price || '')}" placeholder="₹10,499">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Serving Size</label>
+                <input class="admin-form-input" id="prod-serving" value="${esc(product?.serving_size || '24g protein per scoop')}" placeholder="24g protein per scoop">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Product Image</label>
+              <div class="admin-upload-zone" onclick="document.getElementById('prod-img-file').click()">
+                <input type="file" id="prod-img-file" accept="image/*" onchange="handleProductImageUpload(this)">
+                <div id="prod-img-preview" class="admin-upload-preview">
+                  ${product?.image_url ? `<img src="${esc(product.image_url)}" alt="Preview">` : '<p>Click to upload product image</p>'}
+                </div>
+              </div>
+              <input type="hidden" id="prod-image-url" value="${esc(product?.image_url || '')}">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Short Description</label>
+              <textarea class="admin-form-textarea" id="prod-short-desc" rows="3" placeholder="Brief highlight for product cards">${esc(product?.short_description || '')}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Full Description</label>
+              <textarea class="admin-form-textarea" id="prod-full-desc" rows="5" placeholder="Detailed product information">${esc(product?.full_description || '')}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Ingredients</label>
+              <textarea class="admin-form-textarea" id="prod-ingredients" rows="3" placeholder="Comma-separated ingredient list">${esc(product?.ingredients || '')}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Benefits</label>
+              <textarea class="admin-form-textarea" id="prod-benefits" rows="3" placeholder="Key benefits, one per line">${esc(product?.benefits || '')}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Usage Instructions</label>
+              <textarea class="admin-form-textarea" id="prod-usage" rows="3" placeholder="How to use this product">${esc(product?.usage_instruction || '')}</textarea>
+            </div>
+
+            <div class="admin-product-preview" id="product-preview-box">
+              <h4>Live Product Preview</h4>
+              <div class="admin-preview-card">
+                <img id="preview-img" src="${product?.image_url || 'assets/images/logo.webp'}" alt="Preview">
+                <div class="preview-cat" id="preview-cat">${product?.category || 'Lean Muscle'}</div>
+                <h3 id="preview-name">${product?.name || 'Product Name'}</h3>
+                <div class="preview-price" id="preview-price">${product?.price || '₹0'}</div>
+                <p class="preview-desc" id="preview-desc">${product?.short_description || 'Product description will appear here.'}</p>
+              </div>
+            </div>
+          </div>
+          <div class="admin-modal-footer">
+            <button class="admin-btn admin-btn-outline" onclick="closeModal()">Cancel</button>
+            <button class="admin-btn admin-btn-primary" onclick="saveProductFromModal()" id="save-product-btn">${product ? 'Update Product' : 'Save Product'}</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add('open');
+      // Live preview bindings
+      ['prod-name','prod-category','prod-price','prod-short-desc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', updateProductPreview);
+      });
+    }
+
+    function updateProductPreview() {
+      const n = document.getElementById('prod-name');
+      const c = document.getElementById('prod-category');
+      const p = document.getElementById('prod-price');
+      const d = document.getElementById('prod-short-desc');
+      if (n) document.getElementById('preview-name').textContent = n.value || 'Product Name';
+      if (c) document.getElementById('preview-cat').textContent = c.value || 'Category';
+      if (p) document.getElementById('preview-price').textContent = p.value || '₹0';
+      if (d) document.getElementById('preview-desc').textContent = d.value || 'Description';
+    }
+
+    async function handleProductImageUpload(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const preview = document.getElementById('prod-img-preview');
+      preview.innerHTML = '<p>Uploading...</p>';
+      const { url, error } = await uploadImage('product-images', file);
+      if (error) {
+        preview.innerHTML = '<p style="color:#EF4444;">Upload failed. Try again.</p>';
+        return;
+      }
+      document.getElementById('prod-image-url').value = url;
+      preview.innerHTML = `<img src="${url}" alt="Preview">`;
+      document.getElementById('preview-img').src = url;
+    }
+
+    async function saveProductFromModal() {
+      const btn = document.getElementById('save-product-btn');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+      const product = {
+        id: document.getElementById('prod-id').value || undefined,
+        name: document.getElementById('prod-name').value,
+        category: document.getElementById('prod-category').value,
+        price: document.getElementById('prod-price').value,
+        image_url: document.getElementById('prod-image-url').value,
+        short_description: document.getElementById('prod-short-desc').value,
+        full_description: document.getElementById('prod-full-desc').value,
+        ingredients: document.getElementById('prod-ingredients').value,
+        benefits: document.getElementById('prod-benefits').value,
+        usage_instruction: document.getElementById('prod-usage').value,
+        serving_size: document.getElementById('prod-serving').value,
+        faq: []
+      };
+      const { error } = await saveProduct(product);
+      if (error) { alert('Error: ' + error.message); btn.textContent = 'Save'; btn.disabled = false; return; }
+      closeModal();
+      allProducts = await getProducts();
+      renderProducts();
+    }
+
+    async function confirmDeleteProduct(id) {
+      if (!confirm('Delete this product permanently?')) return;
+      await deleteProduct(id);
+      allProducts = allProducts.filter(p => p.id !== id);
+      renderProducts();
+    }
+
+    /* ══════════ BLOGS ══════════ */
+    function renderBlogsAdmin() {
+      if (allBlogsAdmin.length === 0) {
+        document.getElementById('blogs-table-container').innerHTML = '<div class="admin-empty"><p>No blog articles. Click "+ New Article" to write one.</p></div>';
+        return;
+      }
+      document.getElementById('blogs-table-container').innerHTML = `
+        <div class="admin-table-wrap"><table class="admin-table">
+          <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Published</th><th>Actions</th></tr></thead>
+          <tbody>${allBlogsAdmin.map(b => `<tr>
+            <td><strong>${esc(b.title)}</strong></td>
+            <td>${esc(b.author)}</td>
+            <td>${esc(b.category)}</td>
+            <td>${b.publish_date || '—'}</td>
+            <td>
+              <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openBlogModal('${b.id}')">Edit</button>
+              <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="confirmDeleteBlog('${b.id}')">Delete</button>
+            </td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+      `;
+    }
+
+    function openBlogModal(editId) {
+      const blog = editId ? allBlogsAdmin.find(b => b.id === editId) : null;
+      const modal = document.getElementById('admin-modal');
+      modal.innerHTML = `
+        <div class="admin-modal">
+          <div class="admin-modal-header">
+            <h3>${blog ? 'Edit Article' : 'Create New Article'}</h3>
+            <button class="admin-modal-close" onclick="closeModal()">&times;</button>
+          </div>
+          <div class="admin-modal-body">
+            <input type="hidden" id="blog-id" value="${blog ? blog.id : ''}">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Article Title</label>
+              <input class="admin-form-input" id="blog-title" value="${esc(blog?.title || '')}" placeholder="Article title">
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Slug (URL)</label>
+                <input class="admin-form-input" id="blog-slug" value="${esc(blog?.slug || '')}" placeholder="my-article-slug" style="font-family:'JetBrains Mono',monospace;">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Author</label>
+                <input class="admin-form-input" id="blog-author" value="${esc(blog?.author || 'SSN Elite Research')}" placeholder="Author name">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Category</label>
+                <input class="admin-form-input" id="blog-category" value="${esc(blog?.category || 'Nutrition Science')}" placeholder="Category">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Read Time</label>
+                <input class="admin-form-input" id="blog-readtime" value="${esc(blog?.read_time || '5 min read')}" placeholder="5 min read">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Featured Image</label>
+              <div class="admin-upload-zone" onclick="document.getElementById('blog-img-file').click()">
+                <input type="file" id="blog-img-file" accept="image/*" onchange="handleBlogImageUpload(this)">
+                <div id="blog-img-preview" class="admin-upload-preview">
+                  ${blog?.featured_image ? `<img src="${esc(blog.featured_image)}" alt="Preview">` : '<p>Click to upload featured image</p>'}
+                </div>
+              </div>
+              <input type="hidden" id="blog-featured-image" value="${esc(blog?.featured_image || '')}">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Excerpt</label>
+              <textarea class="admin-form-textarea" id="blog-excerpt" rows="3" placeholder="Short summary for cards">${esc(blog?.excerpt || '')}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Content (HTML)</label>
+              <textarea class="admin-form-textarea" id="blog-content" rows="10" placeholder="Full article content (HTML supported)">${esc(blog?.content || '')}</textarea>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">SEO Title</label>
+                <input class="admin-form-input" id="blog-seo-title" value="${esc(blog?.seo_title || '')}" placeholder="Custom page title for search">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">SEO Description</label>
+                <input class="admin-form-input" id="blog-seo-desc" value="${esc(blog?.seo_description || '')}" placeholder="Meta description for SEO">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Card Gradient</label>
+              <select class="admin-form-select" id="blog-gradient">
+                ${GRADIENTS.map((g, i) => `<option value="${g}" ${blog?.gradient === g ? 'selected' : ''}>Gradient ${i + 1}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <div class="admin-modal-footer">
+            <button class="admin-btn admin-btn-outline" onclick="closeModal()">Cancel</button>
+            <button class="admin-btn admin-btn-primary" onclick="saveBlogFromModal()" id="save-blog-btn">${blog ? 'Update Article' : 'Publish Article'}</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add('open');
+    }
+
+    async function handleBlogImageUpload(input) {
+      if (!input.files || !input.files[0]) return;
+      const preview = document.getElementById('blog-img-preview');
+      preview.innerHTML = '<p>Uploading...</p>';
+      const { url, error } = await uploadImage('blog-images', input.files[0]);
+      if (error) { preview.innerHTML = '<p style="color:#EF4444;">Upload failed.</p>'; return; }
+      document.getElementById('blog-featured-image').value = url;
+      preview.innerHTML = `<img src="${url}" alt="Preview">`;
+    }
+
+    async function saveBlogFromModal() {
+      const btn = document.getElementById('save-blog-btn');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+      const title = document.getElementById('blog-title').value;
+      const blog = {
+        id: document.getElementById('blog-id').value || undefined,
+        title,
+        slug: document.getElementById('blog-slug').value || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        featured_image: document.getElementById('blog-featured-image').value,
+        author: document.getElementById('blog-author').value,
+        content: document.getElementById('blog-content').value,
+        excerpt: document.getElementById('blog-excerpt').value,
+        category: document.getElementById('blog-category').value,
+        read_time: document.getElementById('blog-readtime').value,
+        gradient: document.getElementById('blog-gradient').value,
+        seo_title: document.getElementById('blog-seo-title').value,
+        seo_description: document.getElementById('blog-seo-desc').value,
+        publish_date: new Date().toISOString().split('T')[0]
+      };
+      const { error } = await saveBlog(blog);
+      if (error) { alert('Error: ' + error.message); btn.textContent = 'Save'; btn.disabled = false; return; }
+      closeModal();
+      allBlogsAdmin = await getBlogs();
+      renderBlogsAdmin();
+    }
+
+    async function confirmDeleteBlog(id) {
+      if (!confirm('Delete this article permanently?')) return;
+      await deleteBlog(id);
+      allBlogsAdmin = allBlogsAdmin.filter(b => b.id !== id);
+      renderBlogsAdmin();
+    }
+
+    /* ══════════ LAB REPORTS ══════════ */
+    function renderLabReportsAdmin() {
+      if (allLabReportsAdmin.length === 0) {
+        document.getElementById('labreports-table-container').innerHTML = '<div class="admin-empty"><p>No lab reports. Click "+ Add Lab Report" to create one.</p></div>';
+        return;
+      }
+      document.getElementById('labreports-table-container').innerHTML = `
+        <div class="admin-table-wrap"><table class="admin-table">
+          <thead><tr><th>Batch No</th><th>Product</th><th>Lab</th><th>Test Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>${allLabReportsAdmin.map(r => `<tr>
+            <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">${esc(r.batch_number)}</td>
+            <td>${esc(r.product_name)}</td>
+            <td>${esc(r.lab_name)}</td>
+            <td>${esc(r.test_date)}</td>
+            <td><span style="color:#059669;font-weight:600;">${esc(r.status)}</span></td>
+            <td>
+              <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openLabReportModalAdmin('${r.id}')">Edit</button>
+              <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="confirmDeleteLabReport('${r.id}')">Delete</button>
+            </td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+      `;
+    }
+
+    function openLabReportModal() { openLabReportModalAdmin(); }
+
+    function openLabReportModalAdmin(editId) {
+      const report = editId ? allLabReportsAdmin.find(r => r.id === editId) : null;
+      const params = report?.parameters || [];
+      const modal = document.getElementById('admin-modal');
+      modal.innerHTML = `
+        <div class="admin-modal">
+          <div class="admin-modal-header">
+            <h3>${report ? 'Edit Lab Report' : 'Add Lab Report'}</h3>
+            <button class="admin-modal-close" onclick="closeModal()">&times;</button>
+          </div>
+          <div class="admin-modal-body">
+            <input type="hidden" id="lr-id" value="${report ? report.id : ''}">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Batch Number</label>
+                <input class="admin-form-input" id="lr-batch" value="${esc(report?.batch_number || '')}" placeholder="SSN-WHEY-2025-08A" style="font-family:'JetBrains Mono',monospace;">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Product Name</label>
+                <input class="admin-form-input" id="lr-product" value="${esc(report?.product_name || '')}" placeholder="SSN Elite Performance Whey">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Lab Name</label>
+                <input class="admin-form-input" id="lr-lab" value="${esc(report?.lab_name || '')}" placeholder="SGS Analytical Labs">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Test Date</label>
+                <input class="admin-form-input" id="lr-date" value="${esc(report?.test_date || '')}" placeholder="August 14, 2025">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Test Parameters (JSON)</label>
+              <textarea class="admin-form-textarea" id="lr-params" rows="8" style="font-family:'JetBrains Mono',monospace;font-size:12px;">${JSON.stringify(params, null, 2)}</textarea>
+              <p style="font-size:11px;color:#4A4A52;margin-top:6px;">Format: [{"label":"Test Name","value":"Result","status":"PASS"}]</p>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Report Images</label>
+              <div class="admin-upload-zone" onclick="document.getElementById('lr-img-file').click()">
+                <input type="file" id="lr-img-file" accept="image/*" multiple onchange="handleLabReportImageUpload(this)">
+                <div id="lr-img-preview" class="admin-upload-preview">
+                  ${(report?.report_images || []).length > 0 ? report.report_images.map(i => `<img src="${i}" alt="" style="height:60px;margin:4px;">`).join('') : '<p>Click to upload lab certificate images</p>'}
+                </div>
+              </div>
+              <input type="hidden" id="lr-images" value='${JSON.stringify(report?.report_images || [])}'>
+            </div>
+          </div>
+          <div class="admin-modal-footer">
+            <button class="admin-btn admin-btn-outline" onclick="closeModal()">Cancel</button>
+            <button class="admin-btn admin-btn-primary" onclick="saveLabReportFromModal()" id="save-lr-btn">${report ? 'Update Report' : 'Save Report'}</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add('open');
+    }
+
+    async function handleLabReportImageUpload(input) {
+      if (!input.files || input.files.length === 0) return;
+      const preview = document.getElementById('lr-img-preview');
+      preview.innerHTML = '<p>Uploading...</p>';
+      const existing = JSON.parse(document.getElementById('lr-images').value || '[]');
+      for (const file of input.files) {
+        const { url, error } = await uploadImage('lab-report-images', file);
+        if (!error && url) existing.push(url);
+      }
+      document.getElementById('lr-images').value = JSON.stringify(existing);
+      preview.innerHTML = existing.map(u => `<img src="${u}" alt="" style="height:60px;margin:4px;">`).join('');
+    }
+
+    async function saveLabReportFromModal() {
+      const btn = document.getElementById('save-lr-btn');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+      let params;
+      try { params = JSON.parse(document.getElementById('lr-params').value); }
+      catch (e) { alert('Invalid JSON in parameters.'); btn.textContent = 'Save'; btn.disabled = false; return; }
+      const report = {
+        id: document.getElementById('lr-id').value || undefined,
+        batch_number: document.getElementById('lr-batch').value,
+        product_name: document.getElementById('lr-product').value,
+        lab_name: document.getElementById('lr-lab').value,
+        test_date: document.getElementById('lr-date').value,
+        parameters: params,
+        report_images: JSON.parse(document.getElementById('lr-images').value || '[]'),
+        status: 'VERIFIED'
+      };
+      const { error } = await saveLabReport(report);
+      if (error) { alert('Error: ' + error.message); btn.textContent = 'Save'; btn.disabled = false; return; }
+      closeModal();
+      allLabReportsAdmin = await getLabReports();
+      renderLabReportsAdmin();
+    }
+
+    async function confirmDeleteLabReport(id) {
+      if (!confirm('Delete this lab report permanently?')) return;
+      await deleteLabReport(id);
+      allLabReportsAdmin = allLabReportsAdmin.filter(r => r.id !== id);
+      renderLabReportsAdmin();
+    }
+
+    /* ── UTILS ── */
+    function closeModal() {
+      document.getElementById('admin-modal').classList.remove('open');
+      document.getElementById('admin-modal').innerHTML = '';
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Escape key closes modal
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Init auth check
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>

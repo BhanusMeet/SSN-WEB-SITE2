@@ -101,7 +101,7 @@
           <select id="product-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" onchange="handleProductSelect(this.value)">
             <option value="">Select Your Product</option>
           </select>
-          <select id="batch-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" disabled onchange="handleBatchSelect(this.value)">
+          <select id="batch-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" onchange="handleBatchSelect(this.value)" disabled>
             <option value="">Select Your Batch / Lot Code</option>
           </select>
         </div>
@@ -199,7 +199,7 @@
       renderLabReports('lab-reports-grid', currentCategory, currentSearch);
 
       // Populate product dropdown
-      await populateProductDropdown();
+      populateProductDropdown();
     });
 
     function setLabFilter(category, btn) {
@@ -214,27 +214,16 @@
       renderLabReports('lab-reports-grid', currentCategory, currentSearch);
     }
 
-    async function populateProductDropdown() {
+    function populateProductDropdown() {
       const prodDropdown = document.getElementById('product-dropdown');
       if (!prodDropdown) return;
-      
-      const coreProducts = [
-        "SSN Elite Performance Whey",
-        "SSN Elite Anabolic Monster Mass",
-        "SSN Elite Tri Creatine",
-        "SSN Elite EAA + BCAA + Glutamine"
-      ];
-      
       const batches = getAllBatchNumbers();
-      const dynamicProducts = batches.map(b => b.productName);
-      
-      // Combine core products with any new dynamic products, and remove duplicates
-      const allProducts = [...new Set([...coreProducts, ...dynamicProducts])];
-      
-      allProducts.forEach(productName => {
+      // Get unique products
+      const products = [...new Set(batches.map(b => b.productName))];
+      products.forEach(p => {
         const opt = document.createElement('option');
-        opt.value = productName;
-        opt.textContent = productName;
+        opt.value = p;
+        opt.textContent = p;
         prodDropdown.appendChild(opt);
       });
     }
@@ -243,26 +232,21 @@
       const batchDropdown = document.getElementById('batch-dropdown');
       const resultDiv = document.getElementById('batch-result');
       
-      if (batchDropdown) {
-        batchDropdown.innerHTML = '<option value="">Select Your Batch / Lot Code</option>';
-      }
-      if (resultDiv) {
-        resultDiv.style.display = 'none';
-      }
+      batchDropdown.innerHTML = '<option value="">Select Your Batch / Lot Code</option>';
+      resultDiv.style.display = 'none';
 
       if (!productName) {
-        if (batchDropdown) batchDropdown.disabled = true;
+        batchDropdown.disabled = true;
         return;
       }
       
-      if (batchDropdown) batchDropdown.disabled = false;
+      batchDropdown.disabled = false;
       const batches = getAllBatchNumbers().filter(b => b.productName === productName);
-      
       batches.forEach(b => {
         const opt = document.createElement('option');
         opt.value = b.batchNo;
         opt.textContent = b.batchNo;
-        if (batchDropdown) batchDropdown.appendChild(opt);
+        batchDropdown.appendChild(opt);
       });
     }
 

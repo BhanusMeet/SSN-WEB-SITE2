@@ -11,7 +11,25 @@ async function loadBlogPosts() {
   if (typeof getBlogs === 'function') {
     try {
       const result = await getBlogs();
-      SSN_REMOTE_BLOG_POSTS = result?.data || [];
+      const raw = result?.data || [];
+      // Filter out drafts and map to frontend format
+      SSN_REMOTE_BLOG_POSTS = raw
+        .filter(b => b.status !== 'Draft')
+        .map(b => ({
+          id: b.id,
+          slug: b.slug,
+          title: b.title,
+          excerpt: b.excerpt,
+          content: b.content,
+          author: b.author,
+          date: b.publish_date,
+          category: b.category,
+          readTime: b.read_time,
+          gradient: b.gradient || 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
+          seoTitle: b.seo_title,
+          seoDesc: b.seo_description,
+          featuredImage: b.featured_image
+        }));
     } catch (error) {
       console.warn('[SSN] Error loading blogs from DB', error);
       SSN_REMOTE_BLOG_POSTS = [];

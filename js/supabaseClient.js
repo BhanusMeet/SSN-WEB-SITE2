@@ -110,6 +110,27 @@ async function deleteUserSubmission(id) {
 
 
 /* ══════════════════════════════════════════════
+   STORAGE
+   ══════════════════════════════════════════════ */
+async function uploadFileToStorage(folder, file) {
+  const sb = getSupabaseClient();
+  if (!sb) return { error: { message: 'Database not available.' } };
+
+  const baseName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, '-');
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${folder}/${baseName}-${Date.now()}.${fileExt}`;
+  
+  const { data, error } = await sb.storage
+    .from('ssn-uploads')
+    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+  if (error) return { error };
+  
+  const { data: urlData } = sb.storage.from('ssn-uploads').getPublicUrl(fileName);
+  return { publicUrl: urlData.publicUrl, error: null };
+}
+
+/* ══════════════════════════════════════════════
    PRODUCTS
    ══════════════════════════════════════════════ */
 
@@ -129,46 +150,56 @@ async function saveProduct(product) {
   const sb = getSupabaseClient();
   if (!sb) return { error: { message: 'Database not available.' } };
 
-  if (product.id) {
-    // Update existing
-    const { data, error } = await sb
-      .from('products')
-      .update({
-        name: product.name,
-        category: product.category,
-        price: product.price,
-        image_url: product.image_url,
-        short_description: product.short_description,
-        full_description: product.full_description,
-        ingredients: product.ingredients,
-        benefits: product.benefits,
-        usage_instruction: product.usage_instruction,
-        faq: product.faq || [],
-        serving_size: product.serving_size
-      })
-      .eq('id', product.id)
-      .select();
-    return { data, error };
+  let productId = product.id;
+  
+  const productData = {
+    name: product.name,
+    category: product.category,
+    price: product.price || product.selling_price || '',
+    mrp: product.mrp || '',
+    selling_price: product.selling_price || product.price || '',
+    discount: product.discount || '',
+    image_url: product.image_url,
+    short_description: product.short_description,
+    full_description: product.full_description,
+    ingredients: product.ingredients,
+    benefits: product.benefits,
+    usage_instruction: product.usage_instruction,
+    faq: product.faq || [],
+    serving_size: product.serving_size,
+    status: product.status || 'Active',
+    seo_title: product.seo_title || '',
+    seo_description: product.seo_description || '',
+    slug: product.slug || null
+  };
+
+  if (productId) {
+    const { error } = await sb.from('products').update(productData).eq('id', productId);
+    if (error) return { error };
   } else {
-    // Insert new
-    const { data, error } = await sb
-      .from('products')
-      .insert([{
-        name: product.name,
-        category: product.category,
-        price: product.price,
-        image_url: product.image_url,
-        short_description: product.short_description,
-        full_description: product.full_description,
-        ingredients: product.ingredients,
-        benefits: product.benefits,
-        usage_instruction: product.usage_instruction,
-        faq: product.faq || [],
-        serving_size: product.serving_size
-      }])
-      .select();
-    return { data, error };
+    const { data, error } = await sb.from('products').insert([productData]).select();
+    if (error) return { error };
+    productId = data[0].id;
   }
+
+  // Handle variants only if the table exists (commented out to prevent errors)
+  /*
+  if (product.variants && Array.isArray(product.variants)) {
+    await sb.from('product_variants').delete().eq('product_id', productId);
+    if (product.variants.length > 0) {
+      const variantsToInsert = product.variants.map(v => ({
+        product_id: productId,
+        variant_name: v.variant_name,
+        variant_image: v.variant_image || '',
+        price_override: v.price_override || ''
+      }));
+      await sb.from('product_variants').insert(variantsToInsert);
+    }
+  }
+  */
+
+  // Refetch the updated product
+  return await sb.from('products').select('*').eq('id', productId).single();
 }
 
 async function deleteProduct(id) {
@@ -204,43 +235,33 @@ async function saveBlog(blog) {
   const sb = getSupabaseClient();
   if (!sb) return { error: { message: 'Database not available.' } };
 
+  const blogData = {
+    title: blog.title,
+    slug: blog.slug,
+    featured_image: blog.featured_image,
+    author: blog.author,
+    content: blog.content,
+    excerpt: blog.excerpt,
+    category: blog.category,
+    read_time: blog.read_time,
+    gradient: blog.gradient,
+    seo_title: blog.seo_title,
+    seo_description: blog.seo_description,
+    publish_date: blog.publish_date,
+    status: blog.status || 'Published'
+  };
+
   if (blog.id) {
     const { data, error } = await sb
       .from('blogs')
-      .update({
-        title: blog.title,
-        slug: blog.slug,
-        featured_image: blog.featured_image,
-        author: blog.author,
-        content: blog.content,
-        excerpt: blog.excerpt,
-        category: blog.category,
-        read_time: blog.read_time,
-        gradient: blog.gradient,
-        seo_title: blog.seo_title,
-        seo_description: blog.seo_description,
-        publish_date: blog.publish_date
-      })
+      .update(blogData)
       .eq('id', blog.id)
       .select();
     return { data, error };
   } else {
     const { data, error } = await sb
       .from('blogs')
-      .insert([{
-        title: blog.title,
-        slug: blog.slug,
-        featured_image: blog.featured_image,
-        author: blog.author,
-        content: blog.content,
-        excerpt: blog.excerpt,
-        category: blog.category,
-        read_time: blog.read_time,
-        gradient: blog.gradient,
-        seo_title: blog.seo_title,
-        seo_description: blog.seo_description,
-        publish_date: blog.publish_date
-      }])
+      .insert([blogData])
       .select();
     return { data, error };
   }

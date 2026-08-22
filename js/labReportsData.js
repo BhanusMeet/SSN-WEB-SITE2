@@ -6,6 +6,82 @@
    ============================================ */
 
 const SSN_LAB_REPORTS_DATA = [
+  {
+    id: 'whey-protein',
+    name: 'SSN Elite Performance Whey',
+    category: 'Protein',
+    image: 'assets/images/products/performance-whey.png',
+    batchNo: 'SSN-WHEY-2025-08A',
+    testDate: 'August 14, 2025',
+    labName: 'SGS Analytical Labs (ISO/IEC 17025 Certified)',
+    status: 'VERIFIED',
+    purityScore: '100% Passed',
+    summary: 'Third-party assay confirms 24.2g protein per scoop with zero heavy metal contamination and full amino acid profile match.',
+    metrics: [
+      { label: 'Assayed Protein Content', value: '24.2g per scoop', status: 'PASS' },
+      { label: 'Heavy Metals (Lead, Arsenic, Cadmium)', value: 'ND (Not Detected < 0.01 ppm)', status: 'PASS' },
+      { label: 'Microbial Analysis (E.coli, Salmonella)', value: 'Negative / Clean', status: 'PASS' },
+      { label: 'BCAA Ratio (Leucine:Isoleucine:Valine)', value: '2:1:1 Verified', status: 'PASS' },
+      { label: 'Banned Substance Screening (WADA)', value: 'Negative (100% Compliant)', status: 'PASS' }
+    ]
+  },
+  {
+    id: 'bcaa-eaa',
+    name: 'SSN Elite EAA + BCAA + Glutamine',
+    category: 'Amino Acids',
+    image: 'assets/images/products/eaa-bcaa-glutamine.png',
+    batchNo: 'SSN-AMIN-2025-07C',
+    testDate: 'August 10, 2025',
+    labName: 'Eurofins Scientific (ISO 17025 Accredited)',
+    status: 'VERIFIED',
+    purityScore: '100% Passed',
+    summary: 'Full spectrum essential amino acid verification confirming precise 2:1:1 BCAA ratio, l-glutamine purity, and rapid dissolution rate.',
+    metrics: [
+      { label: 'Free-Form Amino Acid Content', value: '7.8g per 10g serving', status: 'PASS' },
+      { label: 'L-Glutamine Purity', value: '99.8% Assay Purity', status: 'PASS' },
+      { label: 'Heavy Metals Assay', value: 'ND (Below Detection Limit)', status: 'PASS' },
+      { label: 'Solubility & pH Balance', value: 'Optimal (pH 6.8)', status: 'PASS' },
+      { label: 'Banned Substance Screening', value: 'Negative', status: 'PASS' }
+    ]
+  },
+  {
+    id: 'tri-creatine',
+    name: 'SSN Elite Tri Creatine',
+    category: 'Performance',
+    image: 'assets/images/products/tri-creatine.png',
+    batchNo: 'SSN-CREA-2025-08B',
+    testDate: 'August 08, 2025',
+    labName: 'Intertek Food & Bio Analytical Services',
+    status: 'VERIFIED',
+    purityScore: '100% Passed',
+    summary: 'High-Performance Liquid Chromatography (HPLC) test confirms 99.9% pure tri-creatine blend with zero dicyandiamide or dihydrotriazine residues.',
+    metrics: [
+      { label: 'HPLC Creatine Assay', value: '99.9% Active Purity', status: 'PASS' },
+      { label: 'Dicyandiamide (DCD) Residue', value: 'ND (< 5 ppm threshold)', status: 'PASS' },
+      { label: 'Dihydrotriazine (DHT) Residue', value: 'ND (< 2 ppm threshold)', status: 'PASS' },
+      { label: 'Moisture & Ash Content', value: '< 0.4%', status: 'PASS' },
+      { label: 'Heavy Metals Screening', value: 'ND (Passes USP Standards)', status: 'PASS' }
+    ]
+  },
+  {
+    id: 'monster-mass',
+    name: 'SSN Elite Anabolic Monster Mass',
+    category: 'Mass Gainer',
+    image: 'assets/images/products/anabolic-monster-mass.png',
+    batchNo: 'SSN-MASS-2025-06F',
+    testDate: 'August 02, 2025',
+    labName: 'SGS Analytical Labs (ISO/IEC 17025 Certified)',
+    status: 'VERIFIED',
+    purityScore: '100% Passed',
+    summary: 'Caloric density and macronutrient profile verified. High protein ratio and complex carbohydrate source confirmed with zero filler spiking.',
+    metrics: [
+      { label: 'Macronutrient Protein Density', value: 'Verified 54g / serving', status: 'PASS' },
+      { label: 'Complex Carbohydrate Matrix', value: 'Clean Maltodextrin & Oat Source', status: 'PASS' },
+      { label: 'Amino Spiking Assay', value: 'Negative (No Free Glycine/Taurine Spiking)', status: 'PASS' },
+      { label: 'Heavy Metal Compliance', value: 'Fully Compliant', status: 'PASS' },
+      { label: 'Microbial Safety', value: '100% Negative', status: 'PASS' }
+    ]
+  }
 ];
 
 /* ─── Supabase-backed dynamic data (merged at runtime) ─── */
@@ -45,8 +121,8 @@ async function loadLabReportsFromDB() {
 }
 
 function getAllLabReports() {
-  const reports = SSN_LAB_REPORTS_DB.length > 0 ? SSN_LAB_REPORTS_DB : SSN_LAB_REPORTS_DATA;
-  return reports.filter(report => report.batchNo !== 'SSN-WHEY-2025-08A');
+  if (SSN_LAB_REPORTS_DB.length > 0) return SSN_LAB_REPORTS_DB;
+  return SSN_LAB_REPORTS_DATA;
 }
 
 function getLabReportByBatch(batchNo) {

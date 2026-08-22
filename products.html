@@ -146,147 +146,187 @@
   <script src="js/dna-scene.js" defer></script>
   <script>
     const FALLBACK_PRODUCTS = [
-      { name: 'SSN Elite Performance Whey', category: 'Performance', image_url: 'assets/images/products/performance-whey.webp', short_description: 'Whey protein concentrate with a complete amino acid profile for daily performance nutrition.', serving_size: '3 KG', price: '₹10,499', slug: 'performance-whey' },
-      { name: 'SSN Elite Anabolic Monster Mass', category: 'Mass', image_url: 'assets/images/products/anabolic-monster-mass.webp', short_description: 'A calorie-dense mass gainer formulated to support strength and muscle growth.', serving_size: '6 KG', price: '₹6,999', slug: 'anabolic-monster-mass' },
-      { name: 'SSN Elite Tri Creatine', category: 'Strength / Performance', image_url: 'assets/images/products/tri-creatine.webp', short_description: 'A precision creatine blend designed to support power, strength, and training output.', serving_size: '300 G', price: '₹2,499', slug: 'tri-creatine' },
-      { name: 'SSN Elite EAA + BCAA + Glutamine', category: 'Amino Acids', image_url: 'assets/images/products/eaa-bcaa-glutamine.webp', short_description: 'Essential amino acids, BCAAs, and glutamine to support recovery and performance.', serving_size: '300 G', price: '₹2,799', slug: 'eaa-bcaa-glutamine' }
+      { name: 'SSN Elite Performance Whey', category: 'Performance', image_url: 'assets/images/products/performance-whey.webp', short_description: 'Whey protein concentrate with a complete amino acid profile for daily performance nutrition.', serving_size: '3 KG', price: '₹10,499', mrp: '₹10,499', slug: 'performance-whey' },
+      { name: 'SSN Elite Anabolic Monster Mass', category: 'Mass', image_url: 'assets/images/products/anabolic-monster-mass.webp', short_description: 'A calorie-dense mass gainer formulated to support strength and muscle growth.', serving_size: '6 KG', price: '₹6,999', mrp: '₹6,999', slug: 'anabolic-monster-mass' },
+      { name: 'SSN Elite Tri Creatine', category: 'Strength / Performance', image_url: 'assets/images/products/tri-creatine.webp', short_description: 'A precision creatine blend designed to support power, strength, and training output.', serving_size: '300 G', price: '₹2,499', mrp: '₹2,499', slug: 'tri-creatine' },
+      { name: 'SSN Elite EAA + BCAA + Glutamine', category: 'Amino Acids', image_url: 'assets/images/products/eaa-bcaa-glutamine.webp', short_description: 'Essential amino acids, BCAAs, and glutamine to support recovery and performance.', serving_size: '300 G', price: '₹2,799', mrp: '₹2,799', slug: 'eaa-bcaa-glutamine' }
     ];
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // Dynamic rendering of products from Supabase
       const container = document.getElementById('dynamic-products-container');
       let allProducts = [];
 
+      // 1. Fetch from Supabase
       if (typeof getProducts === 'function') {
         try {
           console.log('[SSN] Fetching products from Supabase...');
           const result = await getProducts();
           console.log('[SSN] Supabase getProducts result:', result);
-          
-          if (!Array.isArray(result) && !result.error) {
-            allProducts = result.data || [];
+
+          if (result && Array.isArray(result.data) && result.data.length > 0) {
+            allProducts = result.data;
+          } else if (Array.isArray(result) && result.length > 0) {
+            allProducts = result;
           }
-          console.log(`[SSN] Found ${allProducts.length} total products in database.`);
+          console.log(`[SSN] Loaded ${allProducts.length} products from database.`);
         } catch (err) {
           console.error('[SSN] Exception during product loading:', err);
         }
       }
 
-      if (allProducts.length === 0) {
+      // 2. Use Fallbacks if database returned empty
+      if (!allProducts || allProducts.length === 0) {
         console.warn('[SSN] Using built-in product catalog.');
         allProducts = FALLBACK_PRODUCTS;
       }
 
-      const products = allProducts.filter(p => p.status !== 'Inactive');
-      console.log(`[SSN] Rendering ${products.length} active products.`);
+      console.log('productData', allProducts);
+
+      // Filter active products
+      const products = allProducts.filter(p => (p.status || 'Active').toLowerCase() !== 'inactive');
+      console.log('products', products);
 
       if (products.length > 0) {
-            let html = '';
-            products.forEach((p, index) => {
-              const isReverse = index % 2 !== 0 ? 'reverse' : '';
-              const catLower = (p.category || '').toLowerCase();
-              const tagClass = catLower.includes('muscle') ? 'protein' : catLower.includes('mass') ? 'mass' : catLower.includes('amino') ? 'amino' : 'strength';
-              const matchingFallback = FALLBACK_PRODUCTS.find(product => product.slug === p.slug || product.name === p.name);
-              const fallbackImage = matchingFallback?.image_url || FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length].image_url;
-              const imageSrc = p.image_url || fallbackImage;
-              
-              const imgHtml = `
-                <div class="category-image-wrap reveal scale-in">
-                  <img src="${imageSrc}" alt="${p.name || 'Product'}" onerror="this.onerror=null;this.src='${fallbackImage}'" loading="lazy" decoding="async" width="300" height="380">
+        let html = '';
+        products.forEach((p, index) => {
+          const p_name = p.name || p.product_name || p.title || 'SSN Elite Supplement';
+          const p_category = p.category || p.product_category || 'Performance';
+          const p_price = p.selling_price || p.price || p.mrp || '-';
+          const p_mrp = p.mrp || p.price || p.selling_price || '-';
+          const p_desc = p.short_description || p.full_description || p.description || '';
+          const p_size = p.serving_size || p.size || '-';
+          const p_slug = p.slug || (p_name.toLowerCase().includes('whey') ? 'performance-whey' : p_name.toLowerCase().includes('mass') ? 'anabolic-monster-mass' : p_name.toLowerCase().includes('creatine') ? 'tri-creatine' : p_name.toLowerCase().includes('eaa') ? 'eaa-bcaa-glutamine' : '');
+
+          const isReverse = index % 2 !== 0 ? 'reverse' : '';
+          const catLower = p_category.toLowerCase();
+          const tagClass = catLower.includes('muscle') || catLower.includes('protein') || catLower.includes('whey') ? 'protein' : catLower.includes('mass') || catLower.includes('gainer') ? 'mass' : catLower.includes('amino') || catLower.includes('eaa') || catLower.includes('bcaa') ? 'amino' : 'strength';
+
+          const matchingFallback = FALLBACK_PRODUCTS.find(item => (p_slug && item.slug === p_slug) || item.name.toLowerCase() === p_name.toLowerCase());
+          const fallbackImage = matchingFallback ? matchingFallback.image_url : FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length].image_url;
+          const imageSrc = p.image_url || p.image || p.featured_image || fallbackImage;
+
+          const imgHtml = `
+            <div class="category-image-wrap reveal scale-in revealed">
+              <img src="${imageSrc}" alt="${p_name}" onerror="this.onerror=null;this.src='${fallbackImage}'" loading="lazy" decoding="async" width="300" height="380">
+            </div>
+          `;
+          const contentHtml = `
+            <div class="category-content reveal revealed">
+              <span class="category-tag ${tagClass}">${p_category}</span>
+              <h2>${p_name}</h2>
+              <div class="category-description">${p_desc}</div>
+              <div class="category-meta">
+                <div class="category-meta-item">
+                  <span class="product-card-meta-label">Size</span>
+                  <span class="product-card-meta-value">${p_size}</span>
                 </div>
-              `;
-              const contentHtml = `
-                <div class="category-content reveal">
-                  <span class="category-tag ${tagClass}">${p.category || 'Uncategorized'}</span>
-                  <h2>${p.name || 'Unnamed Product'}</h2>
-                  <div class="category-description">${p.short_description || p.full_description || ''}</div>
-                  <div class="category-meta">
-                    <div class="category-meta-item">
-                      <span class="product-card-meta-label">Size</span>
-                      <span class="product-card-meta-value">${p.serving_size || '-'}</span>
-                    </div>
-                    <div class="category-meta-item">
-                      <span class="product-card-meta-label">Category</span>
-                      <span class="product-card-meta-value">${p.category || '-'}</span>
-                    </div>
-                    <div class="category-meta-item">
-                      <span class="product-card-meta-label">MRP</span>
-                      <span class="product-card-meta-value">${p.mrp || p.selling_price || p.price || '-'}</span>
-                    </div>
-                  </div>
-                  <a href="${p.slug ? p.slug + '.html' : '#'}" class="text-link">
-                    Explore ${p.name || 'Product'}
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </a>
+                <div class="category-meta-item">
+                  <span class="product-card-meta-label">Category</span>
+                  <span class="product-card-meta-value">${p_category}</span>
                 </div>
-              `;
-              
-              // Ensure p.id exists for the section ID if slug is missing
-              const sectionId = p.slug || (p.id ? 'prod-' + p.id : 'prod-' + index);
-              html += `
-                <section class="category-section" id="${sectionId}" data-category="${p.category || ''}">
-                  <div class="container">
-                    <div class="category-grid ${isReverse}">
-                      ${isReverse ? imgHtml + contentHtml : contentHtml + imgHtml}
-                    </div>
-                  </div>
-                </section>
-              `;
-            });
-            container.innerHTML = html;
-            console.log('[SSN] Rendered product HTML to DOM.');
+                <div class="category-meta-item">
+                  <span class="product-card-meta-label">MRP</span>
+                  <span class="product-card-meta-value">${p_mrp}</span>
+                </div>
+              </div>
+              <a href="${p_slug ? p_slug + '.html' : '#'}" class="text-link">
+                Explore ${p_name}
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          `;
+
+          const sectionId = p_slug || (p.id ? 'prod-' + p.id : 'prod-' + index);
+          html += `
+            <section class="category-section" id="${sectionId}" data-category="${p_category}" data-slug="${p_slug}" data-name="${p_name}">
+              <div class="container">
+                <div class="category-grid ${isReverse}">
+                  ${isReverse ? imgHtml + contentHtml : contentHtml + imgHtml}
+                </div>
+              </div>
+            </section>
+          `;
+        });
+        container.innerHTML = html;
+        console.log('[SSN] Rendered product HTML to DOM.');
+
+        if (typeof initScrollReveal === 'function') {
+          initScrollReveal();
+        }
+      } else {
+        container.innerHTML = '<div style="text-align:center; padding:100px 20px; color:#637381;"><p>No active products found.</p></div>';
       }
 
-      // Handle category filtering
+      // 3. Category & Goal Filtering
       const urlParams = new URLSearchParams(window.location.search);
-      const category = urlParams.get('category');
-      console.log('[SSN] URL Category Filter:', category);
-      
-      if (category) {
-        const categoryMapping = {
-          'lean-muscle': 'Lean Muscle',
-          'fat-loss': 'Fat Loss',
-          'hydration': 'Hydration',
-          'lifestyle': 'Lifestyle & Performance',
-          'size-strength': 'Size & Strength'
+      const categoryParam = urlParams.get('category');
+      console.log('[SSN] URL Category Filter:', categoryParam);
+
+      if (categoryParam) {
+        const catKey = categoryParam.toLowerCase().trim();
+        const goalProductSlugs = {
+          'lean-muscle': ['performance-whey', 'eaa-bcaa-glutamine', 'tri-creatine'],
+          'fat-loss': ['performance-whey', 'eaa-bcaa-glutamine'],
+          'hydration': ['eaa-bcaa-glutamine'],
+          'lifestyle': ['performance-whey', 'eaa-bcaa-glutamine', 'tri-creatine'],
+          'size-strength': ['anabolic-monster-mass', 'performance-whey', 'tri-creatine']
         };
 
-        const targetCategory = categoryMapping[category];
-        console.log('[SSN] Mapped target category:', targetCategory);
+        const titleMap = {
+          'lean-muscle': 'Lean Muscle Collection',
+          'fat-loss': 'Fat Loss Collection',
+          'hydration': 'Hydration Collection',
+          'lifestyle': 'Lifestyle & Performance Collection',
+          'size-strength': 'Size & Strength Collection'
+        };
 
-        if (targetCategory) {
-          const allProductSections = document.querySelectorAll('.category-section');
-          let visibleCount = 0;
+        const allProductSections = document.querySelectorAll('.category-section');
+        let visibleCount = 0;
+
+        allProductSections.forEach(section => {
+          const secCat = (section.getAttribute('data-category') || '').toLowerCase();
+          const secSlug = (section.getAttribute('data-slug') || '').toLowerCase();
+          const secName = (section.getAttribute('data-name') || '').toLowerCase();
+
+          let isMatch = false;
+
+          // Check if key matches goal slugs
+          if (goalProductSlugs[catKey]) {
+            isMatch = goalProductSlugs[catKey].some(s => secSlug.includes(s) || secName.includes(s.replace(/-/g, ' ')));
+          }
+
+          // Direct category loose match
+          if (!isMatch) {
+            isMatch = secCat.includes(catKey) || catKey.includes(secCat) || secName.includes(catKey);
+          }
+
+          if (isMatch) {
+            section.style.display = 'block';
+            visibleCount++;
+          } else {
+            section.style.display = 'none';
+          }
+        });
+
+        // Safety fallback: If filter matched nothing, show all products so user never sees empty screen
+        if (visibleCount === 0) {
+          console.warn('[SSN] Filter yielded 0 products, displaying all products.');
           allProductSections.forEach(section => {
-            const secCat = section.getAttribute('data-category');
-            // Allow loose matching (e.g. if case is different or there's whitespace)
-            if (secCat && secCat.trim().toLowerCase() === targetCategory.toLowerCase()) {
-               section.style.display = 'block';
-               visibleCount++;
-            } else {
-               section.style.display = 'none';
-            }
+            section.style.display = 'block';
           });
-          console.log(`[SSN] Category filter applied. ${visibleCount} products are now visible.`);
+        }
 
-          // Update page title to reflect the category
-          const titleMap = {
-            'lean-muscle': 'Lean Muscle Collection',
-            'fat-loss': 'Fat Loss Collection',
-            'hydration': 'Hydration Collection',
-            'lifestyle': 'Lifestyle & Performance Collection',
-            'size-strength': 'Size & Strength Collection'
-          };
+        console.log(`[SSN] Category filter applied. ${visibleCount > 0 ? visibleCount : allProductSections.length} products are visible.`);
+
+        // Update page title to reflect category if it's a known goal
+        if (titleMap[catKey]) {
           const heroTitle = document.querySelector('.products-hero h1');
           const heroSubtitle = document.querySelector('.products-hero .body-lg');
           const heroTag = document.querySelector('.products-hero .label-blue');
 
-          if (heroTitle && titleMap[category]) {
-            heroTitle.textContent = titleMap[category];
-            heroTag.textContent = 'Shop By Goal';
-            heroSubtitle.textContent = `Explore our curated selection of products specifically formulated for ${titleMap[category].replace(' Collection', '')}.`;
-          }
-
+          if (heroTitle) heroTitle.textContent = titleMap[catKey];
+          if (heroTag) heroTag.textContent = 'Shop By Goal';
+          if (heroSubtitle) heroSubtitle.textContent = `Explore our curated selection of products specifically formulated for ${titleMap[catKey].replace(' Collection', '')}.`;
         }
       }
     });
