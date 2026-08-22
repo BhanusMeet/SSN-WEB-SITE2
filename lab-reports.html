@@ -216,8 +216,12 @@
       if (!prodDropdown) return;
       let products = [];
       if (typeof getProducts === 'function') {
-        const result = await getProducts();
-        products = (result?.data || []).map(product => product.name).filter(Boolean);
+        try {
+          const result = await getProducts();
+          products = (result?.data || []).map(product => product.name).filter(Boolean);
+        } catch (error) {
+          console.warn('[SSN] Could not load products from database:', error);
+        }
       }
       if (products.length === 0) {
         products = [
