@@ -153,8 +153,46 @@
     /* ── AUTH ── */
     async function handleAdminLogin(e) {
       e.preventDefault();
-      // Temporarily bypassed for testing
-      showDashboard();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const errorDiv = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        errorDiv.textContent = 'Please enter both email and password.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
+      errorDiv.style.display = 'none';
+
+      try {
+        const { data, error } = await adminLogin(email, password);
+        if (error) {
+          errorDiv.textContent = error.message || 'Invalid credentials or user not found.';
+          errorDiv.style.display = 'block';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+          return;
+        }
+
+        if (data && data.session) {
+          showDashboard();
+        } else {
+          errorDiv.textContent = 'Login successful, but no session returned. Please try again.';
+          errorDiv.style.display = 'block';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error('[SSN] Login exception:', err);
+        errorDiv.textContent = 'A network or configuration error occurred.';
+        errorDiv.style.display = 'block';
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
     }
 
     async function handleAdminLogout() {
@@ -186,14 +224,31 @@
 
     /* ── DATA LOADING ── */
     async function loadAllData() {
-      allSubmissions = await getUserSubmissions();
-      allProducts = await getProducts();
-      allBlogsAdmin = await getBlogs();
-      allLabReportsAdmin = await getLabReports();
-      renderSubmissions();
-      renderProducts();
-      renderBlogsAdmin();
-      renderLabReportsAdmin();
+      try {
+        const subs = await getUserSubmissions();
+        if (subs.error) alert('Error loading submissions: ' + subs.error.message);
+        allSubmissions = subs.data || [];
+
+        const prods = await getProducts();
+        if (prods.error) alert('Error loading products: ' + prods.error.message);
+        allProducts = prods.data || [];
+
+        const blogs = await getBlogs();
+        if (blogs.error) alert('Error loading blogs: ' + blogs.error.message);
+        allBlogsAdmin = blogs.data || [];
+
+        const labs = await getLabReports();
+        if (labs.error) alert('Error loading lab reports: ' + labs.error.message);
+        allLabReportsAdmin = labs.data || [];
+
+        renderSubmissions();
+        renderProducts();
+        renderBlogsAdmin();
+        renderLabReportsAdmin();
+      } catch (err) {
+        console.error('[SSN] Error loading dashboard data:', err);
+        alert('An unexpected error occurred while loading dashboard data.');
+      }
     }
 
     /* ══════════ SUBMISSIONS ══════════ */
@@ -703,8 +758,8 @@
     // Escape key closes modal
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    // Auth temporarily disabled; open the dashboard directly.
-    document.addEventListener('DOMContentLoaded', showDashboard);
+    // Init auth check
+    document.addEventListener('DOMContentLoaded', checkAuth);
   </script>
 </body>
 </html>

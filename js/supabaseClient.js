@@ -93,8 +93,7 @@ async function getUserSubmissions() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) { console.error('[SSN] getUserSubmissions error:', error); return []; }
-  return data || [];
+  return { data, error };
 }
 
 async function deleteUserSubmission(id) {
@@ -123,8 +122,7 @@ async function getProducts() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) { console.error('[SSN] getProducts error:', error); return []; }
-  return data || [];
+  return { data, error };
 }
 
 async function saveProduct(product) {
@@ -199,8 +197,7 @@ async function getBlogs() {
     .select('*')
     .order('publish_date', { ascending: false });
 
-  if (error) { console.error('[SSN] getBlogs error:', error); return []; }
-  return data || [];
+  return { data, error };
 }
 
 async function saveBlog(blog) {
@@ -275,8 +272,7 @@ async function getLabReports() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) { console.error('[SSN] getLabReports error:', error); return []; }
-  return data || [];
+  return { data, error };
 }
 
 async function saveLabReport(report) {
