@@ -74,9 +74,24 @@
 
 .product-hero-price {
   font-family: var(--font-mono);
-  font-size: var(--text-h4);
-  font-weight: var(--weight-semibold);
+  font-size: var(--text-h2);
+  font-weight: 900;
   color: var(--text-primary);
+  display: inline-block;
+  animation: priceBreathe 3s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+@keyframes priceBreathe {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 10px rgba(10, 47, 255, 0.1);
+  }
+  50% {
+    transform: scale(1.04);
+    text-shadow: 0 0 20px rgba(10, 47, 255, 0.5);
+    color: var(--ssn-blue);
+  }
 }
 
 .product-hero-price-label {
