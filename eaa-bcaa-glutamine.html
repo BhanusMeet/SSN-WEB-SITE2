@@ -169,13 +169,33 @@
       <div class="product-section-header reveal"><span class="product-section-number">06</span><span class="product-section-line"></span></div>
       <h2 class="product-section-title reveal">Flavours</h2>
       <div class="mt-8 reveal">
-        <div class="placeholder-block">
-          <div class="placeholder-title">Flavour Options</div>
-          <p>Available flavour options will be updated with confirmed flavours from the SSN Elite EAA + BCAA + Glutamine product range.</p>
+        <div class="flavour-selector" id="flavour-selector">
+          <button class="flavour-pill active" data-flavour="Watermelon" data-description="Refreshing watermelon flavour perfect for intra-workout hydration." data-image="assets/images/flavours/watermelon.png" data-color="rgba(255, 90, 100, 0.4)">Watermelon</button>
+          <button class="flavour-pill" data-flavour="Blue Raspberry" data-description="Classic sweet and tart blue raspberry." data-image="assets/images/flavours/blue-raspberry.png" data-color="rgba(80, 130, 255, 0.4)">Blue Raspberry</button>
+          <button class="flavour-pill" data-flavour="Green Mango" data-description="Tangy and sweet green mango flavour." data-image="assets/images/flavours/green_mango.png" data-color="rgba(120, 200, 100, 0.4)">Green Mango</button>
+          <button class="flavour-pill" data-flavour="Lychee" data-description="Exotic and sweet lychee flavour." data-image="assets/images/flavours/lychee.png" data-color="rgba(240, 200, 200, 0.4)">Lychee</button>
+          <button class="flavour-pill" data-flavour="Mojito" data-description="Crisp mint and lime mojito flavour." data-image="assets/images/flavours/mojito.png" data-color="rgba(140, 220, 160, 0.4)">Mojito</button>
+          <button class="flavour-pill" data-flavour="Pineapple" data-description="Tropical sweet pineapple flavour." data-image="assets/images/flavours/pineapple.png" data-color="rgba(250, 210, 80, 0.4)">Pineapple</button>
+          <button class="flavour-pill" data-flavour="Pink Guava" data-description="Tropical sweet pink guava flavour." data-image="assets/images/flavours/pink_guava.png" data-color="rgba(255, 140, 160, 0.4)">Pink Guava</button>
+          <button class="flavour-pill" data-flavour="Lemon" data-description="Zesty and refreshing lemon." data-image="assets/images/flavours/lemon.png" data-color="rgba(255, 230, 80, 0.4)">Lemon</button>
+          <button class="flavour-pill" data-flavour="Berry" data-description="Mixed wild berry flavour." data-image="assets/images/flavours/berry.png" data-color="rgba(160, 80, 180, 0.4)">Berry</button>
+          <button class="flavour-pill" data-flavour="Blueberry" data-description="Sweet and fruity blueberry." data-image="assets/images/flavours/blueberry.png" data-color="rgba(100, 110, 210, 0.4)">Blueberry</button>
+          <button class="flavour-pill" data-flavour="Fusion Fruit" data-description="A refreshing blend of tropical fruits." data-image="assets/images/flavours/fusion_fruit.png" data-color="rgba(255, 120, 80, 0.4)">Fusion Fruit</button>
+          <button class="flavour-pill" data-flavour="Mango" data-description="Rich and sweet ripe mango flavour." data-image="assets/images/flavours/mango.png" data-color="rgba(255, 180, 50, 0.4)">Mango</button>
+          <button class="flavour-pill" data-flavour="Guava" data-description="Sweet traditional guava." data-image="assets/images/flavours/guava.png" data-color="rgba(160, 220, 120, 0.4)">Guava</button>
         </div>
       </div>
-    </div>
-  </section>
+
+      <div class="flavour-display mt-8 reveal">
+        <div class="flavour-visual-container">
+          <div class="flavour-visual-glow" id="flavour-glow" style="background: rgba(255, 90, 100, 0.4);"></div>
+          <img src="assets/images/flavours/watermelon.png" alt="Watermelon Flavour" id="flavour-image" class="flavour-visual-image" onerror="this.style.display='none'">
+        </div>
+        <div class="flavour-text-content mt-4">
+          <div class="flavour-active-name" id="flavour-name">Watermelon</div>
+          <p class="flavour-active-desc body-sm mt-2" id="flavour-desc" style="color: var(--text-tertiary);">Refreshing watermelon flavour perfect for intra-workout hydration.</p>
+        </div>
+      </div>
 
   <!-- 07 — HOW TO USE -->
   <section class="product-section bg-off-white" id="how-to-use">
@@ -236,6 +256,7 @@
   <script src="js/siteConfig.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/expandable.js" defer></script>
+  <script src="js/flavour-selector.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="js/dna-scene.js" defer></script>
 </body>

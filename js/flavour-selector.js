@@ -12,8 +12,10 @@ function initFlavourSelector() {
   if (!selector) return;
 
   const pills = selector.querySelectorAll('.flavour-pill');
-  const displayName = document.querySelector('.flavour-active-name');
-  const displayDesc = document.querySelector('.flavour-active-desc');
+  const displayName = document.getElementById('flavour-name') || document.querySelector('.flavour-active-name');
+  const displayDesc = document.getElementById('flavour-desc') || document.querySelector('.flavour-active-desc');
+  const flavourImage = document.getElementById('flavour-image');
+  const flavourGlow = document.getElementById('flavour-glow');
 
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
@@ -26,6 +28,8 @@ function initFlavourSelector() {
       // Update display
       const flavourName = pill.dataset.flavour;
       const flavourDesc = pill.dataset.description || '';
+      const imageUrl = pill.dataset.image;
+      const glowColor = pill.dataset.color || 'transparent';
 
       if (displayName) {
         displayName.style.opacity = '0';
@@ -34,7 +38,6 @@ function initFlavourSelector() {
           displayName.classList.add('flavour-crossfade-enter');
           displayName.style.opacity = '1';
 
-          // Remove animation class after it completes
           setTimeout(() => {
             displayName.classList.remove('flavour-crossfade-enter');
           }, 300);
@@ -47,6 +50,31 @@ function initFlavourSelector() {
           displayDesc.textContent = flavourDesc;
           displayDesc.style.opacity = '1';
         }, 150);
+      }
+
+      if (flavourImage) {
+        flavourImage.style.opacity = '0';
+        flavourImage.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          if (imageUrl) {
+            flavourImage.src = imageUrl;
+            flavourImage.style.display = 'block';
+            
+            flavourImage.onload = () => {
+              flavourImage.style.opacity = '1';
+              flavourImage.style.transform = 'scale(1)';
+            };
+            flavourImage.onerror = () => {
+              flavourImage.style.display = 'none';
+            };
+          } else {
+            flavourImage.style.display = 'none';
+          }
+        }, 150);
+      }
+
+      if (flavourGlow) {
+        flavourGlow.style.background = glowColor;
       }
     });
   });

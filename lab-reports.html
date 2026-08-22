@@ -97,9 +97,12 @@
           <h3>Look Up Your Batch Certificate</h3>
         </div>
         <p class="lab-batch-selector-desc">Select your product's Batch / Lot Code to view the specific lab analysis certificate for your product.</p>
-        <div class="lab-batch-dropdown-wrap">
+        <div class="lab-batch-dropdown-wrap" style="display: flex; gap: 16px; flex-wrap: wrap;">
           <select id="product-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" onchange="handleProductSelect(this.value)">
             <option value="">Select Your Product</option>
+          </select>
+          <select id="batch-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" disabled onchange="handleBatchSelect(this.value)">
+            <option value="">Select Your Batch / Lot Code</option>
           </select>
         </div>
         <div id="batch-result" class="lab-batch-result" style="display: none;"></div>
@@ -214,24 +217,21 @@
     async function populateProductDropdown() {
       const prodDropdown = document.getElementById('product-dropdown');
       if (!prodDropdown) return;
-      let products = [];
-      if (typeof getProducts === 'function') {
-        try {
-          const result = await getProducts();
-          products = (result?.data || []).map(product => product.name).filter(Boolean);
-        } catch (error) {
-          console.warn('[SSN] Could not load products from database:', error);
-        }
-      }
-      if (products.length === 0) {
-        products = [
-          'SSN Elite Performance Whey',
-          'SSN Elite Anabolic Monster Mass',
-          'SSN Elite Tri Creatine',
-          'SSN Elite EAA + BCAA + Glutamine'
-        ];
-      }
-      [...new Set(products)].forEach(productName => {
+      
+      const coreProducts = [
+        "SSN Elite Performance Whey",
+        "SSN Elite Anabolic Monster Mass",
+        "SSN Elite Tri Creatine",
+        "SSN Elite EAA + BCAA + Glutamine"
+      ];
+      
+      const batches = getAllBatchNumbers();
+      const dynamicProducts = batches.map(b => b.productName);
+      
+      // Combine core products with any new dynamic products, and remove duplicates
+      const allProducts = [...new Set([...coreProducts, ...dynamicProducts])];
+      
+      allProducts.forEach(productName => {
         const opt = document.createElement('option');
         opt.value = productName;
         opt.textContent = productName;
@@ -240,9 +240,30 @@
     }
 
     function handleProductSelect(productName) {
+      const batchDropdown = document.getElementById('batch-dropdown');
       const resultDiv = document.getElementById('batch-result');
-      if (!resultDiv) return;
-      resultDiv.style.display = 'none';
+      
+      if (batchDropdown) {
+        batchDropdown.innerHTML = '<option value="">Select Your Batch / Lot Code</option>';
+      }
+      if (resultDiv) {
+        resultDiv.style.display = 'none';
+      }
+
+      if (!productName) {
+        if (batchDropdown) batchDropdown.disabled = true;
+        return;
+      }
+      
+      if (batchDropdown) batchDropdown.disabled = false;
+      const batches = getAllBatchNumbers().filter(b => b.productName === productName);
+      
+      batches.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.batchNo;
+        opt.textContent = b.batchNo;
+        if (batchDropdown) batchDropdown.appendChild(opt);
+      });
     }
 
     function handleBatchSelect(batchNo) {

@@ -3,96 +3,20 @@
    Structured CMS data schema allowing future headless API / admin integration seamlessly.
    ============================================ */
 
-const SSN_BLOG_POSTS = [
-  {
-    id: 'post-1',
-    slug: 'maximizing-muscle-protein-synthesis',
-    title: 'Maximizing Muscle Protein Synthesis: The Science of Timing & Dose',
-    excerpt: 'Discover how protein intake timing, leucine threshold, and essential amino acid availability optimize muscle hypertrophy and recovery post-workout.',
-    category: 'Nutrition Science',
-    date: 'August 18, 2026',
-    author: 'Dr. Marcus Vance, Ph.D.',
-    authorRole: 'Head of Sports Science',
-    readTime: '5 min read',
-    gradient: 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
-    content: `
-      <p>Muscle Protein Synthesis (MPS) is the fundamental physiological mechanism driving skeletal muscle adaptation, repair, and hypertrophy following resistance training...</p>
-      <h4>1. The Leucine Trigger Hypothesis</h4>
-      <p>Research demonstrates that approximately 3g of L-Leucine per bolus is required to reach peak mTORC1 activation in active individuals...</p>
-    `
-  },
-  {
-    id: 'post-2',
-    slug: 'creatine-monohydrate-vs-tri-creatine',
-    title: 'Creatine Monohydrate vs. Tri-Creatine: Research Breakdown',
-    excerpt: 'An evidence-based analysis of solubility, gastric comfort, cellular hydration, and ATP regeneration differences between creatine forms.',
-    category: 'Performance',
-    date: 'August 10, 2026',
-    author: 'Elena Rostova, CSCS',
-    authorRole: 'Performance Specialist',
-    readTime: '6 min read',
-    gradient: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)',
-    content: `
-      <p>Creatine remains the most extensively validated ergogenic aid in sports science literature...</p>
-    `
-  },
-  {
-    id: 'post-3',
-    slug: 'intra-workout-hydration-electrolytes',
-    title: 'Intra-Workout Hydration & Electrolytes for Peak Athletic Output',
-    excerpt: 'Why plain water alone is insufficient during high-intensity training sessions over 45 minutes, and how sodium-potassium ratios preserve power.',
-    category: 'Recovery',
-    date: 'August 02, 2026',
-    author: 'David Chen, M.S.',
-    authorRole: 'Kinesiology & Biomechanics',
-    readTime: '4 min read',
-    gradient: 'linear-gradient(135deg, #059669 0%, #064E3B 100%)',
-    content: `
-      <p>Electrolyte equilibrium governs neuromuscular signaling and cellular osmolality during intense exercise...</p>
-    `
-  },
-  {
-    id: 'post-4',
-    slug: 'essential-amino-acids-vs-bcaa',
-    title: 'EAAs vs. BCAAs: Why Complete Spectrum Amino Acids Matter',
-    excerpt: 'Understanding why all 9 essential amino acids must be present in sufficient concentration for full muscle tissue repair.',
-    category: 'Nutrition Science',
-    date: 'July 25, 2026',
-    author: 'Dr. Marcus Vance, Ph.D.',
-    authorRole: 'Head of Sports Science',
-    readTime: '7 min read',
-    gradient: 'linear-gradient(135deg, #D97706 0%, #78350F 100%)',
-    content: `
-      <p>While BCAAs (Leucine, Isoleucine, Valine) initiate the synthetic signal, muscle protein building blocks require the complete spectrum of 9 EAAs...</p>
-    `
-  },
-  {
-    id: 'post-5',
-    slug: 'caloric-surplus-hypertrophy-gainer-guide',
-    title: 'The Caloric Surplus Strategy: Building Quality Mass Without Excess Fat',
-    excerpt: 'How to calculate your macro targets and leverage structured gainer supplementation for sustainable lean weight addition.',
-    category: 'Mass & Strength',
-    date: 'July 14, 2026',
-    author: 'Elena Rostova, CSCS',
-    authorRole: 'Performance Specialist',
-    readTime: '8 min read',
-    gradient: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
-    content: `
-      <p>Achieving progressive muscle growth demands a controlled, hyper-caloric state rich in complex carbohydrates and bioavailable proteins...</p>
-    `
-  }
-];
+const SSN_BLOG_POSTS = [];
 
 let SSN_REMOTE_BLOG_POSTS = [];
 
 async function loadBlogPosts() {
-  try {
-    const response = await fetch('content/blog-posts.json', { cache: 'no-store' });
-    if (response.ok) {
-      const posts = await response.json();
-      SSN_REMOTE_BLOG_POSTS = Array.isArray(posts) ? posts : [];
+  if (typeof getBlogs === 'function') {
+    try {
+      const result = await getBlogs();
+      SSN_REMOTE_BLOG_POSTS = result?.data || [];
+    } catch (error) {
+      console.warn('[SSN] Error loading blogs from DB', error);
+      SSN_REMOTE_BLOG_POSTS = [];
     }
-  } catch (error) {
+  } else {
     SSN_REMOTE_BLOG_POSTS = [];
   }
   return SSN_REMOTE_BLOG_POSTS;
@@ -102,15 +26,7 @@ async function loadBlogPosts() {
  * Returns merged list of articles, filtering out user-deleted posts
  */
 function getCombinedBlogPosts() {
-  try {
-    const customPosts = JSON.parse(localStorage.getItem('ssn_custom_blog_posts') || '[]');
-    const deletedIds = JSON.parse(localStorage.getItem('ssn_deleted_blog_ids') || '[]');
-    const all = [...SSN_REMOTE_BLOG_POSTS, ...customPosts, ...SSN_BLOG_POSTS];
-    const unique = all.filter((post, index, posts) => posts.findIndex(item => item.id === post.id) === index);
-    return unique.filter(post => !deletedIds.includes(post.id));
-  } catch (e) {
-    return [...SSN_REMOTE_BLOG_POSTS, ...SSN_BLOG_POSTS];
-  }
+  return SSN_REMOTE_BLOG_POSTS;
 }
 
 /**
