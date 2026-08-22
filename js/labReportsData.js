@@ -7,25 +7,6 @@
 
 const SSN_LAB_REPORTS_DATA = [
   {
-    id: 'whey-protein',
-    name: 'SSN Elite Performance Whey',
-    category: 'Protein',
-    image: 'assets/images/products/performance-whey.png',
-    batchNo: 'SSN-WHEY-2025-08A',
-    testDate: 'August 14, 2025',
-    labName: 'SGS Analytical Labs (ISO/IEC 17025 Certified)',
-    status: 'VERIFIED',
-    purityScore: '100% Passed',
-    summary: 'Third-party assay confirms 24.2g protein per scoop with zero heavy metal contamination and full amino acid profile match.',
-    metrics: [
-      { label: 'Assayed Protein Content', value: '24.2g per scoop', status: 'PASS' },
-      { label: 'Heavy Metals (Lead, Arsenic, Cadmium)', value: 'ND (Not Detected < 0.01 ppm)', status: 'PASS' },
-      { label: 'Microbial Analysis (E.coli, Salmonella)', value: 'Negative / Clean', status: 'PASS' },
-      { label: 'BCAA Ratio (Leucine:Isoleucine:Valine)', value: '2:1:1 Verified', status: 'PASS' },
-      { label: 'Banned Substance Screening (WADA)', value: 'Negative (100% Compliant)', status: 'PASS' }
-    ]
-  },
-  {
     id: 'bcaa-eaa',
     name: 'SSN Elite EAA + BCAA + Glutamine',
     category: 'Amino Acids',
@@ -121,8 +102,8 @@ async function loadLabReportsFromDB() {
 }
 
 function getAllLabReports() {
-  if (SSN_LAB_REPORTS_DB.length > 0) return SSN_LAB_REPORTS_DB;
-  return SSN_LAB_REPORTS_DATA;
+  const reports = SSN_LAB_REPORTS_DB.length > 0 ? SSN_LAB_REPORTS_DB : SSN_LAB_REPORTS_DATA;
+  return reports.filter(report => report.batchNo !== 'SSN-WHEY-2025-08A');
 }
 
 function getLabReportByBatch(batchNo) {
