@@ -32,8 +32,8 @@ const SSN_CONFIG = {
      SUPABASE_URL: Your project URL (e.g., https://xxxx.supabase.co)
      SUPABASE_ANON_KEY: Your project anon/public key */
   supabase: Object.freeze({
-    url: '',
-    anonKey: ''
+    url: 'https://pnxnwtrozxxqoofxutci.supabase.co',
+    anonKey: 'sb_publishable_QH1WF8LiQIxdNbOym0oCIw_gDZn28x0'
   })
 };
 
