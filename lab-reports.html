@@ -97,12 +97,9 @@
           <h3>Look Up Your Batch Certificate</h3>
         </div>
         <p class="lab-batch-selector-desc">Select your product's Batch / Lot Code to view the specific lab analysis certificate for your product.</p>
-        <div class="lab-batch-dropdown-wrap" style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <div class="lab-batch-dropdown-wrap">
           <select id="product-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" onchange="handleProductSelect(this.value)">
             <option value="">Select Your Product</option>
-          </select>
-          <select id="batch-dropdown" class="lab-batch-dropdown" style="flex: 1; min-width: 200px;" onchange="handleBatchSelect(this.value)" disabled>
-            <option value="">Select Your Batch / Lot Code</option>
           </select>
         </div>
         <div id="batch-result" class="lab-batch-result" style="display: none;"></div>
@@ -199,7 +196,7 @@
       renderLabReports('lab-reports-grid', currentCategory, currentSearch);
 
       // Populate product dropdown
-      populateProductDropdown();
+      await populateProductDropdown();
     });
 
     function setLabFilter(category, btn) {
@@ -214,40 +211,34 @@
       renderLabReports('lab-reports-grid', currentCategory, currentSearch);
     }
 
-    function populateProductDropdown() {
+    async function populateProductDropdown() {
       const prodDropdown = document.getElementById('product-dropdown');
       if (!prodDropdown) return;
-      const batches = getAllBatchNumbers();
-      // Get unique products
-      const products = [...new Set(batches.map(b => b.productName))];
-      products.forEach(p => {
+      let products = [];
+      if (typeof getProducts === 'function') {
+        const result = await getProducts();
+        products = (result?.data || []).map(product => product.name).filter(Boolean);
+      }
+      if (products.length === 0) {
+        products = [
+          'SSN Elite Performance Whey',
+          'SSN Elite Anabolic Monster Mass',
+          'SSN Elite Tri Creatine',
+          'SSN Elite EAA + BCAA + Glutamine'
+        ];
+      }
+      [...new Set(products)].forEach(productName => {
         const opt = document.createElement('option');
-        opt.value = p;
-        opt.textContent = p;
+        opt.value = productName;
+        opt.textContent = productName;
         prodDropdown.appendChild(opt);
       });
     }
 
     function handleProductSelect(productName) {
-      const batchDropdown = document.getElementById('batch-dropdown');
       const resultDiv = document.getElementById('batch-result');
-      
-      batchDropdown.innerHTML = '<option value="">Select Your Batch / Lot Code</option>';
+      if (!resultDiv) return;
       resultDiv.style.display = 'none';
-
-      if (!productName) {
-        batchDropdown.disabled = true;
-        return;
-      }
-      
-      batchDropdown.disabled = false;
-      const batches = getAllBatchNumbers().filter(b => b.productName === productName);
-      batches.forEach(b => {
-        const opt = document.createElement('option');
-        opt.value = b.batchNo;
-        opt.textContent = b.batchNo;
-        batchDropdown.appendChild(opt);
-      });
     }
 
     function handleBatchSelect(batchNo) {
