@@ -3,7 +3,7 @@
    Single source of truth for all public brand details.
    ============================================ */
 
-const SSN_CONFIG = {
+window.SSN_CONFIG = {
   brandName: 'SSN ELITE',
   tagline: 'Performance Nutrition, Engineered with Purpose',
   companyName: 'SSN Elite Nutrition Inc.',
