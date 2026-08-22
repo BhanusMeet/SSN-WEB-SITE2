@@ -164,11 +164,28 @@
   <section class="product-section" id="flavours">
     <div class="container-narrow">
       <div class="product-section-header reveal"><span class="product-section-number">06</span><span class="product-section-line"></span></div>
-      <h2 class="product-section-title reveal">Flavours</h2>
+      <h2 class="product-section-title reveal">Flavour Experience</h2>
+      <p class="body mt-4 reveal">
+        Tri Creatine is available in four refreshing flavours. Select a flavour to explore.
+      </p>
+
       <div class="mt-8 reveal">
-        <div class="placeholder-block">
-          <div class="placeholder-title">Flavour Options</div>
-          <p>Available flavour options will be updated with confirmed flavours from the SSN Elite Tri Creatine product range.</p>
+        <div class="flavour-selector" id="flavour-selector">
+          <button class="flavour-pill active" data-flavour="Orange Slush" data-description="Crisp and invigorating citrus orange slush flavour for instant energy and refreshment." data-image="assets/images/flavours/mango.png" data-color="rgba(255, 140, 0, 0.4)">Orange Slush</button>
+          <button class="flavour-pill" data-flavour="Watermelon" data-description="Refreshing and sweet watermelon flavour to power up your workout." data-image="assets/images/flavours/watermelon.png" data-color="rgba(255, 90, 100, 0.4)">Watermelon</button>
+          <button class="flavour-pill" data-flavour="Pineapple" data-description="Tropical sweet and tangy pineapple flavour." data-image="assets/images/flavours/pineapple.png" data-color="rgba(250, 210, 80, 0.4)">Pineapple</button>
+          <button class="flavour-pill" data-flavour="Lemon Lime" data-description="Zesty, tart, and revitalising lemon lime blend for peak performance." data-image="assets/images/flavours/lemon.png" data-color="rgba(200, 230, 80, 0.4)">Lemon Lime</button>
+        </div>
+      </div>
+
+      <div class="flavour-display mt-8 reveal">
+        <div class="flavour-visual-container">
+          <div class="flavour-visual-glow" id="flavour-glow" style="background: rgba(255, 140, 0, 0.4);"></div>
+          <img src="assets/images/flavours/mango.png" alt="Orange Slush Flavour" id="flavour-image" class="flavour-visual-image" onerror="this.style.display='none'">
+        </div>
+        <div class="flavour-text-content mt-4">
+          <div class="flavour-active-name" id="flavour-name">Orange Slush</div>
+          <p class="flavour-active-desc body-sm mt-2" id="flavour-desc" style="color: var(--text-tertiary);">Crisp and invigorating citrus orange slush flavour for instant energy and refreshment.</p>
         </div>
       </div>
     </div>
@@ -233,6 +250,7 @@
   <script src="js/siteConfig.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/expandable.js" defer></script>
+  <script src="js/flavour-selector.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="js/dna-scene.js" defer></script>
 </body>

@@ -178,11 +178,27 @@
         <span class="product-section-number">06</span>
         <span class="product-section-line"></span>
       </div>
-      <h2 class="product-section-title reveal">Flavours</h2>
+      <h2 class="product-section-title reveal">Flavour Experience</h2>
+      <p class="body mt-4 reveal">
+        Anabolic Monster Mass is available in three delicious flavours. Select a flavour to explore.
+      </p>
+
       <div class="mt-8 reveal">
-        <div class="placeholder-block">
-          <div class="placeholder-title">Flavour Options</div>
-          <p>Available flavour options will be updated with confirmed flavours from the SSN Elite Anabolic Monster Mass product range.</p>
+        <div class="flavour-selector" id="flavour-selector">
+          <button class="flavour-pill active" data-flavour="Chocolate Brownie" data-description="Rich and indulgent chocolate brownie flavour profile formulated for high-caloric mass gain." data-image="assets/images/flavours/chocolate-brownie.png" data-color="rgba(101, 67, 33, 0.4)">Chocolate Brownie</button>
+          <button class="flavour-pill" data-flavour="Cookies &amp; Cream" data-description="Classic blend of chocolate cookie pieces and velvety cream." data-image="assets/images/flavours/cookies-cream.png" data-color="rgba(200, 200, 200, 0.4)">Cookies &amp; Cream</button>
+          <button class="flavour-pill" data-flavour="Strawberry Milk Shake" data-description="Smooth and creamy strawberry milkshake flavour for an enjoyable post-workout shake." data-image="assets/images/flavours/strawberry.png" data-color="rgba(255, 153, 168, 0.4)">Strawberry Milk Shake</button>
+        </div>
+      </div>
+
+      <div class="flavour-display mt-8 reveal">
+        <div class="flavour-visual-container">
+          <div class="flavour-visual-glow" id="flavour-glow" style="background: rgba(101, 67, 33, 0.4);"></div>
+          <img src="assets/images/flavours/chocolate-brownie.png" alt="Chocolate Brownie Flavour" id="flavour-image" class="flavour-visual-image" onerror="this.style.display='none'">
+        </div>
+        <div class="flavour-text-content mt-4">
+          <div class="flavour-active-name" id="flavour-name">Chocolate Brownie</div>
+          <p class="flavour-active-desc body-sm mt-2" id="flavour-desc" style="color: var(--text-tertiary);">Rich and indulgent chocolate brownie flavour profile formulated for high-caloric mass gain.</p>
         </div>
       </div>
     </div>
@@ -285,6 +301,7 @@
   <script src="js/siteConfig.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/expandable.js" defer></script>
+  <script src="js/flavour-selector.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="js/dna-scene.js" defer></script>
 </body>
