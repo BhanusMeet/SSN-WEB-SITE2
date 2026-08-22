@@ -281,20 +281,6 @@
             <div class="meta-row"><span class="meta-label">Purity Status:</span><span class="meta-val text-success">${report.purityScore}</span></div>
           </div>
           ${imagesHtml}
-          <div class="lab-metrics-table-wrap">
-            <table class="lab-metrics-table">
-              <thead><tr><th>Test Parameter</th><th>Measured Value</th><th>Result</th></tr></thead>
-              <tbody>
-                ${report.metrics.map(m => `
-                  <tr>
-                    <td><strong>${m.label}</strong></td>
-                    <td><code class="metric-code">${m.value}</code></td>
-                    <td><span class="badge-pass">${m.status}</span></td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
         </div>
       `;
     }

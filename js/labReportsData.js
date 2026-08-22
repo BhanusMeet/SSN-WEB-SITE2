@@ -240,28 +240,6 @@ function openLabReportModal(productId) {
         <h4 class="modal-section-title" style="margin-top: 24px;">Scanned Certificate</h4>
         ${reportImagesHtml}
         ` : ''}
-
-        <h4 class="modal-section-title" style="margin-top: 24px;">Assay Parameters & Verification Findings</h4>
-        <div class="lab-metrics-table-wrap">
-          <table class="lab-metrics-table">
-            <thead>
-              <tr>
-                <th>Test Parameter</th>
-                <th>Measured Value</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${item.metrics.map(m => `
-                <tr>
-                  <td><strong>${m.label}</strong></td>
-                  <td><code class="metric-code">${m.value}</code></td>
-                  <td><span class="badge-pass">${m.status}</span></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
       </div>
 
       <div class="lab-modal-footer">
