@@ -382,19 +382,112 @@
 }
 #blog-content-editor {
   min-height: 400px;
+  background: #ffffff;
+  pointer-events: auto;
 }
 #blog-content-editor .ql-editor {
   min-height: 400px;
   font-size: 15px;
   line-height: 1.6;
+  color: #202223;
+  pointer-events: auto;
+  cursor: text;
 }
 #prod-desc-editor {
   min-height: 250px;
+  background: #ffffff;
+  pointer-events: auto;
 }
 #prod-desc-editor .ql-editor {
   min-height: 250px;
   font-size: 14px;
   line-height: 1.5;
+  color: #202223;
+  pointer-events: auto;
+  cursor: text;
+}
+
+/* ── Blog HTML Editor & Mode Switcher ── */
+.editor-mode-toggle {
+  display: inline-flex;
+  background: #f1f2f4;
+  border-radius: 6px;
+  padding: 2px;
+  border: 1px solid #dfe3e8;
+  gap: 2px;
+}
+.editor-mode-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #637381;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 120ms ease;
+  user-select: none;
+}
+.editor-mode-btn:hover {
+  color: #202223;
+}
+.editor-mode-btn.active {
+  background: #ffffff;
+  color: #202223;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.html-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border: 1px solid #c4cdd5;
+  border-bottom: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.html-tool-btn {
+  background: #ffffff;
+  border: 1px solid #dfe3e8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'SF Mono', Menlo, Consolas, Monaco, monospace;
+  cursor: pointer;
+  color: #454f5b;
+  font-weight: 500;
+  transition: background 120ms, border-color 120ms;
+}
+.html-tool-btn:hover {
+  background: #ebeef0;
+  border-color: #c4cdd5;
+  color: #202223;
+}
+.admin-html-textarea {
+  display: block;
+  width: 100%;
+  min-height: 420px;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, Monaco, 'Courier New', monospace;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid #c4cdd5;
+  border-radius: 0 0 6px 6px;
+  resize: vertical;
+  outline: none;
+  tab-size: 2;
+  transition: border-color 150ms, box-shadow 150ms;
+  pointer-events: auto;
+}
+.admin-html-textarea:focus {
+  border-color: #008060;
+  box-shadow: 0 0 0 1px #008060;
 }
 
 /* ── Media Upload ── */

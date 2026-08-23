@@ -298,8 +298,36 @@
               <input type="text" id="blog-title" class="admin-form-input">
             </div>
             <div class="admin-form-group">
-              <label class="admin-form-label">Content (HTML)</label>
-              <div id="blog-content-editor"></div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <label class="admin-form-label" style="margin-bottom:0;">Content (HTML)</label>
+                <div class="editor-mode-toggle" id="blog-editor-tabs">
+                  <button type="button" class="editor-mode-btn active" id="btn-mode-visual" onclick="setBlogEditorMode('visual')">Visual Editor</button>
+                  <button type="button" class="editor-mode-btn" id="btn-mode-html" onclick="setBlogEditorMode('html')">&lt;/&gt; HTML Source</button>
+                </div>
+              </div>
+              
+              <!-- Visual Quill Container -->
+              <div id="blog-visual-wrap">
+                <div id="blog-content-editor"></div>
+              </div>
+              
+              <!-- Raw HTML Code Editor Textarea -->
+              <div id="blog-html-wrap" style="display:none;">
+                <div class="html-editor-toolbar">
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('h2')">&lt;h2&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('h3')">&lt;h3&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('p')">&lt;p&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('strong')">&lt;b&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('em')">&lt;i&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('ul')">&lt;ul&gt;&lt;li&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('blockquote')">&lt;quote&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('a')">&lt;a link&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('img')">&lt;img&gt;</button>
+                  <button type="button" class="html-tool-btn" onclick="formatHtmlSource()" title="Clean indentation">Format HTML</button>
+                </div>
+                <textarea id="blog-content-html" class="admin-html-textarea" placeholder="<p>Write or paste your full HTML article content here...</p>" spellcheck="false" oninput="handleHtmlTextareaInput(this)"></textarea>
+              </div>
+              <span style="font-size:12px; color:#637381; margin-top:6px; display:block;">You can switch between Visual Rich Text and HTML Source Code anytime. Content stays automatically synced.</span>
             </div>
           </div>
 

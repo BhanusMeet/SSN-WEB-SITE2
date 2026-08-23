@@ -100,9 +100,15 @@ function switchTab(tabId, btnElement) {
   }
 }
 
-// ── Editors Initialization (Quill with Full Rich Text Controls) ──
+let blogEditorMode = 'visual';
+
+// ── Editors Initialization (Quill with Full Rich Text Controls & Dual Sync) ──
 function initQuillEditors() {
-  if (typeof Quill === 'undefined') return;
+  if (typeof Quill === 'undefined') {
+    console.warn('[SSN Admin] Quill library not found. Falling back to HTML Code Editor.');
+    setBlogEditorMode('html');
+    return;
+  }
 
   const quillToolbarOptions = [
     [{ 'header': [1, 2, 3, 4, false] }],
@@ -116,21 +122,40 @@ function initQuillEditors() {
 
   const prodElem = document.getElementById('prod-desc-editor');
   if (prodElem && !quillProduct) {
-    quillProduct = new Quill('#prod-desc-editor', {
-      theme: 'snow',
-      placeholder: 'Write comprehensive product description, clinical highlights, dosage, etc.',
-      modules: { toolbar: quillToolbarOptions }
-    });
+    try {
+      quillProduct = new Quill('#prod-desc-editor', {
+        theme: 'snow',
+        placeholder: 'Write comprehensive product description, clinical highlights, dosage, etc.',
+        modules: { toolbar: quillToolbarOptions }
+      });
+    } catch (e) {
+      console.warn('[SSN Admin] Failed to initialize Quill for product:', e);
+    }
   }
   
   const blogElem = document.getElementById('blog-content-editor');
   if (blogElem && !quillBlog) {
-    quillBlog = new Quill('#blog-content-editor', {
-      theme: 'snow',
-      placeholder: 'Write your full scientific article, subheadings, key takeaways, and references here...',
-      modules: { toolbar: quillToolbarOptions }
-    });
+    try {
+      quillBlog = new Quill('#blog-content-editor', {
+        theme: 'snow',
+        placeholder: 'Write your full scientific article, subheadings, key takeaways, and references here...',
+        modules: { toolbar: quillToolbarOptions }
+      });
+
+      // Synchronize visual changes to HTML textarea in real-time
+      quillBlog.on('text-change', () => {
+        const htmlTextarea = document.getElementById('blog-content-html');
+        if (htmlTextarea && blogEditorMode === 'visual') {
+          htmlTextarea.value = quillBlog.root.innerHTML;
+        }
+      });
+    } catch (e) {
+      console.warn('[SSN Admin] Failed to initialize Quill for blog:', e);
+    }
   }
+
+  if (quillBlog) quillBlog.enable(true);
+  if (quillProduct) quillProduct.enable(true);
 }
 
 // ── Data Loading & Synchronization ──
@@ -205,6 +230,7 @@ function renderProductsTable() {
 }
 
 function openProductEditor(id = null) {
+  switchTab('product-editor');
   initQuillEditors();
   document.getElementById('variant-list').innerHTML = '';
   
@@ -454,6 +480,7 @@ function renderBlogsTable() {
 }
 
 function openBlogEditor(id = null) {
+  switchTab('blog-editor');
   initQuillEditors();
 
   if (id) {
@@ -468,7 +495,7 @@ function openBlogEditor(id = null) {
     document.getElementById('blog-seo-desc').value = b.seo_description || '';
     document.getElementById('blog-slug').value = b.slug || '';
     document.getElementById('blog-featured-image').value = b.featured_image || '';
-    if (quillBlog) quillBlog.root.innerHTML = b.content || '';
+    setBlogContentHtml(b.content || '');
     document.getElementById('blog-img-preview').innerHTML = b.featured_image ? `<img src="${b.featured_image}">` : '';
     document.getElementById('blog-editor-title').textContent = `Edit — ${b.title}`;
   } else {
@@ -481,11 +508,148 @@ function openBlogEditor(id = null) {
     document.getElementById('blog-seo-desc').value = '';
     document.getElementById('blog-slug').value = '';
     document.getElementById('blog-featured-image').value = '';
-    if (quillBlog) quillBlog.root.innerHTML = '';
+    setBlogContentHtml('');
     document.getElementById('blog-img-preview').innerHTML = '';
     document.getElementById('blog-editor-title').textContent = 'Add blog post';
   }
-  switchTab('blog-editor');
+
+  // Restore active mode and ensure editor has focus
+  setBlogEditorMode(blogEditorMode || 'visual');
+}
+
+function setBlogEditorMode(mode) {
+  blogEditorMode = mode;
+  const visualWrap = document.getElementById('blog-visual-wrap');
+  const htmlWrap = document.getElementById('blog-html-wrap');
+  const btnVisual = document.getElementById('btn-mode-visual');
+  const btnHtml = document.getElementById('btn-mode-html');
+  const htmlTextarea = document.getElementById('blog-content-html');
+
+  if (mode === 'visual') {
+    // If Quill is available, sync content from textarea into Quill
+    if (quillBlog && htmlTextarea) {
+      quillBlog.root.innerHTML = htmlTextarea.value || '';
+      quillBlog.enable(true);
+    }
+    if (visualWrap) visualWrap.style.display = 'block';
+    if (htmlWrap) htmlWrap.style.display = 'none';
+    if (btnVisual) btnVisual.classList.add('active');
+    if (btnHtml) btnHtml.classList.remove('active');
+    if (quillBlog) {
+      quillBlog.focus();
+    }
+  } else {
+    // Mode is 'html': sync content from Quill into textarea
+    if (quillBlog && htmlTextarea) {
+      const qHtml = quillBlog.root.innerHTML;
+      if (qHtml === '<p><br></p>') {
+        htmlTextarea.value = '';
+      } else if (qHtml) {
+        htmlTextarea.value = qHtml;
+      }
+    }
+    if (visualWrap) visualWrap.style.display = 'none';
+    if (htmlWrap) htmlWrap.style.display = 'block';
+    if (btnVisual) btnVisual.classList.remove('active');
+    if (btnHtml) btnHtml.classList.add('active');
+    if (htmlTextarea) {
+      htmlTextarea.focus();
+    }
+  }
+}
+
+function handleHtmlTextareaInput(textarea) {
+  if (quillBlog && blogEditorMode === 'html') {
+    quillBlog.root.innerHTML = textarea.value;
+  }
+}
+
+function getBlogContentHtml() {
+  const htmlTextarea = document.getElementById('blog-content-html');
+  if (blogEditorMode === 'html' && htmlTextarea) {
+    return htmlTextarea.value.trim();
+  }
+  if (quillBlog) {
+    const raw = quillBlog.root.innerHTML;
+    if (raw === '<p><br></p>') return '';
+    return raw;
+  }
+  if (htmlTextarea) {
+    return htmlTextarea.value.trim();
+  }
+  return '';
+}
+
+function setBlogContentHtml(html) {
+  const htmlTextarea = document.getElementById('blog-content-html');
+  if (htmlTextarea) {
+    htmlTextarea.value = html || '';
+  }
+  if (quillBlog) {
+    quillBlog.root.innerHTML = html || '';
+  }
+}
+
+function insertHtmlTag(tag) {
+  const textarea = document.getElementById('blog-content-html');
+  if (!textarea) return;
+
+  const start = textarea.selectionStart || 0;
+  const end = textarea.selectionEnd || 0;
+  const selectedText = textarea.value.substring(start, end);
+  let replacement = '';
+
+  switch (tag) {
+    case 'h2':
+      replacement = `<h2>${selectedText || 'Heading 2'}</h2>`;
+      break;
+    case 'h3':
+      replacement = `<h3>${selectedText || 'Heading 3'}</h3>`;
+      break;
+    case 'p':
+      replacement = `<p>${selectedText || 'Paragraph text here...'}</p>`;
+      break;
+    case 'strong':
+      replacement = `<strong>${selectedText || 'bold text'}</strong>`;
+      break;
+    case 'em':
+      replacement = `<em>${selectedText || 'italic text'}</em>`;
+      break;
+    case 'ul':
+      replacement = `<ul>\n  <li>${selectedText || 'List item 1'}</li>\n  <li>List item 2</li>\n</ul>`;
+      break;
+    case 'blockquote':
+      replacement = `<blockquote>${selectedText || 'Quote text here...'}</blockquote>`;
+      break;
+    case 'a':
+      replacement = `<a href="https://example.com" target="_blank">${selectedText || 'Link text'}</a>`;
+      break;
+    case 'img':
+      replacement = `<img src="https://example.com/image.webp" alt="${selectedText || 'Image description'}" style="max-width:100%; border-radius:8px; margin:16px 0;">`;
+      break;
+    default:
+      replacement = `<${tag}>${selectedText}</${tag}>`;
+  }
+
+  textarea.setRangeText(replacement, start, end, 'select');
+  handleHtmlTextareaInput(textarea);
+  textarea.focus();
+}
+
+function formatHtmlSource() {
+  const textarea = document.getElementById('blog-content-html');
+  if (!textarea || !textarea.value) return;
+
+  let html = textarea.value;
+  html = html
+    .replace(/>\s*</g, '>\n<')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .join('\n');
+
+  textarea.value = html;
+  handleHtmlTextareaInput(textarea);
 }
 
 async function handleBlogImageUpload(input) {
@@ -514,19 +678,19 @@ async function saveBlogData() {
   btn.textContent = 'Saving...';
   btn.disabled = true;
   
-  const contentHtml = quillBlog ? quillBlog.root.innerHTML : '';
-  const plainText = quillBlog ? quillBlog.getText().trim() : '';
-  const excerpt = plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
+  const contentHtml = getBlogContentHtml();
+  const plainText = contentHtml.replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, ' ').trim();
+  const excerpt = plainText.length > 160 ? plainText.substring(0, 160) + '...' : plainText;
 
   const blog = {
     id: document.getElementById('blog-id').value || undefined,
     title: title,
-    slug: document.getElementById('blog-slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    slug: document.getElementById('blog-slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
     status: document.getElementById('blog-status').value,
-    author: document.getElementById('blog-author').value.trim(),
-    category: document.getElementById('blog-category').value.trim(),
-    seo_title: document.getElementById('blog-seo-title').value.trim(),
-    seo_description: document.getElementById('blog-seo-desc').value.trim(),
+    author: document.getElementById('blog-author').value.trim() || 'SSN Elite Science Team',
+    category: document.getElementById('blog-category').value.trim() || 'Nutrition Science',
+    seo_title: document.getElementById('blog-seo-title').value.trim() || title,
+    seo_description: document.getElementById('blog-seo-desc').value.trim() || excerpt,
     featured_image: document.getElementById('blog-featured-image').value.trim(),
     content: contentHtml,
     excerpt: excerpt,
