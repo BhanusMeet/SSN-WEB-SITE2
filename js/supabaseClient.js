@@ -124,32 +124,31 @@ async function uploadFileToStorage(folder, file) {
 
   // Strict MIME type validation
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+  const ALLOWED_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf'];
   const fileType = (file.type || '').toLowerCase();
   const fileNameLower = (file.name || '').toLowerCase();
+  const fileExt = (file.name.split('.').pop() || '').toLowerCase();
 
   // Max 25 MB file limit
   if (file.size > 25 * 1024 * 1024) {
     return { error: { message: 'File is too large. Maximum allowed size is 25 MB.' } };
   }
 
+  // Check Extension whitelist
+  if (!ALLOWED_EXTS.includes(fileExt)) {
+    return { error: { message: `File extension .${fileExt} is not allowed. Only .jpg, .png, .webp, .gif, and .pdf files are accepted.` } };
+  }
+
   // Check MIME whitelist
   if (fileType && !ALLOWED_MIME_TYPES.includes(fileType)) {
-    return { error: { message: `File type "${fileType}" is not permitted. Allowed types: JPEG, PNG, WebP, GIF, PDF.` } };
+    return { error: { message: `File MIME type "${fileType}" is not permitted. Allowed types: JPEG, PNG, WebP, GIF, PDF.` } };
   }
 
-  // Block dangerous extensions explicitly
-  const DANGEROUS_EXTS = ['.svg', '.html', '.htm', '.js', '.jsx', '.ts', '.tsx', '.exe', '.bat', '.cmd', '.php', '.sh', '.py', '.rb', '.vbs'];
-  for (const ext of DANGEROUS_EXTS) {
-    if (fileNameLower.endsWith(ext)) {
-      return { error: { message: `Files with extension "${ext}" are blocked for security reasons.` } };
-    }
-  }
-
-  // Safe file naming
+  // Safe file naming & Path Traversal Prevention
   const rawBaseName = file.name.replace(/\.[^/.]+$/, "");
   const cleanBaseName = rawBaseName.replace(/[^a-zA-Z0-9-_]/g, '-').substring(0, 40) || 'upload';
-  const fileExt = (file.name.split('.').pop() || 'dat').toLowerCase();
-  const filePath = `${folder}/${cleanBaseName}-${Date.now()}-${Math.random().toString(36).substr(2, 6)}.${fileExt}`;
+  const cleanFolder = folder.replace(/[^a-zA-Z0-9-_\/]/g, '').replace(/\.\./g, '');
+  const filePath = `${cleanFolder}/${cleanBaseName}-${Date.now()}-${Math.random().toString(36).substr(2, 6)}.${fileExt}`;
 
   // Upload to ssn-uploads bucket
   let res = await sb.storage

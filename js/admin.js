@@ -207,9 +207,9 @@ function renderProductsTable() {
       <td>${esc(p.serving_size || '-')}</td>
       <td>
         <div style="display:flex; gap:8px;">
-          <a href="${liveUrl}" target="_blank" class="admin-btn admin-btn-outline admin-btn-sm" style="text-decoration:none;">View</a>
-          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openProductEditor('${p.id}')">Edit</button>
-          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteProduct('${p.id}', '${esc(p.name || p.title)}')">Delete</button>
+          <a href="${liveUrl}" target="_blank" rel="noopener noreferrer" class="admin-btn admin-btn-outline admin-btn-sm" style="text-decoration:none;">View</a>
+          <button class="admin-btn admin-btn-outline admin-btn-sm" data-id="${esc(p.id)}" onclick="openProductEditor(this.getAttribute('data-id'))">Edit</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" data-id="${esc(p.id)}" data-name="${esc(p.name || p.title)}" onclick="handleDeleteProduct(this.getAttribute('data-id'), this.getAttribute('data-name'))">Delete</button>
         </div>
       </td>
     </tr>`;
@@ -988,9 +988,9 @@ function renderBlogsTable() {
       <td>${esc(b.publish_date || '-')}</td>
       <td>
         <div style="display:flex; gap:8px;">
-          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openBlogEditor('${b.id}')">Edit</button>
-          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="handleToggleBlogStatus('${b.id}')">${isPublished ? 'Draft' : 'Publish'}</button>
-          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteBlog('${b.id}', '${esc(b.title)}')">Delete</button>
+          <button class="admin-btn admin-btn-outline admin-btn-sm" data-id="${esc(b.id)}" onclick="openBlogEditor(this.getAttribute('data-id'))">Edit</button>
+          <button class="admin-btn admin-btn-outline admin-btn-sm" data-id="${esc(b.id)}" onclick="handleToggleBlogStatus(this.getAttribute('data-id'))">${isPublished ? 'Draft' : 'Publish'}</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" data-id="${esc(b.id)}" data-title="${esc(b.title)}" onclick="handleDeleteBlog(this.getAttribute('data-id'), this.getAttribute('data-title'))">Delete</button>
         </div>
       </td>
     </tr>`;
@@ -1169,8 +1169,8 @@ function renderLabReportsTable() {
       <td>${certUrl ? `<a href="${certUrl}" target="_blank" style="color:#008060; font-weight:600; font-size:12px;">PDF File</a>` : `<span style="color:#8c9196; font-size:12px;">No PDF</span>`}</td>
       <td>
         <div style="display:flex; gap:8px;">
-          <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openLabReportEditor('${r.id}')">Edit</button>
-          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteLabReport('${r.id}', '${esc(r.batch_number)}')">Delete</button>
+          <button class="admin-btn admin-btn-outline admin-btn-sm" data-id="${esc(r.id)}" onclick="openLabReportEditor(this.getAttribute('data-id'))">Edit</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" data-id="${esc(r.id)}" data-batch="${esc(r.batch_number)}" onclick="handleDeleteLabReport(this.getAttribute('data-id'), this.getAttribute('data-batch'))">Delete</button>
         </div>
       </td>
     </tr>`;
@@ -1393,7 +1393,7 @@ function renderSubmissionsTable(data) {
       <td style="font-size:13px; max-width:240px; color:#454f5b;">${esc(s.message || '—')}</td>
       <td style="font-size:13px; color:#637381;">${d}</td>
       <td>
-        <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="handleDeleteSubmission('${s.id}', '${esc(s.full_name)}')">Delete</button>
+        <button class="admin-btn admin-btn-danger admin-btn-sm" data-id="${esc(s.id)}" data-name="${esc(s.full_name)}" onclick="handleDeleteSubmission(this.getAttribute('data-id'), this.getAttribute('data-name'))">Delete</button>
       </td>
     </tr>`;
   });

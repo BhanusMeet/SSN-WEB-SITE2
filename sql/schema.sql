@@ -220,13 +220,37 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+-- ============================================
+-- 6. USER SUBMISSIONS / ENQUIRIES TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS user_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name TEXT,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  message TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
 
-DROP POLICY IF EXISTS "Allow public select on site_settings" ON site_settings;
-CREATE POLICY "Allow public select on site_settings" ON site_settings FOR SELECT USING (true);
+ALTER TABLE user_submissions ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Allow authenticated manage on site_settings" ON site_settings;
-CREATE POLICY "Allow authenticated manage on site_settings" ON site_settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Allow public insert on user_submissions" ON user_submissions;
+CREATE POLICY "Allow public insert on user_submissions"
+  ON user_submissions FOR INSERT
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow authenticated select on user_submissions" ON user_submissions;
+CREATE POLICY "Allow authenticated select on user_submissions"
+  ON user_submissions FOR SELECT
+  TO authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "Allow authenticated delete on user_submissions" ON user_submissions;
+CREATE POLICY "Allow authenticated delete on user_submissions"
+  ON user_submissions FOR DELETE
+  TO authenticated
+  USING (true);
 
 INSERT INTO site_settings (key, value) VALUES (
   'social_media',

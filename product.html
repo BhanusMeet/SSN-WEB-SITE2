@@ -626,7 +626,7 @@
                 </div>
 
                 <div class="reveal reveal-delay-4" style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
-                  <button class="btn btn-primary" onclick="openEnquiryModal('${esc(name)}')">Enquire / Order</button>
+                  <button class="btn btn-primary" onclick="openEnquiryModal(this.getAttribute('data-product'))" data-product="${esc(name)}">Enquire / Order</button>
                   <a href="lab-reports.html" class="btn btn-secondary">View Lab Certificates</a>
                 </div>
               </div>
@@ -636,7 +636,7 @@
                 ${gallery.length > 1 ? `
                   <div class="gallery-thumbs">
                     ${gallery.map((img, idx) => `
-                      <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="swapMainImage('${img}', this)" alt="Thumbnail">
+                      <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="swapMainImage(this.src, this)" alt="Thumbnail">
                     `).join('')}
                   </div>
                 ` : ''}

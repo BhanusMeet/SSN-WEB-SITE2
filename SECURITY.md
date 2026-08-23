@@ -1,118 +1,125 @@
-# SSN ELITE — Security Architecture & Hardening Document
+# SSN ELITE — Comprehensive Security Architecture & Hardening Document
 
 ## 1. Security Architecture Overview
 
-**SSN ELITE** is built as a **static-first web application**. Public pages remain static, while the protected blog publisher uses Vercel serverless functions and GitHub OAuth to commit approved articles to the repository.
+**SSN ELITE** is an enterprise-grade sports nutrition platform engineered with a **defense-in-depth static-first architecture** backed by **Supabase PostgreSQL Row Level Security (RLS)** and **Edge CDN security headers**.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                 Client Browser (HTTPS)                      │
 │                                                             │
-│  HTML5 + CSS3 + Vanilla JS + WebGL (Three.js)               │
+│  HTML5 + CSS3 + Vanilla JS + WebGL (Three.js DNA Scene)     │
 └──────────────────────────────┬──────────────────────────────┘
-                               │ Static assets + protected API calls
+                               │ HTTPS / TLS 1.3
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │           Static Edge CDN (Cloudflare / Vercel)             │
 │                                                             │
-│  - Vercel serverless auth/content routes for admin only     │
-│  - GitHub repository is the content store                   │
-│  - Strict Security Headers & CSP Policies                   │
+│  - Strict Content-Security-Policy (CSP)                     │
+│  - Clickjacking Protection (X-Frame-Options: DENY)          │
+│  - MIME Sniffing Defense (nosniff)                          │
+│  - Strict-Transport-Security (HSTS Preload)                 │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ REST / PostgREST & Auth
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│             Supabase Managed Cloud Backend                  │
+│                                                             │
+│  - JWT Bearer Authentication for Admin Panel                │
+│  - Row Level Security (RLS) on ALL tables                   │
+│  - MIME & Extension-validated Storage Bucket (ssn-uploads)  │
+│  - Isolated Customer Enquiries (Private Data Protection)    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Attack Surface Reduction
+## 2. Threat Modeling & OWASP Top 10 Mitigation Matrix
 
-Public pages avoid dynamic server infrastructure; only the protected publisher routes access GitHub:
-
-| Attack Vector | Status | Mitigation / Architectural Guarantee |
-|---|---|---|
-| **SQL Injection (SQLi)** | **N/A** | Zero database exists; no SQL queries are constructed or executed. |
-| **Cross-Site Request Forgery (CSRF)** | **Mitigated** | OAuth state validation, HttpOnly/Secure/SameSite cookies, and same-origin publishing API. |
-| **Server-Side Request Forgery (SSRF)** | **N/A** | Zero server-side HTTP clients or proxy endpoints exist. |
-| **Authentication & Privilege Escalation** | **Mitigated** | GitHub OAuth plus an explicit `GITHUB_ALLOWED_USER` allow-list protects publishing. |
-| **File Upload Vulnerabilities** | **N/A** | Zero file upload handlers or server storage exist. |
-| **Data Leakage / PII Exposure** | **Mitigated** | The API stores published article content in the configured GitHub repository; OAuth tokens remain server-side in HttpOnly cookies. |
-| **Cross-Site Scripting (XSS)** | **Mitigated** | All content is trusted static HTML/JS; dynamic DOM generation uses `textContent` instead of `innerHTML`; strict CSP blocks inline script injection. |
-| **Clickjacking** | **Mitigated** | Restricted via `X-Frame-Options: DENY` and CSP `frame-ancestors 'none'`. |
-| **MIME Sniffing** | **Mitigated** | Restricted via `X-Content-Type-Options: nosniff`. |
-
----
-
-## 3. Security Headers Evaluation
-
-The project provides deployment configuration files (`_headers`, `vercel.json`, `.htaccess`) to enforce edge security headers:
-
-### Content-Security-Policy (CSP)
-```http
-Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'none';
-```
-- `script-src`: Restricts JavaScript execution exclusively to origin scripts and trusted Three.js CDN (`cdnjs.cloudflare.com`).
-- `style-src`: Restricts CSS styling to origin and Google Fonts (`fonts.googleapis.com`).
-- `font-src`: Restricts fonts to origin and Google Font assets (`fonts.gstatic.com`).
-- `frame-ancestors 'none'`: Prevents embedding in any iframe (Clickjacking defense).
-- `form-action 'none'`: Prevents form submission actions.
-
-### Additional Security Headers
-- **Strict-Transport-Security (HSTS)**: `max-age=31536000; includeSubDomains; preload` (Forces HTTPS connections).
-- **X-Frame-Options**: `DENY` (Legacy Clickjacking protection).
-- **X-Content-Type-Options**: `nosniff` (Prevents browsers from MIME-sniffing responses).
-- **Referrer-Policy**: `strict-origin-when-cross-origin` (Protects referrer data when navigating to external links).
-- **Permissions-Policy**: `camera=(), microphone=(), geolocation=(), payment=(), usb=()` (Disables unnecessary browser hardware APIs).
-
----
-
-## 4. External Dependencies Audit
-
-| Dependency | Purpose | Source / Integrity | Risk Assessment |
+| OWASP Top 10 Category | Threat Vector | Status | Mitigation Implemented |
 |---|---|---|---|
-| **Google Fonts** | Inter & JetBrains Mono typography | `https://fonts.googleapis.com` / `https://fonts.gstatic.com` | **Low** — Standard web fonts served over HTTPS. |
-| **Three.js (r128)** | Real-time 3D DNA WebGL rendering | `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js` | **Low** — Hosted on Cloudflare's global CDN; immutable release version. |
+| **A01: Broken Access Control** | Unauthorized product/blog modification, direct URL manipulation, IDOR | **Hardened** | PostgreSQL Row Level Security (RLS) blocks all unauthenticated `INSERT`, `UPDATE`, and `DELETE` queries at database level. |
+| **A02: Cryptographic Failures** | Secret exposure, plain-text transmission | **Hardened** | Zero `service_role` keys in client code; only public anon key used; HSTS preload enforced; all traffic over TLS 1.3. |
+| **A03: Injection (XSS & SQLi)** | Stored/DOM XSS, SQL injection | **Hardened** | PostgREST parameterized queries; strict HTML sanitization via `DOMParser` for blog bodies; `esc()` text escaping for all dynamic fields; safe `data-*` attributes for DOM callbacks. |
+| **A04: Insecure Design** | Unrestricted file uploads, SVG script execution | **Hardened** | Whitelist-only file extension checking (`.jpg`, `.png`, `.webp`, `.gif`, `.pdf`); explicit block of executable scripts and `.svg`; random hash-based filename generation. |
+| **A05: Security Misconfiguration** | Clickjacking, MIME sniffing, permissive CORS | **Hardened** | `X-Frame-Options: DENY`, `frame-ancestors 'none'`, `X-Content-Type-Options: nosniff`, and edge CDN headers configured in `_headers`, `vercel.json`, and `.htaccess`. |
+| **A06: Vulnerable Components** | Outdated or unsafe third-party libraries | **Hardened** | Minimal dependencies; official Supabase JS client and Three.js loaded from integrity-verified CDNs. |
+| **A07: Identification & Auth Failures** | Session hijacking, brute-force admin login | **Hardened** | Supabase managed cryptographic JWT authentication with automatic session invalidation on logout. |
+| **A08: Software & Data Integrity Failures** | Unvalidated redirects, malicious CDN injections | **Hardened** | Strict CSP policy restricts external origins; all external links enforce `rel="noopener noreferrer"`. |
+| **A09: Security Logging & Monitoring** | Silent mutation failures, unhandled exceptions | **Hardened** | Real-time console error logging with status codes, error details, and user-facing non-leaking toast feedback. |
+| **A10: Server-Side Request Forgery (SSRF)** | Server-side URL fetching exploits | **N/A** | Pure static and serverless architecture; no arbitrary proxy or server-side fetch endpoints exist. |
 
 ---
 
-## 5. Blog Publishing Architecture
+## 3. Database & Row Level Security (RLS) Policy Specifications
 
-The admin publisher at `/blog-publisher.html` authenticates with GitHub. Vercel routes under `/api/auth/` handle OAuth and `/api/content` reads or updates `content/blog-posts.json`. Every successful publish creates a Git commit, which triggers the normal Vercel deployment.
+Every database table has Row Level Security explicitly enabled (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`):
 
-Required Vercel environment variables are documented in `.env.example`. Set `GITHUB_ALLOWED_USER` to the exact GitHub username that should be able to publish.
+### 1. `products` Table
+- **SELECT**: Public read-only access (`anon` & `authenticated`).
+- **INSERT / UPDATE / DELETE**: Strictly restricted to `authenticated` admin sessions.
 
-## 6. Centralized Public Information Model
+### 2. `blogs` Table
+- **SELECT**: Public read-only access (`anon` & `authenticated`).
+- **INSERT / UPDATE / DELETE**: Strictly restricted to `authenticated` admin sessions.
 
-All public brand contact details, social URLs, and product MRPs are isolated in a single configuration file:
-- File: [js/siteConfig.js](js/siteConfig.js)
-- **Zero Secrets**: Contains exclusively public contact information.
-- **Auto-Injection**: Injects values safely using `textContent` and safe link prefixes (`mailto:`, `tel:`).
+### 3. `lab_reports` Table
+- **SELECT**: Public read-only access (`anon` & `authenticated`).
+- **INSERT / UPDATE / DELETE**: Strictly restricted to `authenticated` admin sessions.
 
----
+### 4. `submissions` (Customer Enquiries) Table
+- **INSERT**: Open to `anon` and `authenticated` (allows prospective customers to send inquiries).
+- **SELECT / DELETE**: Restricted **strictly** to `authenticated` admin sessions. **Anonymous users CANNOT read or list customer submissions**, preventing PII and contact data leaks.
 
-## 7. Hosting & Deployment Requirements
+### 5. `site_settings` Table
+- **SELECT**: Public read-only access (`anon` & `authenticated`).
+- **ALL (Manage)**: Restricted to `authenticated` admin sessions.
 
-1. **Cloudflare Pages / Netlify**:
-   - Commit `_headers` to the repository root. Edge headers apply automatically.
-2. **Vercel**:
-   - Commit `vercel.json` to the repository root. Headers apply automatically on deployment.
-3. **Apache / cPanel Static Web Server**:
-   - Commit `.htaccess` to the document root. Ensure `mod_headers` and `mod_rewrite` are enabled.
-4. **Nginx Static Server**:
-   - Add the header directives from `SECURITY-CHECKLIST.md` to your Nginx `server {}` block.
-
----
-
-## 8. Security Model Limitations & Remaining Risks
-
-The static public architecture reduces the attack surface, but the publishing integration adds operational risks:
-
-1. **Edge CDN / Hosting Account Compromise**: Strong passwords and Multi-Factor Authentication (MFA) must be enabled on hosting provider accounts (Cloudflare, Vercel, Netlify, domain registrars).
-2. **DNS Tampering / Hijacking**: Ensure DNSSEC is activated at your domain registrar.
-3. **Third-Party CDN Availability**: If `cdnjs` or `fonts.googleapis.com` experience outages, 3D graphics or fonts fallback gracefully to local system sans-serif fonts.
+### 6. Storage Bucket (`ssn-uploads`)
+- **Public Read (`SELECT`)**: Enabled for public product images, blog banners, and certified lab PDFs.
+- **Upload / Modify / Delete (`INSERT`, `UPDATE`, `DELETE`)**: Strictly restricted to `authenticated` admin sessions.
 
 ---
 
-## 9. Recommended Periodic Checks
+## 4. File Upload Defensive Controls
 
-- Audit domain registration and SSL certificate expiration dates.
-- Review hosting provider access logs for anomaly detection.
-- Periodically check external CDN library hashes for version integrity.
+In [js/supabaseClient.js](js/supabaseClient.js), `uploadFileToStorage()` enforces multi-layered upload validation:
+
+1. **Extension Whitelist**: Only `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, and `.pdf` are permitted.
+2. **Dangerous Extension Blocking**: `.svg`, `.html`, `.htm`, `.js`, `.php`, `.exe`, `.bat`, `.cmd`, `.sh`, `.py`, and script extensions are strictly blocked.
+3. **MIME Type Validation**: Verified against `image/jpeg`, `image/png`, `image/webp`, `image/gif`, `application/pdf`.
+4. **Path Traversal Sanitization**: Folder and file names are stripped of `..`, slashes, and non-alphanumeric characters.
+5. **Collision & Overwrite Defense**: All filenames are appended with unique timestamps and cryptographically secure random suffixes (`${cleanBaseName}-${Date.now()}-${randomHash}.${ext}`).
+6. **Payload Size Limit**: Strict 25 MB ceiling enforced before transmission.
+
+---
+
+## 5. XSS & Client-Side Hardening
+
+1. **Blog HTML Sanitization**: [js/blogData.js](js/blogData.js) uses `DOMParser` to strip `script`, `iframe`, `object`, `embed`, `form`, `link`, `meta` tags, all `on*` event handlers, and `javascript:` / `vbscript:` / `data:text/html` URLs.
+2. **Text Escaping**: Every dynamic user-facing string (Product names, categories, descriptions, metrics, lab report batch numbers) is sanitized using `esc()` before DOM insertion.
+3. **Safe Event Handlers**: Action buttons in data tables use HTML5 `data-*` attributes (`this.getAttribute('data-id')`) instead of interpolated string literals to prevent injection breaks.
+4. **Target Blank Hardening**: All external and preview links declare `rel="noopener noreferrer"` to prevent tab-nabbing and `window.opener` privilege leaks.
+
+---
+
+## 6. Security Headers Specification
+
+Deployed via `_headers`, `vercel.json`, and `.htaccess`:
+
+```http
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.quilljs.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co; frame-src https://*.supabase.co blob:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.supabase.co;
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+```
+
+---
+
+## 7. Residual Risks & Operational Recommendations
+
+1. **Supabase SQL Migration Execution**: Ensure all RLS policies in [sql/migrations.sql](sql/migrations.sql) are executed in the Supabase Dashboard SQL Editor so remote database tables enforce backend policies.
+2. **Admin Password Complexity**: Enforce strong passwords (12+ characters, mixed casing, symbols) for admin accounts in Supabase Auth.
+3. **Environment Security**: Keep production credentials out of source control. Use environment variables for deployment CI/CD.

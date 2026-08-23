@@ -155,40 +155,58 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       const container = document.getElementById('dynamic-products-container');
-      let allProducts = [];
+      let dbProducts = [];
 
-      // 1. Fetch from Supabase
+      // 1. Fetch live products from Supabase / data layer
       if (typeof getProducts === 'function') {
         try {
-          console.log('[SSN] Fetching products from Supabase...');
+          console.log('[SSN] Fetching live products from Supabase...');
           const result = await getProducts();
           console.log('[SSN] Supabase getProducts result:', result);
 
-          if (result && Array.isArray(result.data) && result.data.length > 0) {
-            allProducts = result.data;
-          } else if (Array.isArray(result) && result.length > 0) {
-            allProducts = result;
+          if (result && Array.isArray(result.data)) {
+            dbProducts = result.data;
+          } else if (Array.isArray(result)) {
+            dbProducts = result;
           }
-          console.log(`[SSN] Loaded ${allProducts.length} products from database.`);
+          console.log(`[SSN] Loaded ${dbProducts.length} product records from database.`);
         } catch (err) {
           console.error('[SSN] Exception during product loading:', err);
         }
       }
 
-      // 2. Use Fallbacks if database returned empty
-      if (!allProducts || allProducts.length === 0) {
-        console.warn('[SSN] Using built-in product catalog.');
-        allProducts = FALLBACK_PRODUCTS;
+      // 2. Intelligently merge live database products with the default catalog
+      // This ensures all 4 flagship products remain visible while newly created products (e.g. protine) appear dynamically!
+      let allProducts = [...FALLBACK_PRODUCTS];
+
+      if (dbProducts.length > 0) {
+        dbProducts.forEach(dbItem => {
+          const dbName = (dbItem.name || dbItem.title || '').trim().toLowerCase();
+          const dbSlug = (dbItem.slug || '').trim().toLowerCase();
+          
+          const matchIdx = allProducts.findIndex(f => {
+            const fSlug = (f.slug || '').toLowerCase();
+            const fName = (f.name || '').toLowerCase();
+            return (dbSlug && fSlug === dbSlug) || (dbName && fName === dbName) || (dbItem.id && f.id === dbItem.id);
+          });
+
+          if (matchIdx >= 0) {
+            allProducts[matchIdx] = { ...allProducts[matchIdx], ...dbItem };
+          } else {
+            // New custom product created by user — append to catalog!
+            allProducts.push(dbItem);
+          }
+        });
       }
 
-      console.log('productData', allProducts);
+      console.log('[SSN] Complete merged product catalog:', allProducts);
 
       // Filter active products only
       const products = allProducts.filter(p => {
         const s = (p.status || 'Active').toLowerCase();
         return s === 'active' || s === 'published' || (!p.status && s !== 'draft' && s !== 'archived' && s !== 'inactive');
       });
-      console.log('products', products);
+      console.log('[SSN] Active products to render:', products);
 
       if (products.length > 0) {
         let html = '';
@@ -218,8 +236,8 @@
           const tagClass = catLower.includes('muscle') || catLower.includes('protein') || catLower.includes('whey') ? 'protein' : catLower.includes('mass') || catLower.includes('gainer') ? 'mass' : catLower.includes('amino') || catLower.includes('eaa') || catLower.includes('bcaa') ? 'amino' : 'strength';
 
           const matchingFallback = FALLBACK_PRODUCTS.find(item => (p_slug && item.slug === p_slug) || item.name.toLowerCase() === p_name.toLowerCase());
-          const fallbackImage = matchingFallback ? matchingFallback.image_url : FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length].image_url;
-          const imageSrc = p.image_url || p.image || p.featured_image || fallbackImage;
+          const fallbackImage = matchingFallback ? matchingFallback.image_url : (FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length] ? FALLBACK_PRODUCTS[index % FALLBACK_PRODUCTS.length].image_url : 'assets/images/products/performance-whey.webp');
+          const imageSrc = p.image_url || p.main_image || p.image || p.featured_image || fallbackImage;
 
           const imgHtml = `
             <a href="${detailUrl}" class="category-image-wrap reveal scale-in revealed" style="text-decoration:none;" aria-label="${p_name}">
