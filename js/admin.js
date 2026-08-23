@@ -914,6 +914,19 @@ async function saveProductData() {
     if (res && res.error) {
       showToast(`Error saving product: ${res.error.message}`, 'error');
     } else {
+      // Immediately cache locally so detail page loads instantly
+      try {
+        const savedItem = { id: (res && res.data && res.data.id) || productPayload.id || ('prod-' + Date.now()), ...productPayload, ...(res.data || {}) };
+        let localProds = JSON.parse(localStorage.getItem('ssn_local_products') || '[]');
+        const idx = localProds.findIndex(x => x.id === savedItem.id || (x.name && x.name.toLowerCase() === savedItem.name.toLowerCase()));
+        if (idx >= 0) {
+          localProds[idx] = savedItem;
+        } else {
+          localProds.unshift(savedItem);
+        }
+        localStorage.setItem('ssn_local_products', JSON.stringify(localProds));
+      } catch (e) {}
+
       showToast('Product saved successfully!');
       await loadDashboardData();
       switchTab('products');

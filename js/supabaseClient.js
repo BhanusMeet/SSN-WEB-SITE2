@@ -189,40 +189,59 @@ async function uploadFileToStorage(folder, file) {
 
 async function getProducts() {
   const sb = getSupabaseClient();
-  if (!sb) return { data: [], error: { message: 'Supabase client not initialized.' } };
+  let dbProducts = [];
 
+  if (sb) {
+    try {
+      const { data, error } = await sb
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (data && Array.isArray(data)) {
+        dbProducts = data;
+      }
+    } catch (err) {
+      console.warn('[SSN Supabase] getProducts exception:', err);
+    }
+  }
+
+  // Merge with locally stored products to ensure newly created products are immediately accessible
   try {
-    const { data, error } = await sb
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (data && Array.isArray(data)) {
-      data.forEach(p => {
-        // Check for embedded structured data trailer in description or full_description
-        const rawText = p.full_description || p.description || '';
-        const match = rawText.match(/<!--SSN_STRUCTURED_DATA:(.*?)-->/s);
-        if (match && match[1]) {
-          try {
-            const parsed = JSON.parse(decodeURIComponent(match[1]));
-            Object.keys(parsed).forEach(k => {
-              if (p[k] === undefined || p[k] === null || (typeof p[k] === 'object' && Object.keys(p[k]).length === 0)) {
-                p[k] = parsed[k];
-              }
-            });
-            // Clean up visual text
-            if (p.full_description) p.full_description = p.full_description.replace(/<!--SSN_STRUCTURED_DATA:.*?-->/s, '').trim();
-            if (p.description) p.description = p.description.replace(/<!--SSN_STRUCTURED_DATA:.*?-->/s, '').trim();
-          } catch (e) {}
+    const local = JSON.parse(localStorage.getItem('ssn_local_products') || '[]');
+    if (Array.isArray(local) && local.length > 0) {
+      local.forEach(lp => {
+        const matchIdx = dbProducts.findIndex(dp => (lp.id && dp.id === lp.id) || (dp.name && lp.name && dp.name.toLowerCase() === lp.name.toLowerCase()));
+        if (matchIdx >= 0) {
+          dbProducts[matchIdx] = { ...dbProducts[matchIdx], ...lp };
+        } else {
+          dbProducts.unshift(lp);
         }
       });
     }
+  } catch (e) {}
 
-    return { data: data || [], error };
-  } catch (err) {
-    console.error('[SSN Supabase] getProducts exception:', err);
-    return { data: [], error: { message: err.message } };
+  if (dbProducts.length > 0) {
+    dbProducts.forEach(p => {
+      // Check for embedded structured data trailer in description or full_description
+      const rawText = p.full_description || p.description || '';
+      const match = rawText.match(/<!--SSN_STRUCTURED_DATA:(.*?)-->/s);
+      if (match && match[1]) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(match[1]));
+          Object.keys(parsed).forEach(k => {
+            if (p[k] === undefined || p[k] === null || (typeof p[k] === 'object' && Object.keys(p[k]).length === 0)) {
+              p[k] = parsed[k];
+            }
+          });
+          if (p.full_description) p.full_description = p.full_description.replace(/<!--SSN_STRUCTURED_DATA:.*?-->/s, '').trim();
+          if (p.description) p.description = p.description.replace(/<!--SSN_STRUCTURED_DATA:.*?-->/s, '').trim();
+        } catch (e) {}
+      }
+    });
   }
+
+  return { data: dbProducts, error: null };
 }
 
 async function saveProduct(product) {

@@ -476,32 +476,67 @@
     async function loadDynamicProduct() {
       const root = document.getElementById('product-root');
       const params = new URLSearchParams(window.location.search);
-      const slugParam = (params.get('slug') || '').trim().toLowerCase();
+      let slugParam = (params.get('slug') || params.get('product') || params.get('name') || '').trim().toLowerCase();
       const idParam = (params.get('id') || '').trim();
+
+      // If query is formatted like "?protine" without key
+      if (!slugParam && !idParam && window.location.search) {
+        slugParam = decodeURIComponent(window.location.search.replace(/^\?/, '').split('&')[0]).trim().toLowerCase();
+      }
 
       console.log(`[SSN Product] Loading detail for slug: "${slugParam}", id: "${idParam}"`);
 
       let product = null;
+      let candidateList = [];
 
+      // 1. Fetch from Supabase via getProducts()
       try {
         if (typeof getProducts === 'function') {
           const { data } = await getProducts();
-          if (data && data.length > 0) {
-            if (idParam) {
-              product = data.find(p => String(p.id) === idParam);
-            }
-            if (!product && slugParam) {
-              product = data.find(p => {
-                const s = (p.slug || p.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                return s === slugParam || (p.slug && p.slug.toLowerCase() === slugParam) || (p.name && p.name.toLowerCase() === slugParam);
-              });
-            }
+          if (data && Array.isArray(data)) {
+            candidateList = [...data];
           }
         }
       } catch (err) {
         console.warn('[SSN Product] Supabase fetch warning:', err);
       }
 
+      // 2. Also check localStorage directly
+      try {
+        const local = JSON.parse(localStorage.getItem('ssn_local_products') || '[]');
+        if (Array.isArray(local)) {
+          local.forEach(lp => {
+            if (!candidateList.some(c => c.id === lp.id)) {
+              candidateList.push(lp);
+            }
+          });
+        }
+      } catch (e) {}
+
+      // 3. Match by ID or Slug or Name
+      if (candidateList.length > 0) {
+        if (idParam) {
+          product = candidateList.find(p => String(p.id).toLowerCase() === idParam.toLowerCase());
+        }
+        if (!product && slugParam) {
+          const cleanParam = slugParam.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          product = candidateList.find(p => {
+            const pSlug = (p.slug || '').toLowerCase().trim();
+            const pName = (p.name || p.title || '').toLowerCase().trim();
+            const pCleanSlug = pSlug.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            const pCleanName = pName.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+            return pSlug === slugParam || 
+                   pName === slugParam || 
+                   pCleanSlug === cleanParam || 
+                   pCleanName === cleanParam ||
+                   pCleanName.includes(cleanParam) ||
+                   cleanParam.includes(pCleanName);
+          });
+        }
+      }
+
+      // 4. Fallback Dictionary
       if (!product && slugParam && STATIC_FALLBACKS[slugParam]) {
         product = STATIC_FALLBACKS[slugParam];
       }
@@ -510,7 +545,7 @@
         root.innerHTML = `
           <div class="dynamic-loading">
             <h1 style="font-size:28px; margin-bottom:12px; font-weight:800;">Product Not Found</h1>
-            <p style="color:#8c9196; max-width:440px; margin-bottom:24px; font-size:14px; line-height:1.6;">The requested product could not be located or may have been updated. Explore our full supplement lineup.</p>
+            <p style="color:#8c9196; max-width:440px; margin-bottom:24px; font-size:14px; line-height:1.6;">The requested product could not be located. Explore our full supplement lineup or check back shortly.</p>
             <a href="products.html" class="btn btn-primary">Browse All Products</a>
           </div>
         `;
