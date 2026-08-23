@@ -181,7 +181,7 @@
           </div>
           
           <div class="admin-card">
-            <h3 class="admin-card-title">Pricing</h3>
+            <h3 class="admin-card-title">Pricing & Inventory</h3>
             <div class="admin-form-row" style="margin-top:16px;">
               <div class="admin-form-group">
                 <label class="admin-form-label">Selling Price</label>
@@ -191,13 +191,37 @@
                 <label class="admin-form-label">Compare at price (MRP)</label>
                 <input type="text" id="prod-mrp" class="admin-form-input" placeholder="₹3,499">
               </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Discount / Offer (Optional)</label>
+                <input type="text" id="prod-discount" class="admin-form-input" placeholder="20% OFF">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Serving Size / Weight</label>
+              <input type="text" id="prod-serving" class="admin-form-input" placeholder="e.g. 3 KG / 300 G / 75 Servings">
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <h3 class="admin-card-title">Formulation & Specifications</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <label class="admin-form-label">Key Ingredients</label>
+              <textarea id="prod-ingredients" class="admin-form-textarea" placeholder="e.g. Whey Protein Isolate, Cocoa Powder, Sunflower Lecithin..."></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Key Benefits</label>
+              <textarea id="prod-benefits" class="admin-form-textarea" placeholder="e.g. 24g Pure Protein per serving, 5.5g BCAAs, Ultra-filtered absorption"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">How to Use (Directions)</label>
+              <textarea id="prod-usage" class="admin-form-textarea" placeholder="e.g. Mix 1 scoop (33g) with 200-250ml of cold water or skimmed milk."></textarea>
             </div>
           </div>
 
           <div class="admin-card">
             <div class="admin-card-header">
               <h3 class="admin-card-title">Variants (Flavours)</h3>
-              <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="addVariantField()">+ Add Flavour</button>
+              <button class="admin-btn admin-btn-outline admin-btn-sm" type="button" onclick="addVariantField()">+ Add Flavour</button>
             </div>
             <div id="variant-list" class="variant-list">
               <!-- Dynamically populated -->
@@ -378,17 +402,18 @@
           </div>
 
           <div class="admin-card">
-            <h3 class="admin-card-title">Certificate Images</h3>
-            <p style="color:#637381; font-size:14px; margin: 8px 0 16px;">Upload the scanned lab report certificates as images. PDFs are not required.</p>
-            <div class="admin-upload-zone">
-              <div class="admin-upload-content" onclick="document.getElementById('lr-img-upload').click()">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p style="margin-top:8px;">Add certificate images</p>
+            <h3 class="admin-card-title">Upload PDF Certificate</h3>
+            <p style="color:#637381; font-size:14px; margin: 8px 0 16px;">Upload official lab test report in PDF format (.pdf only). The PDF will be saved in Supabase storage and accessible by consumers.</p>
+            <div class="admin-upload-zone" onclick="document.getElementById('lr-pdf-upload').click()">
+              <div class="admin-upload-content">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <p style="margin:0; font-weight:500;">Click to select PDF document</p>
+                <span style="font-size:12px; color:#8c9196;">Supported format: .pdf only</span>
               </div>
-              <input type="file" id="lr-img-upload" accept="image/*" multiple onchange="handleLabReportImageUpload(this)">
-              <div id="lr-img-preview" class="admin-upload-preview"></div>
-              <input type="hidden" id="lr-images-store" value="[]">
+              <input type="file" id="lr-pdf-upload" accept="application/pdf,.pdf" onchange="handleLabReportPdfUpload(this)">
             </div>
+            <div id="lr-pdf-preview" style="margin-top:16px;"></div>
+            <input type="hidden" id="lr-certificate-url" value="">
           </div>
         </div>
         

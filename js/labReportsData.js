@@ -1,8 +1,6 @@
 /* ============================================
    SSN ELITE — Lab Reports Data Store & Renderer
-   Now integrates with Supabase for dynamic data.
-   Falls back to static seed data when DB is unavailable.
-   Download buttons are permanently removed.
+   Integrates with Supabase for dynamic PDF lab reports.
    ============================================ */
 
 const SSN_LAB_REPORTS_DATA = [
@@ -10,12 +8,12 @@ const SSN_LAB_REPORTS_DATA = [
     id: 'whey-protein',
     name: 'SSN Elite Performance Whey',
     category: 'Protein',
-    image: 'assets/images/products/performance-whey.png',
     batchNo: 'SSN-WHEY-2025-08A',
     testDate: 'August 14, 2025',
     labName: 'SGS Analytical Labs (ISO/IEC 17025 Certified)',
     status: 'VERIFIED',
     purityScore: '100% Passed',
+    certificateUrl: '',
     summary: 'Third-party assay confirms 24.2g protein per scoop with zero heavy metal contamination and full amino acid profile match.',
     metrics: [
       { label: 'Assayed Protein Content', value: '24.2g per scoop', status: 'PASS' },
@@ -29,12 +27,12 @@ const SSN_LAB_REPORTS_DATA = [
     id: 'bcaa-eaa',
     name: 'SSN Elite EAA + BCAA + Glutamine',
     category: 'Amino Acids',
-    image: 'assets/images/products/eaa-bcaa-glutamine.png',
     batchNo: 'SSN-AMIN-2025-07C',
     testDate: 'August 10, 2025',
     labName: 'Eurofins Scientific (ISO 17025 Accredited)',
     status: 'VERIFIED',
     purityScore: '100% Passed',
+    certificateUrl: '',
     summary: 'Full spectrum essential amino acid verification confirming precise 2:1:1 BCAA ratio, l-glutamine purity, and rapid dissolution rate.',
     metrics: [
       { label: 'Free-Form Amino Acid Content', value: '7.8g per 10g serving', status: 'PASS' },
@@ -48,12 +46,12 @@ const SSN_LAB_REPORTS_DATA = [
     id: 'tri-creatine',
     name: 'SSN Elite Tri Creatine',
     category: 'Performance',
-    image: 'assets/images/products/tri-creatine.png',
     batchNo: 'SSN-CREA-2025-08B',
     testDate: 'August 08, 2025',
     labName: 'Intertek Food & Bio Analytical Services',
     status: 'VERIFIED',
     purityScore: '100% Passed',
+    certificateUrl: '',
     summary: 'High-Performance Liquid Chromatography (HPLC) test confirms 99.9% pure tri-creatine blend with zero dicyandiamide or dihydrotriazine residues.',
     metrics: [
       { label: 'HPLC Creatine Assay', value: '99.9% Active Purity', status: 'PASS' },
@@ -67,12 +65,12 @@ const SSN_LAB_REPORTS_DATA = [
     id: 'monster-mass',
     name: 'SSN Elite Anabolic Monster Mass',
     category: 'Mass Gainer',
-    image: 'assets/images/products/anabolic-monster-mass.png',
     batchNo: 'SSN-MASS-2025-06F',
     testDate: 'August 02, 2025',
     labName: 'SGS Analytical Labs (ISO/IEC 17025 Certified)',
     status: 'VERIFIED',
     purityScore: '100% Passed',
+    certificateUrl: '',
     summary: 'Caloric density and macronutrient profile verified. High protein ratio and complex carbohydrate source confirmed with zero filler spiking.',
     metrics: [
       { label: 'Macronutrient Protein Density', value: 'Verified 54g / serving', status: 'PASS' },
@@ -84,7 +82,7 @@ const SSN_LAB_REPORTS_DATA = [
   }
 ];
 
-/* ─── Supabase-backed dynamic data (merged at runtime) ─── */
+/* ─── Supabase-backed dynamic data ─── */
 let SSN_LAB_REPORTS_DB = [];
 
 async function loadLabReportsFromDB() {
@@ -93,27 +91,29 @@ async function loadLabReportsFromDB() {
       const result = await getLabReports();
       const dbReports = (result && result.data) || (Array.isArray(result) ? result : []);
       if (dbReports && dbReports.length > 0) {
-        SSN_LAB_REPORTS_DB = dbReports.map(r => ({
-          id: r.id,
-          name: r.product_name,
-          category: r.product_name.includes('Whey') ? 'Protein'
-            : r.product_name.includes('EAA') ? 'Amino Acids'
-            : r.product_name.includes('Creatine') ? 'Performance'
-            : 'Mass Gainer',
-          image: (r.report_images && r.report_images.length > 0) ? r.report_images[0] : '',
-          batchNo: r.batch_number,
-          testDate: r.test_date,
-          labName: r.lab_name,
-          status: r.status || 'VERIFIED',
-          purityScore: '100% Passed',
-          summary: `Verified ISO-accredited laboratory assay for batch ${r.batch_number}.`,
-          metrics: (r.parameters || []).map(p => ({
-            label: p.label,
-            value: p.value,
-            status: p.status || 'PASS'
-          })),
-          reportImages: r.report_images || []
-        }));
+        SSN_LAB_REPORTS_DB = dbReports.map(r => {
+          const certUrl = r.certificate_url || (Array.isArray(r.report_images) && r.report_images.length > 0 ? r.report_images[0] : (typeof r.report_images === 'string' ? r.report_images : ''));
+          return {
+            id: r.id,
+            name: r.product_name,
+            category: r.product_name.includes('Whey') ? 'Protein'
+              : r.product_name.includes('EAA') ? 'Amino Acids'
+              : r.product_name.includes('Creatine') ? 'Performance'
+              : 'Mass Gainer',
+            batchNo: r.batch_number,
+            testDate: r.test_date,
+            labName: r.lab_name,
+            status: r.status || 'VERIFIED',
+            purityScore: '100% Passed',
+            certificateUrl: certUrl,
+            summary: `Official certified laboratory analysis for batch ${r.batch_number}.`,
+            metrics: (r.parameters || []).map(p => ({
+              label: p.label,
+              value: p.value,
+              status: p.status || 'PASS'
+            }))
+          };
+        });
       }
     } catch (e) {
       console.warn('[SSN Lab Reports] DB load fallback:', e);
@@ -128,7 +128,7 @@ function getAllLabReports() {
 
 function getLabReportByBatch(batchNo) {
   const all = getAllLabReports();
-  return all.find(r => r.batchNo === batchNo) || null;
+  return all.find(r => r.batchNo.toLowerCase() === (batchNo || '').toLowerCase().trim()) || null;
 }
 
 function getAllBatchNumbers() {
@@ -138,7 +138,6 @@ function getAllBatchNumbers() {
 
 /**
  * Render Lab Reports Cards dynamically into a container
- * Download buttons are permanently removed.
  */
 function renderLabReports(containerId = 'lab-reports-grid', categoryFilter = 'ALL', searchQuery = '') {
   const container = document.getElementById(containerId);
@@ -169,7 +168,6 @@ function renderLabReports(containerId = 'lab-reports-grid', categoryFilter = 'AL
   container.innerHTML = filteredData.map(item => `
     <article class="lab-report-card reveal" id="report-card-${item.id}">
       <div class="lab-report-header">
-        ${item.image ? `<div class="lab-report-img-box"><img src="${item.image}" alt="${item.name}" loading="lazy"></div>` : ''}
         <div class="lab-report-badge">
           <span class="status-dot"></span>
           ${item.status}
@@ -193,14 +191,17 @@ function renderLabReports(containerId = 'lab-reports-grid', categoryFilter = 'AL
           </div>
         </div>
         ${item.summary ? `<p class="lab-report-summary">${item.summary}</p>` : ''}
-        <div class="lab-report-actions">
-          <button class="cta-button btn-sm" onclick="openLabReportModal('${item.id}')" aria-label="View Full Report for ${item.name}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            View Lab Report
-          </button>
+        <div class="lab-report-actions" style="margin-top: 16px;">
+          ${item.certificateUrl ? `
+            <a href="${item.certificateUrl}" target="_blank" rel="noopener noreferrer" class="cta-button btn-sm" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              View Lab Report PDF
+            </a>
+          ` : `
+            <button class="cta-button-outline btn-sm" onclick="openLabReportModal('${item.id}')">
+              View Assay Details
+            </button>
+          `}
         </div>
       </div>
     </article>
@@ -209,7 +210,6 @@ function renderLabReports(containerId = 'lab-reports-grid', categoryFilter = 'AL
 
 /**
  * Open interactive Lab Report Preview Modal
- * No download buttons — view only.
  */
 function openLabReportModal(productId) {
   const allData = getAllLabReports();
@@ -223,10 +223,6 @@ function openLabReportModal(productId) {
     modal.className = 'lab-modal-overlay';
     document.body.appendChild(modal);
   }
-
-  const reportImagesHtml = (item.reportImages && item.reportImages.length > 0)
-    ? `<div class="lab-report-images-grid">${item.reportImages.map(img => `<img src="${img}" alt="Lab Report Certificate" class="lab-report-scan-img" loading="lazy">`).join('')}</div>`
-    : '';
 
   modal.innerHTML = `
     <div class="lab-modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -256,9 +252,16 @@ function openLabReportModal(productId) {
           </div>
         </div>
 
-        ${reportImagesHtml ? `
-        <h4 class="modal-section-title" style="margin-top: 24px;">Scanned Certificate</h4>
-        ${reportImagesHtml}
+        ${item.certificateUrl ? `
+          <div style="margin-top: 24px; text-align: center; padding: 24px; background: var(--surface-off-white); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px; color: var(--ssn-blue);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <h4 style="margin: 0 0 8px;">Official Lab Certificate PDF Available</h4>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">View the verified PDF test report issued directly by ${item.labName}.</p>
+            <a href="${item.certificateUrl}" target="_blank" rel="noopener noreferrer" class="cta-button" style="display: inline-flex; align-items: center; gap: 8px;">
+              Open Lab Report PDF
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
         ` : ''}
       </div>
 

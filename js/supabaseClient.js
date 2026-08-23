@@ -112,6 +112,9 @@ async function deleteUserSubmission(id) {
 /* ══════════════════════════════════════════════
    STORAGE
    ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   STORAGE
+   ══════════════════════════════════════════════ */
 async function uploadFileToStorage(folder, file) {
   const sb = getSupabaseClient();
   if (!sb) return { error: { message: 'Database not available.' } };
@@ -123,17 +126,28 @@ async function uploadFileToStorage(folder, file) {
   // Try ssn-uploads bucket first
   let res = await sb.storage
     .from('ssn-uploads')
-    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+    .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
   if (res.error) {
-    // If ssn-uploads fails or does not exist, try folder-specific bucket
-    const altBucket = folder.startsWith('products') ? 'product-images' : folder.startsWith('blogs') ? 'blog-images' : 'lab-report-images';
-    const altRes = await sb.storage.from(altBucket).upload(fileName, file, { cacheControl: '3600', upsert: false });
-    if (!altRes.error) {
-      const { data: urlData } = sb.storage.from(altBucket).getPublicUrl(fileName);
-      return { publicUrl: urlData.publicUrl, error: null };
+    console.warn('[SSN Storage] Upload to ssn-uploads returned:', res.error.message);
+    // If bucket not found, attempt creation if authenticated
+    if (res.error.message && (res.error.message.includes('not found') || res.error.statusCode === '404')) {
+      try {
+        await sb.storage.createBucket('ssn-uploads', { public: true });
+        res = await sb.storage.from('ssn-uploads').upload(fileName, file, { cacheControl: '3600', upsert: true });
+      } catch (createErr) {}
     }
-    return { error: res.error };
+    
+    // If still error, try alt bucket
+    if (res.error) {
+      const altBucket = folder.startsWith('products') ? 'product-images' : folder.startsWith('blogs') ? 'blog-images' : 'lab-report-images';
+      const altRes = await sb.storage.from(altBucket).upload(fileName, file, { cacheControl: '3600', upsert: true });
+      if (!altRes.error) {
+        const { data: urlData } = sb.storage.from(altBucket).getPublicUrl(fileName);
+        return { publicUrl: urlData.publicUrl, error: null };
+      }
+      return { error: res.error };
+    }
   }
   
   const { data: urlData } = sb.storage.from('ssn-uploads').getPublicUrl(fileName);
@@ -246,7 +260,7 @@ async function deleteProduct(id) {
 
 async function getBlogs() {
   const sb = getSupabaseClient();
-  if (!sb) return [];
+  if (!sb) return { data: [], error: null };
 
   const { data, error } = await sb
     .from('blogs')
@@ -262,34 +276,38 @@ async function saveBlog(blog) {
 
   const blogData = {
     title: blog.title,
-    slug: blog.slug,
-    featured_image: blog.featured_image,
-    author: blog.author,
-    content: blog.content,
-    excerpt: blog.excerpt,
-    category: blog.category,
-    read_time: blog.read_time,
-    gradient: blog.gradient,
-    seo_title: blog.seo_title,
-    seo_description: blog.seo_description,
-    publish_date: blog.publish_date,
+    slug: blog.slug || (blog.title ? blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : null),
+    featured_image: blog.featured_image || '',
+    author: blog.author || 'SSN Elite Research Team',
+    content: blog.content || '',
+    excerpt: blog.excerpt || '',
+    category: blog.category || 'Nutrition Science',
+    read_time: blog.read_time || '5 min read',
+    gradient: blog.gradient || 'linear-gradient(135deg, #0A2FFF 0%, #061B99 100%)',
+    seo_title: blog.seo_title || blog.meta_title || '',
+    seo_description: blog.seo_description || blog.meta_description || '',
+    publish_date: blog.publish_date || new Date().toISOString().split('T')[0],
     status: blog.status || 'Published'
   };
 
+  let response;
   if (blog.id) {
-    const { data, error } = await sb
-      .from('blogs')
-      .update(blogData)
-      .eq('id', blog.id)
-      .select();
-    return { data, error };
+    response = await sb.from('blogs').update(blogData).eq('id', blog.id).select();
+    // Graceful column fallback if older schema without status column
+    if (response.error && response.error.message && response.error.message.includes('status')) {
+      delete blogData.status;
+      response = await sb.from('blogs').update(blogData).eq('id', blog.id).select();
+    }
   } else {
-    const { data, error } = await sb
-      .from('blogs')
-      .insert([blogData])
-      .select();
-    return { data, error };
+    response = await sb.from('blogs').insert([blogData]).select();
+    // Graceful column fallback if older schema without status column
+    if (response.error && response.error.message && response.error.message.includes('status')) {
+      delete blogData.status;
+      response = await sb.from('blogs').insert([blogData]).select();
+    }
   }
+
+  return response;
 }
 
 async function deleteBlog(id) {
@@ -311,7 +329,7 @@ async function deleteBlog(id) {
 
 async function getLabReports() {
   const sb = getSupabaseClient();
-  if (!sb) return [];
+  if (!sb) return { data: [], error: null };
 
   const { data, error } = await sb
     .from('lab_reports')
@@ -325,36 +343,36 @@ async function saveLabReport(report) {
   const sb = getSupabaseClient();
   if (!sb) return { error: { message: 'Database not available.' } };
 
+  const certUrl = report.certificate_url || (Array.isArray(report.report_images) && report.report_images.length > 0 ? report.report_images[0] : '');
+
+  const payload = {
+    batch_number: report.batch_number,
+    product_name: report.product_name,
+    lab_name: report.lab_name,
+    test_date: report.test_date,
+    certificate_url: certUrl,
+    report_images: certUrl ? [certUrl] : (report.report_images || []),
+    parameters: report.parameters || [],
+    status: report.status || 'VERIFIED'
+  };
+
+  let response;
   if (report.id) {
-    const { data, error } = await sb
-      .from('lab_reports')
-      .update({
-        batch_number: report.batch_number,
-        product_name: report.product_name,
-        lab_name: report.lab_name,
-        test_date: report.test_date,
-        parameters: report.parameters,
-        report_images: report.report_images || [],
-        status: report.status || 'VERIFIED'
-      })
-      .eq('id', report.id)
-      .select();
-    return { data, error };
+    response = await sb.from('lab_reports').update(payload).eq('id', report.id).select();
+    // If certificate_url column is not in remote schema yet, fallback gracefully
+    if (response.error && response.error.message && response.error.message.includes('certificate_url')) {
+      delete payload.certificate_url;
+      response = await sb.from('lab_reports').update(payload).eq('id', report.id).select();
+    }
   } else {
-    const { data, error } = await sb
-      .from('lab_reports')
-      .insert([{
-        batch_number: report.batch_number,
-        product_name: report.product_name,
-        lab_name: report.lab_name,
-        test_date: report.test_date,
-        parameters: report.parameters,
-        report_images: report.report_images || [],
-        status: report.status || 'VERIFIED'
-      }])
-      .select();
-    return { data, error };
+    response = await sb.from('lab_reports').insert([payload]).select();
+    if (response.error && response.error.message && response.error.message.includes('certificate_url')) {
+      delete payload.certificate_url;
+      response = await sb.from('lab_reports').insert([payload]).select();
+    }
   }
+
+  return response;
 }
 
 async function deleteLabReport(id) {

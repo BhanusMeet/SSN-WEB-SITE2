@@ -1,6 +1,6 @@
 /* ============================================
    SSN ELITE — Admin Dashboard Logic
-   Unified CMS management for Products, Blogs, Lab Reports & Submissions
+   Shopify-style CMS management for Products, Blogs, Lab Reports & Submissions
    ============================================ */
 
 let currentSession = null;
@@ -100,15 +100,26 @@ function switchTab(tabId, btnElement) {
   }
 }
 
-// ── Editors Initialization ──
+// ── Editors Initialization (Quill with Full Rich Text Controls) ──
 function initQuillEditors() {
   if (typeof Quill === 'undefined') return;
+
+  const quillToolbarOptions = [
+    [{ 'header': [1, 2, 3, 4, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['blockquote', 'code-block'],
+    ['link', 'image'],
+    [{ 'color': [] }, { 'background': [] }],
+    ['clean']
+  ];
 
   const prodElem = document.getElementById('prod-desc-editor');
   if (prodElem && !quillProduct) {
     quillProduct = new Quill('#prod-desc-editor', {
       theme: 'snow',
-      modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ] }
+      placeholder: 'Write comprehensive product description, clinical highlights, dosage, etc.',
+      modules: { toolbar: quillToolbarOptions }
     });
   }
   
@@ -116,7 +127,8 @@ function initQuillEditors() {
   if (blogElem && !quillBlog) {
     quillBlog = new Quill('#blog-content-editor', {
       theme: 'snow',
-      modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean'] ] }
+      placeholder: 'Write your full scientific article, subheadings, key takeaways, and references here...',
+      modules: { toolbar: quillToolbarOptions }
     });
   }
 }
@@ -205,6 +217,22 @@ function openProductEditor(id = null) {
     document.getElementById('prod-category').value = p.category || 'Lean Muscle';
     document.getElementById('prod-selling').value = p.selling_price || p.price || '';
     document.getElementById('prod-mrp').value = p.mrp || '';
+    
+    const discElem = document.getElementById('prod-discount');
+    if (discElem) discElem.value = p.discount || '';
+    
+    const servElem = document.getElementById('prod-serving');
+    if (servElem) servElem.value = p.serving_size || '';
+    
+    const ingElem = document.getElementById('prod-ingredients');
+    if (ingElem) ingElem.value = p.ingredients || '';
+    
+    const benElem = document.getElementById('prod-benefits');
+    if (benElem) benElem.value = p.benefits || '';
+    
+    const useElem = document.getElementById('prod-usage');
+    if (useElem) useElem.value = p.usage_instruction || '';
+
     document.getElementById('prod-seo-title').value = p.seo_title || '';
     document.getElementById('prod-seo-desc').value = p.seo_description || '';
     document.getElementById('prod-slug').value = p.slug || '';
@@ -225,6 +253,22 @@ function openProductEditor(id = null) {
     document.getElementById('prod-category').value = 'Lean Muscle';
     document.getElementById('prod-selling').value = '';
     document.getElementById('prod-mrp').value = '';
+    
+    const discElem = document.getElementById('prod-discount');
+    if (discElem) discElem.value = '';
+    
+    const servElem = document.getElementById('prod-serving');
+    if (servElem) servElem.value = '';
+    
+    const ingElem = document.getElementById('prod-ingredients');
+    if (ingElem) ingElem.value = '';
+    
+    const benElem = document.getElementById('prod-benefits');
+    if (benElem) benElem.value = '';
+    
+    const useElem = document.getElementById('prod-usage');
+    if (useElem) useElem.value = '';
+
     document.getElementById('prod-seo-title').value = '';
     document.getElementById('prod-seo-desc').value = '';
     document.getElementById('prod-slug').value = '';
@@ -309,6 +353,12 @@ async function saveProductData() {
   });
 
   const fullDesc = quillProduct ? quillProduct.root.innerHTML : '';
+  const discElem = document.getElementById('prod-discount');
+  const servElem = document.getElementById('prod-serving');
+  const ingElem = document.getElementById('prod-ingredients');
+  const benElem = document.getElementById('prod-benefits');
+  const useElem = document.getElementById('prod-usage');
+
   const product = {
     id: document.getElementById('prod-id').value || undefined,
     name: prodName,
@@ -316,6 +366,11 @@ async function saveProductData() {
     category: document.getElementById('prod-category').value,
     selling_price: document.getElementById('prod-selling').value.trim(),
     mrp: document.getElementById('prod-mrp').value.trim(),
+    discount: discElem ? discElem.value.trim() : '',
+    serving_size: servElem ? servElem.value.trim() : '',
+    ingredients: ingElem ? ingElem.value.trim() : '',
+    benefits: benElem ? benElem.value.trim() : '',
+    usage_instruction: useElem ? useElem.value.trim() : '',
     seo_title: document.getElementById('prod-seo-title').value.trim(),
     seo_description: document.getElementById('prod-seo-desc').value.trim(),
     slug: document.getElementById('prod-slug').value.trim() || prodName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
@@ -366,7 +421,7 @@ function renderBlogsTable() {
   if (!container) return;
 
   if (allBlogs.length === 0) {
-    container.innerHTML = '<p style="color:#637381; padding: 24px 0;">No blog posts found. Click "Add blog post" to publish your first article.</p>';
+    container.innerHTML = '<p style="color:#637381; padding: 24px 0;">No blog posts found in database. Click "Add blog post" to publish your first article.</p>';
     return;
   }
   
@@ -587,6 +642,9 @@ function populateLabProductDropdown() {
 function openLabReportEditor(id = null) {
   populateLabProductDropdown();
 
+  const preview = document.getElementById('lr-pdf-preview');
+  const certInput = document.getElementById('lr-certificate-url');
+
   if (id) {
     const r = allLabReports.find(x => x.id === id);
     if (!r) return;
@@ -595,11 +653,24 @@ function openLabReportEditor(id = null) {
     document.getElementById('lr-batch').value = r.batch_number || '';
     document.getElementById('lr-lab').value = r.lab_name || '';
     document.getElementById('lr-date').value = r.test_date || '';
-    const images = Array.isArray(r.report_images) ? r.report_images : [];
-    document.getElementById('lr-images-store').value = JSON.stringify(images);
     
-    const preview = document.getElementById('lr-img-preview');
-    preview.innerHTML = images.map(u => `<img src="${u}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #dfe3e8;">`).join('');
+    const certUrl = r.certificate_url || (Array.isArray(r.report_images) && r.report_images.length > 0 ? r.report_images[0] : (typeof r.report_images === 'string' ? r.report_images : ''));
+    if (certInput) certInput.value = certUrl || '';
+    
+    if (preview) {
+      preview.innerHTML = certUrl 
+        ? `<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:#f4f6f8; border:1px solid #dfe3e8; border-radius:6px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:20px;">📄</span>
+              <div>
+                <a href="${certUrl}" target="_blank" style="color:#008060; font-weight:600; font-size:13px; text-decoration:none;">View Uploaded PDF Certificate</a>
+                <div style="font-size:11px; color:#637381;">Saved in ssn-uploads/lab-reports/</div>
+              </div>
+            </div>
+            <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="document.getElementById('lr-pdf-upload').click()">Change PDF</button>
+          </div>`
+        : '';
+    }
     
     document.getElementById('lab-editor-title').textContent = `Edit Lab Report — ${r.batch_number}`;
   } else {
@@ -608,34 +679,51 @@ function openLabReportEditor(id = null) {
     document.getElementById('lr-batch').value = '';
     document.getElementById('lr-lab').value = '';
     document.getElementById('lr-date').value = '';
-    document.getElementById('lr-images-store').value = '[]';
-    document.getElementById('lr-img-preview').innerHTML = '';
+    if (certInput) certInput.value = '';
+    if (preview) preview.innerHTML = '';
     document.getElementById('lab-editor-title').textContent = 'Upload lab report';
   }
   switchTab('lab-editor');
 }
 
-async function handleLabReportImageUpload(input) {
+async function handleLabReportPdfUpload(input) {
   if (!input.files || input.files.length === 0) return;
-  const preview = document.getElementById('lr-img-preview');
-  preview.innerHTML = '<p style="color:#637381; font-size:12px;">Uploading certificates...</p>';
+  const file = input.files[0];
   
-  let existing = [];
-  try {
-    existing = JSON.parse(document.getElementById('lr-images-store').value || '[]');
-  } catch (e) {
-    existing = [];
+  if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+    alert('Please select a valid PDF file (.pdf only).');
+    return;
+  }
+
+  const preview = document.getElementById('lr-pdf-preview');
+  if (preview) {
+    preview.innerHTML = '<p style="color:#637381; font-size:13px; padding:8px 0;">Uploading PDF certificate to ssn-uploads/lab-reports/ ...</p>';
   }
   
-  for (const file of input.files) {
-    const { publicUrl, error } = await uploadFileToStorage('lab-reports', file);
-    if (!error && publicUrl) {
-      existing.push(publicUrl);
-    }
+  const { publicUrl, error } = await uploadFileToStorage('lab-reports', file);
+  if (error) {
+    if (preview) preview.innerHTML = `<p style="color:#d82c0d; font-size:13px;">Upload failed: ${error.message}</p>`;
+    alert(`Upload error: ${error.message}`);
+    return;
   }
   
-  document.getElementById('lr-images-store').value = JSON.stringify(existing);
-  preview.innerHTML = existing.map(u => `<img src="${u}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #dfe3e8;">`).join('');
+  const certInput = document.getElementById('lr-certificate-url');
+  if (certInput) certInput.value = publicUrl;
+  
+  if (preview) {
+    preview.innerHTML = `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:#e3f1df; border:1px solid #008060; border-radius:6px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px;">✅</span>
+          <div>
+            <a href="${publicUrl}" target="_blank" style="color:#008060; font-weight:600; font-size:13px; text-decoration:none;">PDF Certificate Uploaded (${file.name})</a>
+            <div style="font-size:11px; color:#008060;">Ready to save to database</div>
+          </div>
+        </div>
+        <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="document.getElementById('lr-pdf-upload').click()">Replace</button>
+      </div>
+    `;
+  }
 }
 
 async function saveLabReportData() {
@@ -651,20 +739,17 @@ async function saveLabReportData() {
   btn.textContent = 'Saving...';
   btn.disabled = true;
   
-  let reportImages = [];
-  try {
-    reportImages = JSON.parse(document.getElementById('lr-images-store').value || '[]');
-  } catch (e) {
-    reportImages = [];
-  }
+  const certInput = document.getElementById('lr-certificate-url');
+  const certUrl = certInput ? certInput.value.trim() : '';
 
   const report = {
     id: document.getElementById('lr-id').value || undefined,
     batch_number: batchNumber,
     product_name: productName,
-    lab_name: document.getElementById('lr-lab').value.trim() || 'ISO Accredited Testing Lab',
+    lab_name: document.getElementById('lr-lab').value.trim() || 'ISO/IEC 17025 Accredited Laboratory',
     test_date: document.getElementById('lr-date').value.trim() || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-    report_images: reportImages,
+    certificate_url: certUrl,
+    report_images: certUrl ? [certUrl] : [],
     parameters: [],
     status: 'VERIFIED'
   };
