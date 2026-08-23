@@ -285,8 +285,8 @@
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(10, 10, 15, 0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -314,6 +314,144 @@
   flex-direction: column;
 }
 
+/* ── Premium Embedded PDF Viewer Modal ── */
+.lab-pdf-modal-card {
+  width: 95%;
+  max-width: 980px;
+  height: 90vh;
+  max-height: 920px;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-white);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lab-pdf-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-6) var(--space-8);
+  background: var(--surface-off-white);
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lab-pdf-modal-title-box {
+  flex: 1;
+  padding-right: var(--space-8);
+}
+
+.lab-pdf-title {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 4px 0 6px;
+  line-height: 1.25;
+}
+
+.lab-pdf-submeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.dot-sep {
+  color: var(--text-quaternary);
+}
+
+.lab-pdf-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #2d3032;
+  overflow: hidden;
+}
+
+.lab-pdf-embed-wrapper {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+.lab-pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #525659;
+}
+
+.lab-pdf-fallback-container {
+  padding: var(--space-8);
+  background: var(--surface-white);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.lab-assay-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: var(--text-small);
+}
+
+.lab-assay-table th {
+  background: var(--surface-off-white);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lab-assay-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.lab-param-pass {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: #e6f4ea;
+  color: #137333;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .lab-pdf-modal-card {
+    width: 100%;
+    height: 94vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin-top: auto;
+  }
+  
+  .lab-pdf-modal-header {
+    padding: var(--space-4) var(--space-5);
+  }
+  
+  .lab-pdf-title {
+    font-size: 1.1rem;
+  }
+  
+  .lab-pdf-submeta {
+    font-size: 11px;
+  }
+}
+
 .lab-modal-close {
   position: absolute;
   top: var(--space-4);
@@ -321,17 +459,21 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--surface-off-white);
-  border: none;
+  background: var(--surface-white);
+  border: 1px solid var(--border-subtle);
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   color: var(--text-secondary);
   transition: all var(--duration-fast) var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lab-modal-close:hover {
   background: var(--ssn-blue);
+  border-color: var(--ssn-blue);
   color: white;
 }
 

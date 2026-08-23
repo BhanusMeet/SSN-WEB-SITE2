@@ -7,6 +7,10 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/webp" href="assets/images/logo.webp">
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="css/pages/admin.css">
 </head>
@@ -17,16 +21,16 @@
     <div class="admin-login-card">
       <img src="assets/images/logo.webp" alt="SSN ELITE" height="36" style="filter: invert(1);">
       <h2>Admin Login</h2>
-      <p>Log in to manage SSN Elite store.</p>
+      <p>Log in to manage SSN Elite store and products.</p>
       <div id="login-error" style="color:#d82c0d; font-size: 13px; margin-bottom: 12px; display: none;"></div>
       <form onsubmit="handleAdminLogin(event)">
         <div class="admin-form-group" style="text-align:left;">
           <label class="admin-form-label">Email</label>
-          <input type="email" id="login-email" class="admin-form-input" placeholder="admin@ssnelite.com" required>
+          <input type="email" id="login-email" class="admin-form-input" placeholder="admin@ssnelite.com" required autocomplete="username">
         </div>
         <div class="admin-form-group" style="text-align:left;">
           <label class="admin-form-label">Password</label>
-          <input type="password" id="login-password" class="admin-form-input" placeholder="••••••••" required>
+          <input type="password" id="login-password" class="admin-form-input" placeholder="••••••••" required autocomplete="current-password">
         </div>
         <button type="submit" class="admin-btn admin-btn-primary" style="width:100%;" id="login-btn">Log in</button>
       </form>
@@ -42,23 +46,27 @@
     <nav class="admin-nav">
       <button class="admin-nav-item active" onclick="switchTab('dashboard', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-        Home
-      </button>
-      <button class="admin-nav-item" onclick="switchTab('submissions', this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        Enquiries
+        <span>Overview</span>
       </button>
       <button class="admin-nav-item" onclick="switchTab('products', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-        Products
+        <span>Products</span>
       </button>
       <button class="admin-nav-item" onclick="switchTab('blogs', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Blogs
+        <span>Blogs</span>
       </button>
       <button class="admin-nav-item" onclick="switchTab('labreports', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-        Lab Reports
+        <span>Lab Reports</span>
+      </button>
+      <button class="admin-nav-item" onclick="switchTab('submissions', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Enquiries</span>
+      </button>
+      <button class="admin-nav-item" onclick="switchTab('settings', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
       </button>
     </nav>
     <div class="admin-sidebar-footer">
@@ -74,10 +82,493 @@
       <div class="admin-topbar">
         <h1>Overview</h1>
       </div>
+      <div class="admin-card">
+        <h3 class="admin-card-title">Welcome to SSN Elite Command Center</h3>
+        <p style="color:#637381; font-size:14px; margin-top:8px;">
+          Manage your products with live frontend preview, publish research articles, upload batch testing certificates, and review customer enquiries.
+        </p>
+      </div>
+      <div class="admin-form-row-3" style="margin-top:20px;">
+        <div class="admin-card" style="cursor:pointer;" onclick="switchTab('products')">
+          <div style="font-size:13px; color:#637381;">Total Products</div>
+          <div id="stat-products-count" style="font-size:28px; font-weight:700; margin-top:6px;">-</div>
+        </div>
+        <div class="admin-card" style="cursor:pointer;" onclick="switchTab('blogs')">
+          <div style="font-size:13px; color:#637381;">Published Articles</div>
+          <div id="stat-blogs-count" style="font-size:28px; font-weight:700; margin-top:6px;">-</div>
+        </div>
+        <div class="admin-card" style="cursor:pointer;" onclick="switchTab('labreports')">
+          <div style="font-size:13px; color:#637381;">Lab Reports</div>
+          <div id="stat-lab-count" style="font-size:28px; font-weight:700; margin-top:6px;">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRODUCTS TAB ── -->
+    <div class="admin-tab-panel" id="tab-products">
+      <div class="admin-topbar">
+        <h1>Products</h1>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-primary" onclick="openProductEditor()">+ Add Product</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div id="products-table-container">Loading products...</div>
+      </div>
+    </div>
+
+    <!-- ── REBUILT SPLIT-VIEW PRODUCT EDITOR ── -->
+    <div class="admin-tab-panel" id="tab-product-editor">
+      <div class="admin-topbar">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <button class="admin-btn admin-btn-outline" onclick="switchTab('products')">&larr; Back to Products</button>
+          <h1 id="product-editor-title">Add Product</h1>
+        </div>
+        <div class="admin-topbar-actions">
+          <select id="prod-status" class="admin-form-select" style="width:120px;" onchange="updateLivePreview()">
+            <option value="Active">Active</option>
+            <option value="Draft">Draft</option>
+            <option value="Archived">Archived</option>
+          </select>
+          <button class="admin-btn admin-btn-outline" onclick="switchTab('products')">Discard</button>
+          <button class="admin-btn admin-btn-primary" id="save-product-btn" onclick="saveProductData()">Save Product</button>
+        </div>
+      </div>
+      
+      <div class="admin-split-container">
+        <!-- LEFT: STRUCTURED EDITOR -->
+        <div class="admin-editor-col">
+          <input type="hidden" id="prod-id">
+
+          <!-- 1. Hero Editor -->
+          <div class="admin-card">
+            <h3 class="admin-card-title">01 — Product Hero</h3>
+            <p class="admin-card-subtitle">Essential details displayed in the top hero section.</p>
+            
+            <div class="admin-form-group" style="margin-top:16px;">
+              <label class="admin-form-label">Product Name *</label>
+              <input type="text" id="prod-name" class="admin-form-input" placeholder="e.g. SSN Elite Performance Whey" oninput="updateLivePreview()">
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Product Series</label>
+                <input type="text" id="prod-series" class="admin-form-input" placeholder="SSN Elite Series" value="SSN Elite Series" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Category</label>
+                <select id="prod-category" class="admin-form-select" onchange="updateLivePreview()">
+                  <option value="Lean Muscle">Lean Muscle</option>
+                  <option value="Fat Loss">Fat Loss</option>
+                  <option value="Hydration">Hydration</option>
+                  <option value="Lifestyle & Performance">Lifestyle & Performance</option>
+                  <option value="Size & Strength">Size & Strength</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="admin-form-row-3">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Selling Price *</label>
+                <input type="text" id="prod-selling" class="admin-form-input" placeholder="₹10,499" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">MRP (Compare Price)</label>
+                <input type="text" id="prod-mrp" class="admin-form-input" placeholder="₹12,999" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Discount Text</label>
+                <input type="text" id="prod-discount" class="admin-form-input" placeholder="20% OFF" oninput="updateLivePreview()">
+              </div>
+            </div>
+
+            <div class="admin-form-row-3">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Serving Size / Weight</label>
+                <input type="text" id="prod-serving-size" class="admin-form-input" placeholder="3 KG" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Total Servings</label>
+                <input type="text" id="prod-servings" class="admin-form-input" placeholder="70 Servings" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Protein Per Serving</label>
+                <input type="text" id="prod-protein-per-serving" class="admin-form-input" placeholder="24g Protein" oninput="updateLivePreview()">
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">Product Badges (Comma-separated)</label>
+              <input type="text" id="prod-badges" class="admin-form-input" placeholder="Strength Training, Sports, Active Lifestyle, Gluten Free" oninput="updateLivePreview()">
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">Main Product Image</label>
+              <div class="admin-upload-zone" onclick="document.getElementById('prod-main-img-file').click()">
+                <div class="admin-upload-content">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <p style="margin:6px 0 0; font-size:13px; font-weight:500;">Click to upload main image</p>
+                  <span style="font-size:11px; color:#8c9196;">WebP, PNG, JPEG up to 15MB</span>
+                </div>
+                <input type="file" id="prod-main-img-file" accept="image/*" onchange="handleMainImageUpload(this)">
+              </div>
+              <input type="hidden" id="prod-main-img-url">
+              <div id="prod-main-img-preview" class="admin-upload-preview"></div>
+            </div>
+
+            <div class="admin-form-group">
+              <div class="admin-card-header">
+                <label class="admin-form-label" style="margin:0;">Additional Gallery Images</label>
+                <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="document.getElementById('prod-gallery-file').click()">+ Add Gallery Image</button>
+              </div>
+              <input type="file" id="prod-gallery-file" accept="image/*" style="display:none;" onchange="handleGalleryImageUpload(this)">
+              <div id="gallery-chip-container" class="gallery-grid"></div>
+            </div>
+          </div>
+
+          <!-- 2. Product Introduction -->
+          <div class="admin-card">
+            <h3 class="admin-card-title">02 — Product Introduction</h3>
+            <div class="admin-form-row" style="margin-top:16px;">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Section Heading</label>
+                <input type="text" id="prod-intro-heading" class="admin-form-input" placeholder="What Is Performance Whey?" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Tag / Label</label>
+                <input type="text" id="prod-intro-tag" class="admin-form-input" placeholder="Educational" value="Educational" oninput="updateLivePreview()">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Detailed Description</label>
+              <textarea id="prod-intro-content" class="admin-form-textarea" rows="4" placeholder="Explain what the product is and who it is formulated for..." oninput="updateLivePreview()"></textarea>
+            </div>
+          </div>
+
+          <!-- 3. Key Metric -->
+          <div class="admin-card">
+            <h3 class="admin-card-title">03 — Key Metric Highlight</h3>
+            <div class="admin-form-row-4" style="margin-top:16px;">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Big Number</label>
+                <input type="text" id="prod-metric-num" class="admin-form-input" placeholder="24" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Unit</label>
+                <input type="text" id="prod-metric-unit" class="admin-form-input" placeholder="G" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Label</label>
+                <input type="text" id="prod-metric-label" class="admin-form-input" placeholder="Protein Per Serving" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Sublabel</label>
+                <input type="text" id="prod-metric-sublabel" class="admin-form-input" placeholder="Per scoop serving" oninput="updateLivePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Protein Source -->
+          <div class="admin-card">
+            <h3 class="admin-card-title">04 — Protein Source</h3>
+            <div class="admin-form-row" style="margin-top:16px;">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Heading</label>
+                <input type="text" id="prod-source-heading" class="admin-form-input" placeholder="The Protein Source" value="The Protein Source" oninput="updateLivePreview()">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Source Tag</label>
+                <input type="text" id="prod-source-tag" class="admin-form-input" placeholder="Whey Protein Concentrate" oninput="updateLivePreview()">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Educational Source Info</label>
+              <textarea id="prod-source-content" class="admin-form-textarea" rows="3" placeholder="Explain the origin and purity of the protein source..." oninput="updateLivePreview()"></textarea>
+            </div>
+          </div>
+
+          <!-- 5. Ingredient Accordion ("What's Inside") -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">05 — "What's Inside" Accordion</h3>
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="addAccordionItem()">+ Add Accordion Item</button>
+            </div>
+            <p class="admin-card-subtitle">Structured repeatable accordion items with descriptions and bullet points.</p>
+            <div id="accordion-list" class="repeatable-list" style="margin-top:12px;"></div>
+          </div>
+
+          <!-- 6. Key Nutrition Facts -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">06 — Key Nutrition Facts</h3>
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="addNutritionRow()">+ Add Nutrient Row</button>
+            </div>
+            <div id="nutrition-list" class="repeatable-list" style="margin-top:12px;"></div>
+          </div>
+
+          <!-- 7. Flavour System -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">07 — Flavour System</h3>
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="addFlavourItem()">+ Add Flavour</button>
+            </div>
+            <div id="flavour-list" class="repeatable-list" style="margin-top:12px;"></div>
+          </div>
+
+          <!-- 8. How To Use -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">08 — How To Use Steps</h3>
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="addUsageStep()">+ Add Step</button>
+            </div>
+            <div id="usage-list" class="repeatable-list" style="margin-top:12px;"></div>
+          </div>
+
+          <!-- 9. Who Is It For -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">09 — Target Audience ("Who Is It For")</h3>
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" onclick="addAudienceItem()">+ Add Audience Card</button>
+            </div>
+            <div id="audience-list" class="repeatable-list" style="margin-top:12px;"></div>
+          </div>
+
+          <!-- 10. Storage & Warnings -->
+          <div class="admin-card">
+            <h3 class="admin-card-title">10 — Storage & Important Information</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <label class="admin-form-label">Storage Instructions</label>
+              <textarea id="prod-storage-content" class="admin-form-textarea" rows="2" placeholder="Store in a cool, dry place away from direct sunlight..." oninput="updateLivePreview()"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Important Notice / Disclaimer</label>
+              <textarea id="prod-notice-content" class="admin-form-textarea" rows="2" placeholder="This product is a dietary supplement and is not intended to diagnose, treat, cure, or prevent any disease..." oninput="updateLivePreview()"></textarea>
+            </div>
+          </div>
+
+          <!-- 11. SEO & Handle -->
+          <div class="admin-card">
+            <h3 class="admin-card-title">11 — SEO & URL Slug</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <label class="admin-form-label">SEO Page Title</label>
+              <input type="text" id="prod-seo-title" class="admin-form-input">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Meta Description</label>
+              <textarea id="prod-seo-desc" class="admin-form-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">URL Slug</label>
+              <input type="text" id="prod-slug" class="admin-form-input" placeholder="performance-whey">
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: LIVE CUSTOMER PREVIEW -->
+        <div class="admin-preview-col">
+          <div class="admin-preview-header">
+            <div class="admin-preview-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              Live Customer Preview
+            </div>
+            <div class="admin-preview-device-toggle">
+              <button type="button" class="device-btn active" onclick="setPreviewDevice('desktop', this)">Desktop</button>
+              <button type="button" class="device-btn" onclick="setPreviewDevice('tablet', this)">Tablet</button>
+              <button type="button" class="device-btn" onclick="setPreviewDevice('mobile', this)">Mobile</button>
+            </div>
+          </div>
+
+          <div class="admin-preview-body">
+            <div id="live-preview-viewport" class="admin-preview-viewport device-desktop">
+              <div class="live-ssn-page" id="live-ssn-page">
+                <!-- Dynamically synchronized via updateLivePreview() -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BLOGS TAB ── -->
+    <div class="admin-tab-panel" id="tab-blogs">
+      <div class="admin-topbar">
+        <h1>Blogs &amp; Journal</h1>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-primary" onclick="openBlogEditor()">+ Add Blog Post</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div id="blogs-table-container">Loading blog posts...</div>
+      </div>
+    </div>
+
+    <!-- ── BLOG EDITOR ── -->
+    <div class="admin-tab-panel" id="tab-blog-editor">
+      <div class="admin-topbar">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <button class="admin-btn admin-btn-outline" onclick="switchTab('blogs')">&larr; Back</button>
+          <h1 id="blog-editor-title">Add Blog Post</h1>
+        </div>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-outline" onclick="switchTab('blogs')">Discard</button>
+          <button class="admin-btn admin-btn-primary" id="save-blog-btn" onclick="saveBlogData()">Save Article</button>
+        </div>
+      </div>
+      
       <div class="editor-layout">
-        <div class="admin-card">
-          <h3 class="admin-card-title">Welcome to SSN Elite Admin</h3>
-          <p style="color:#637381; font-size:14px; margin-top:8px;">Manage your products, blog articles, lab certificates, and customer enquiries from this Shopify-inspired dashboard.</p>
+        <div class="editor-main">
+          <input type="hidden" id="blog-id">
+          
+          <div class="admin-card">
+            <div class="admin-form-group">
+              <label class="admin-form-label">Article Title *</label>
+              <input type="text" id="blog-title" class="admin-form-input" placeholder="e.g. Maximizing Muscle Protein Synthesis">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Article Content (Clean HTML / Editorial Body)</label>
+              <textarea id="blog-content" class="admin-html-textarea" placeholder="<p>Write your article content here...</p>"></textarea>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <h3 class="admin-card-title">Featured Image</h3>
+            <div class="admin-upload-zone" onclick="document.getElementById('blog-img-upload').click()">
+              <div class="admin-upload-content">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <p style="margin-top:6px; font-weight:500;">Click to upload article image</p>
+              </div>
+              <input type="file" id="blog-img-upload" accept="image/*" onchange="handleBlogImageUpload(this)">
+            </div>
+            <input type="hidden" id="blog-featured-image">
+            <div id="blog-img-preview" class="admin-upload-preview"></div>
+          </div>
+          
+          <div class="admin-card">
+            <h3 class="admin-card-title">Search Engine Listing</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <label class="admin-form-label">SEO Title</label>
+              <input type="text" id="blog-seo-title" class="admin-form-input">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Meta Description</label>
+              <textarea id="blog-seo-desc" class="admin-form-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">URL Slug</label>
+              <input type="text" id="blog-slug" class="admin-form-input" placeholder="maximizing-protein-synthesis">
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-sidebar">
+          <div class="admin-card">
+            <h3 class="admin-card-title">Publication Status</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <select id="blog-status" class="admin-form-select">
+                <option value="Published">Published (Public)</option>
+                <option value="Draft">Draft (Hidden)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="admin-card">
+            <h3 class="admin-card-title">Article Details</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <label class="admin-form-label">Author Name</label>
+              <input type="text" id="blog-author" class="admin-form-input" value="SSN Elite Science Team">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">Category</label>
+              <input type="text" id="blog-category" class="admin-form-input" value="Nutrition Science">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LAB REPORTS TAB ── -->
+    <div class="admin-tab-panel" id="tab-labreports">
+      <div class="admin-topbar">
+        <h1>Lab Reports &amp; Batch Certificates</h1>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-primary" onclick="openLabReportEditor()">+ Add Lab Report</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div id="labreports-table-container">Loading lab reports...</div>
+      </div>
+    </div>
+
+    <!-- ── LAB REPORT EDITOR ── -->
+    <div class="admin-tab-panel" id="tab-lab-editor">
+      <div class="admin-topbar">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <button class="admin-btn admin-btn-outline" onclick="switchTab('labreports')">&larr; Back</button>
+          <h1 id="lab-editor-title">Upload Lab Report</h1>
+        </div>
+        <div class="admin-topbar-actions">
+          <button class="admin-btn admin-btn-outline" onclick="switchTab('labreports')">Discard</button>
+          <button class="admin-btn admin-btn-primary" id="save-lr-btn" onclick="saveLabReportData()">Save Certificate</button>
+        </div>
+      </div>
+      
+      <div class="editor-layout">
+        <div class="editor-main">
+          <input type="hidden" id="lr-id">
+          
+          <div class="admin-card">
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Product Name *</label>
+                <select id="lr-product" class="admin-form-select">
+                  <option value="">Select a product...</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Batch / Lot Number *</label>
+                <input type="text" id="lr-batch" class="admin-form-input" placeholder="e.g. SSN-PW-2026-01">
+              </div>
+            </div>
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">Accredited Laboratory *</label>
+                <input type="text" id="lr-lab" class="admin-form-input" placeholder="e.g. SGS Analytical Labs (ISO/IEC 17025 Certified)">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Test Date *</label>
+                <input type="text" id="lr-date" class="admin-form-input" placeholder="e.g. August 2026">
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <h3 class="admin-card-title">Upload PDF Certificate Document</h3>
+            <p style="color:#637381; font-size:13px; margin: 6px 0 16px;">
+              Upload the official lab certificate in PDF format (.pdf only). It will be stored securely in Supabase storage and viewable via the customer-facing modal viewer.
+            </p>
+            <div class="admin-upload-zone" onclick="document.getElementById('lr-pdf-upload').click()">
+              <div class="admin-upload-content">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <p style="margin:6px 0 0; font-weight:500;">Click to select PDF document</p>
+                <span style="font-size:12px; color:#8c9196;">Supported format: .pdf only</span>
+              </div>
+              <input type="file" id="lr-pdf-upload" accept="application/pdf,.pdf" onchange="handleLabReportPdfUpload(this)">
+            </div>
+            <input type="hidden" id="lr-certificate-url" value="">
+            <div id="lr-pdf-preview" style="margin-top:16px;"></div>
+          </div>
+        </div>
+        
+        <div class="editor-sidebar">
+          <div class="admin-card">
+            <h3 class="admin-card-title">Verification Status</h3>
+            <div class="admin-form-group" style="margin-top:16px;">
+              <select id="lr-status" class="admin-form-select">
+                <option value="VERIFIED">VERIFIED</option>
+                <option value="PENDING">PENDING</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -94,365 +585,80 @@
         </div>
       </div>
       <div class="admin-card">
-        <div id="submissions-table-container">Loading...</div>
+        <div id="submissions-table-container">Loading enquiries...</div>
       </div>
     </div>
 
-    <!-- ── PRODUCTS TAB ── -->
-    <div class="admin-tab-panel" id="tab-products">
+    <!-- ── SETTINGS TAB ── -->
+    <div class="admin-tab-panel" id="tab-settings">
       <div class="admin-topbar">
-        <h1>Products</h1>
+        <h1>Website &amp; Footer Settings</h1>
         <div class="admin-topbar-actions">
-          <button class="admin-btn admin-btn-primary" onclick="openProductEditor()">Add product</button>
+          <button class="admin-btn admin-btn-primary" id="save-settings-btn" onclick="saveSocialSettingsData()">Save Settings</button>
         </div>
       </div>
-      <div class="admin-card">
-        <div id="products-table-container">Loading...</div>
-      </div>
-    </div>
 
-    <!-- ── BLOGS TAB ── -->
-    <div class="admin-tab-panel" id="tab-blogs">
-      <div class="admin-topbar">
-        <h1>Blogs</h1>
-        <div class="admin-topbar-actions">
-          <button class="admin-btn admin-btn-primary" onclick="openBlogEditor()">Add blog post</button>
-        </div>
-      </div>
-      <div class="admin-card">
-        <div id="blogs-table-container">Loading...</div>
-      </div>
-    </div>
-
-    <!-- ── LAB REPORTS TAB ── -->
-    <div class="admin-tab-panel" id="tab-labreports">
-      <div class="admin-topbar">
-        <h1>Lab Reports</h1>
-        <div class="admin-topbar-actions">
-          <button class="admin-btn admin-btn-primary" onclick="openLabReportEditor()">Add lab report</button>
-        </div>
-      </div>
-      <div class="admin-card">
-        <div id="labreports-table-container">Loading...</div>
-      </div>
-    </div>
-
-    <!-- ── PRODUCT EDITOR (Hidden by default) ── -->
-    <div class="admin-tab-panel" id="tab-product-editor">
-      <div class="admin-topbar">
-        <div style="display:flex; align-items:center; gap:16px;">
-          <button class="admin-btn admin-btn-outline" onclick="switchTab('products')">&larr; Back</button>
-          <h1 id="product-editor-title">Add product</h1>
-        </div>
-        <div class="admin-topbar-actions">
-          <button class="admin-btn admin-btn-outline" onclick="switchTab('products')">Discard</button>
-          <button class="admin-btn admin-btn-primary" id="save-product-btn" onclick="saveProductData()">Save</button>
-        </div>
-      </div>
-      
-      <div class="editor-layout">
-        <!-- Main Column -->
-        <div class="editor-main">
-          <input type="hidden" id="prod-id">
-          
-          <div class="admin-card">
-            <h3 class="admin-card-title">Title and description</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <label class="admin-form-label">Title</label>
-              <input type="text" id="prod-name" class="admin-form-input" placeholder="e.g. SSN Elite Performance Whey">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Description (HTML)</label>
-              <div id="prod-desc-editor"></div>
-            </div>
-          </div>
-
-          <div class="admin-card">
-            <h3 class="admin-card-title">Media</h3>
-            <div class="admin-upload-zone" style="margin-top:16px;">
-              <div class="admin-upload-content" onclick="document.getElementById('prod-img-upload').click()">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p style="margin-top:8px;">Add main product image</p>
-              </div>
-              <input type="file" id="prod-img-upload" accept="image/*" onchange="handleProductImageUpload(this)">
-              <div id="prod-img-preview" class="admin-upload-preview"></div>
-              <input type="hidden" id="prod-image-url">
-            </div>
-          </div>
-          
-          <div class="admin-card">
-            <h3 class="admin-card-title">Pricing & Inventory</h3>
-            <div class="admin-form-row" style="margin-top:16px;">
-              <div class="admin-form-group">
-                <label class="admin-form-label">Selling Price</label>
-                <input type="text" id="prod-selling" class="admin-form-input" placeholder="₹2,799">
-              </div>
-              <div class="admin-form-group">
-                <label class="admin-form-label">Compare at price (MRP)</label>
-                <input type="text" id="prod-mrp" class="admin-form-input" placeholder="₹3,499">
-              </div>
-              <div class="admin-form-group">
-                <label class="admin-form-label">Discount / Offer (Optional)</label>
-                <input type="text" id="prod-discount" class="admin-form-input" placeholder="20% OFF">
-              </div>
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Serving Size / Weight</label>
-              <input type="text" id="prod-serving" class="admin-form-input" placeholder="e.g. 3 KG / 300 G / 75 Servings">
-            </div>
-          </div>
-
-          <div class="admin-card">
-            <h3 class="admin-card-title">Formulation & Specifications</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <label class="admin-form-label">Key Ingredients</label>
-              <textarea id="prod-ingredients" class="admin-form-textarea" placeholder="e.g. Whey Protein Isolate, Cocoa Powder, Sunflower Lecithin..."></textarea>
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Key Benefits</label>
-              <textarea id="prod-benefits" class="admin-form-textarea" placeholder="e.g. 24g Pure Protein per serving, 5.5g BCAAs, Ultra-filtered absorption"></textarea>
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">How to Use (Directions)</label>
-              <textarea id="prod-usage" class="admin-form-textarea" placeholder="e.g. Mix 1 scoop (33g) with 200-250ml of cold water or skimmed milk."></textarea>
-            </div>
-          </div>
-
-          <div class="admin-card">
-            <div class="admin-card-header">
-              <h3 class="admin-card-title">Variants (Flavours)</h3>
-              <button class="admin-btn admin-btn-outline admin-btn-sm" type="button" onclick="addVariantField()">+ Add Flavour</button>
-            </div>
-            <div id="variant-list" class="variant-list">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-          
-          <div class="admin-card">
-            <h3 class="admin-card-title">Search engine listing preview</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <label class="admin-form-label">Page title</label>
-              <input type="text" id="prod-seo-title" class="admin-form-input">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Meta description</label>
-              <input type="text" id="prod-seo-desc" class="admin-form-input">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">URL handle</label>
-              <input type="text" id="prod-slug" class="admin-form-input" placeholder="performance-whey">
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="editor-sidebar">
-          <div class="admin-card">
-            <h3 class="admin-card-title">Product status</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <select id="prod-status" class="admin-form-select">
-                <option value="Active">Active</option>
-                <option value="Draft">Draft</option>
-                <option value="Archived">Archived</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="admin-card">
-            <h3 class="admin-card-title">Organization</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <label class="admin-form-label">Category</label>
-              <select id="prod-category" class="admin-form-select">
-                <option value="Lean Muscle">Lean Muscle</option>
-                <option value="Fat Loss">Fat Loss</option>
-                <option value="Hydration">Hydration</option>
-                <option value="Lifestyle & Performance">Lifestyle & Performance</option>
-                <option value="Size & Strength">Size & Strength</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── BLOG EDITOR ── -->
-    <div class="admin-tab-panel" id="tab-blog-editor">
-      <div class="admin-topbar">
-        <div style="display:flex; align-items:center; gap:16px;">
-          <button class="admin-btn admin-btn-outline" onclick="switchTab('blogs')">&larr; Back</button>
-          <h1 id="blog-editor-title">Add blog post</h1>
-        </div>
-        <div class="admin-topbar-actions">
-          <button class="admin-btn admin-btn-outline" onclick="switchTab('blogs')">Discard</button>
-          <button class="admin-btn admin-btn-primary" id="save-blog-btn" onclick="saveBlogData()">Save</button>
-        </div>
-      </div>
-      
       <div class="editor-layout">
         <div class="editor-main">
-          <input type="hidden" id="blog-id">
-          
           <div class="admin-card">
-            <div class="admin-form-group">
-              <label class="admin-form-label">Title</label>
-              <input type="text" id="blog-title" class="admin-form-input">
-            </div>
-            <div class="admin-form-group">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <label class="admin-form-label" style="margin-bottom:0;">Content (HTML)</label>
-                <div class="editor-mode-toggle" id="blog-editor-tabs">
-                  <button type="button" class="editor-mode-btn active" id="btn-mode-visual" onclick="setBlogEditorMode('visual')">Visual Editor</button>
-                  <button type="button" class="editor-mode-btn" id="btn-mode-html" onclick="setBlogEditorMode('html')">&lt;/&gt; HTML Source</button>
+            <h3 class="admin-card-title">SSN Elite Official Brand Social Links</h3>
+            <p style="color:#637381; font-size:14px; margin: 8px 0 20px;">
+              Manage the official SSN Elite brand social profiles displayed in the website footer. Toggle off any platform to hide its icon on public pages.
+            </p>
+
+            <!-- Instagram -->
+            <div style="display:flex; flex-direction:column; gap:10px; padding:16px; background:#f9fafb; border:1px solid #dfe3e8; border-radius:8px; margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                  Instagram (SSN Brand)
                 </div>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:500;">
+                  <input type="checkbox" id="setting-ig-enabled" checked style="width:16px; height:16px; accent-color:#008060;">
+                  <span>Show in Footer</span>
+                </label>
               </div>
-              
-              <!-- Visual Quill Container -->
-              <div id="blog-visual-wrap">
-                <div id="blog-content-editor"></div>
-              </div>
-              
-              <!-- Raw HTML Code Editor Textarea -->
-              <div id="blog-html-wrap" style="display:none;">
-                <div class="html-editor-toolbar">
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('h2')">&lt;h2&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('h3')">&lt;h3&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('p')">&lt;p&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('strong')">&lt;b&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('em')">&lt;i&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('ul')">&lt;ul&gt;&lt;li&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('blockquote')">&lt;quote&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('a')">&lt;a link&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="insertHtmlTag('img')">&lt;img&gt;</button>
-                  <button type="button" class="html-tool-btn" onclick="formatHtmlSource()" title="Clean indentation">Format HTML</button>
+              <input type="url" id="setting-ig-url" class="admin-form-input" placeholder="https://instagram.com/ssnelite" value="https://instagram.com/ssnelite">
+            </div>
+
+            <!-- Facebook -->
+            <div style="display:flex; flex-direction:column; gap:10px; padding:16px; background:#f9fafb; border:1px solid #dfe3e8; border-radius:8px; margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                  Facebook (SSN Brand)
                 </div>
-                <textarea id="blog-content-html" class="admin-html-textarea" placeholder="<p>Write or paste your full HTML article content here...</p>" spellcheck="false" oninput="handleHtmlTextareaInput(this)"></textarea>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:500;">
+                  <input type="checkbox" id="setting-fb-enabled" checked style="width:16px; height:16px; accent-color:#008060;">
+                  <span>Show in Footer</span>
+                </label>
               </div>
-              <span style="font-size:12px; color:#637381; margin-top:6px; display:block;">You can switch between Visual Rich Text and HTML Source Code anytime. Content stays automatically synced.</span>
+              <input type="url" id="setting-fb-url" class="admin-form-input" placeholder="https://facebook.com/ssnelite" value="https://facebook.com/ssnelite">
             </div>
-          </div>
 
-          <div class="admin-card">
-            <h3 class="admin-card-title">Featured image</h3>
-            <div class="admin-upload-zone" style="margin-top:16px;">
-              <div class="admin-upload-content" onclick="document.getElementById('blog-img-upload').click()">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p style="margin-top:8px;">Add image</p>
+            <!-- LinkedIn -->
+            <div style="display:flex; flex-direction:column; gap:10px; padding:16px; background:#f9fafb; border:1px solid #dfe3e8; border-radius:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                  LinkedIn (SSN Brand)
+                </div>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:500;">
+                  <input type="checkbox" id="setting-li-enabled" checked style="width:16px; height:16px; accent-color:#008060;">
+                  <span>Show in Footer</span>
+                </label>
               </div>
-              <input type="file" id="blog-img-upload" accept="image/*" onchange="handleBlogImageUpload(this)">
-              <div id="blog-img-preview" class="admin-upload-preview"></div>
-              <input type="hidden" id="blog-featured-image">
-            </div>
-          </div>
-          
-          <div class="admin-card">
-            <h3 class="admin-card-title">Search engine listing</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <label class="admin-form-label">Page title</label>
-              <input type="text" id="blog-seo-title" class="admin-form-input">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Meta description</label>
-              <input type="text" id="blog-seo-desc" class="admin-form-input">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">URL handle</label>
-              <input type="text" id="blog-slug" class="admin-form-input">
+              <input type="url" id="setting-li-url" class="admin-form-input" placeholder="https://linkedin.com/company/ssnelite" value="https://linkedin.com/company/ssnelite">
             </div>
           </div>
         </div>
 
         <div class="editor-sidebar">
           <div class="admin-card">
-            <h3 class="admin-card-title">Visibility</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <select id="blog-status" class="admin-form-select">
-                <option value="Published">Visible (Published)</option>
-                <option value="Draft">Hidden (Draft)</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="admin-card">
-            <h3 class="admin-card-title">Details</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <label class="admin-form-label">Author</label>
-              <input type="text" id="blog-author" class="admin-form-input" value="SSN Elite Science Team">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label">Category</label>
-              <input type="text" id="blog-category" class="admin-form-input" value="Nutrition Science">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── LAB REPORT EDITOR ── -->
-    <div class="admin-tab-panel" id="tab-lab-editor">
-      <div class="admin-topbar">
-        <div style="display:flex; align-items:center; gap:16px;">
-          <button class="admin-btn admin-btn-outline" onclick="switchTab('labreports')">&larr; Back</button>
-          <h1 id="lab-editor-title">Upload lab report</h1>
-        </div>
-        <div class="admin-topbar-actions">
-          <button class="admin-btn admin-btn-outline" onclick="switchTab('labreports')">Discard</button>
-          <button class="admin-btn admin-btn-primary" id="save-lr-btn" onclick="saveLabReportData()">Save</button>
-        </div>
-      </div>
-      
-      <div class="editor-layout">
-        <div class="editor-main">
-          <input type="hidden" id="lr-id">
-          
-          <div class="admin-card">
-            <div class="admin-form-row">
-              <div class="admin-form-group">
-                <label class="admin-form-label">Product Name</label>
-                <select id="lr-product" class="admin-form-select">
-                  <option value="">Select a product...</option>
-                </select>
-              </div>
-              <div class="admin-form-group">
-                <label class="admin-form-label">Batch Number</label>
-                <input type="text" id="lr-batch" class="admin-form-input" placeholder="e.g. SSN-WHEY-001">
-              </div>
-            </div>
-            <div class="admin-form-row">
-              <div class="admin-form-group">
-                <label class="admin-form-label">Lab Name</label>
-                <input type="text" id="lr-lab" class="admin-form-input" placeholder="e.g. SGS Analytical Labs">
-              </div>
-              <div class="admin-form-group">
-                <label class="admin-form-label">Test Date</label>
-                <input type="text" id="lr-date" class="admin-form-input" placeholder="e.g. August 2026">
-              </div>
-            </div>
-          </div>
-
-          <div class="admin-card">
-            <h3 class="admin-card-title">Upload PDF Certificate</h3>
-            <p style="color:#637381; font-size:14px; margin: 8px 0 16px;">Upload official lab test report in PDF format (.pdf only). The PDF will be saved in Supabase storage and accessible by consumers.</p>
-            <div class="admin-upload-zone" onclick="document.getElementById('lr-pdf-upload').click()">
-              <div class="admin-upload-content">
-                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <p style="margin:0; font-weight:500;">Click to select PDF document</p>
-                <span style="font-size:12px; color:#8c9196;">Supported format: .pdf only</span>
-              </div>
-              <input type="file" id="lr-pdf-upload" accept="application/pdf,.pdf" onchange="handleLabReportPdfUpload(this)">
-            </div>
-            <div id="lr-pdf-preview" style="margin-top:16px;"></div>
-            <input type="hidden" id="lr-certificate-url" value="">
-          </div>
-        </div>
-        
-        <div class="editor-sidebar">
-           <div class="admin-card">
-            <h3 class="admin-card-title">Status</h3>
-            <div class="admin-form-group" style="margin-top:16px;">
-              <select id="lr-status" class="admin-form-select" disabled>
-                <option value="VERIFIED">VERIFIED</option>
-              </select>
-            </div>
+            <h3 class="admin-card-title">Developer Credit Note</h3>
+            <p style="color:#637381; font-size:13px; margin-top:8px; line-height:1.5;">
+              The personal developer credit (<code>Developed &amp; Managed by @buildwithmeeett</code>) is kept separate from SSN's official brand social links and rendered at the absolute bottom of every footer.
+            </p>
           </div>
         </div>
       </div>
@@ -460,8 +666,10 @@
 
   </main>
 
+  <!-- Toast Notification Container -->
+  <div id="admin-toast" class="admin-toast"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
   <script src="js/siteConfig.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/admin.js"></script>

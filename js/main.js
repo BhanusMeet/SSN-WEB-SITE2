@@ -4,6 +4,11 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const isExcluded = window.location.pathname.toLowerCase().includes('admin') || 
+                     document.body.classList.contains('admin-body') || 
+                     document.getElementById('admin-sidebar');
+  if (isExcluded) return;
+
   initNavigation();
   initScrollReveal();
   initSmoothScroll();
@@ -292,12 +297,35 @@ function initConnectModal() {
       btn.textContent = 'Submitting...';
 
       const formData = {
-        full_name: form.full_name.value.trim(),
-        email: form.email.value.trim(),
-        phone: form.phone.value.trim(),
-        address: form.address.value.trim(),
-        message: form.message.value.trim() || null
+        full_name: form.full_name.value.trim().substring(0, 200),
+        email: form.email.value.trim().substring(0, 254),
+        phone: form.phone.value.trim().substring(0, 20),
+        address: form.address.value.trim().substring(0, 500),
+        message: (form.message.value.trim() || null)?.substring(0, 2000) || null
       };
+
+      // Input validation
+      if (formData.full_name.length < 2) {
+        status.style.display = 'block';
+        status.style.color = '#e11d48';
+        status.textContent = 'Please enter a valid name.';
+        btn.disabled = false;
+        btn.textContent = 'Submit Inquiry';
+        return;
+      }
+
+      // Rate limiting: max 3 submissions per 5 minutes
+      const now = Date.now();
+      const submissions = JSON.parse(sessionStorage.getItem('ssn_form_submissions') || '[]');
+      const recentSubmissions = submissions.filter(t => now - t < 300000);
+      if (recentSubmissions.length >= 3) {
+        status.style.display = 'block';
+        status.style.color = '#e11d48';
+        status.textContent = 'Too many submissions. Please wait a few minutes.';
+        btn.disabled = false;
+        btn.textContent = 'Submit Inquiry';
+        return;
+      }
 
       try {
         const result = typeof saveUserSubmission === 'function' 
@@ -307,8 +335,11 @@ function initConnectModal() {
         if (result.error) {
           status.style.display = 'block';
           status.style.color = '#e11d48';
-          status.textContent = result.error.message || 'Error saving submission.';
+          status.textContent = 'Error saving submission. Please try again.';
         } else {
+          // Track submission for rate limiting
+          recentSubmissions.push(Date.now());
+          sessionStorage.setItem('ssn_form_submissions', JSON.stringify(recentSubmissions));
           status.style.display = 'block';
           status.style.color = '#10b981';
           status.textContent = 'Message Sent Successfully!';

@@ -77,7 +77,8 @@
     <div class="nav-mobile-logo-wrap"><img src="assets/images/logo.webp" alt="SSN ELITE" class="mobile-logo" width="140"
         height="35"></div>
     <a href="index.html" class="nav-mobile-link">Home</a>
-    <a href="products.html" class="nav-mobile-link">Products</a>
+    <a href="products.html" class="nav-mobile-link active">Products</a>
+    <a href="index.html#shop-by-goal" class="nav-mobile-link">Shop By Goal</a>
     <a href="lab-reports.html" class="nav-mobile-link">Lab Reports</a>
     <a href="blog.html" class="nav-mobile-link">Journal</a>
     <a href="about.html" class="nav-mobile-link">About</a>
@@ -198,7 +199,19 @@
           const p_mrp = p.mrp || p.price || p.selling_price || '-';
           const p_desc = p.short_description || p.full_description || p.description || '';
           const p_size = p.serving_size || p.size || '-';
-          const p_slug = p.slug || (p_name.toLowerCase().includes('whey') ? 'performance-whey' : p_name.toLowerCase().includes('mass') ? 'anabolic-monster-mass' : p_name.toLowerCase().includes('creatine') ? 'tri-creatine' : p_name.toLowerCase().includes('eaa') ? 'eaa-bcaa-glutamine' : '');
+          const staticPages = ['performance-whey', 'anabolic-monster-mass', 'tri-creatine', 'eaa-bcaa-glutamine'];
+          const p_slug = (p.slug || (p_name.toLowerCase().includes('whey') ? 'performance-whey' : p_name.toLowerCase().includes('mass') ? 'anabolic-monster-mass' : p_name.toLowerCase().includes('creatine') ? 'tri-creatine' : p_name.toLowerCase().includes('eaa') ? 'eaa-bcaa-glutamine' : p_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''))).trim();
+
+          let detailUrl;
+          if (staticPages.includes(p_slug)) {
+            detailUrl = `${p_slug}.html`;
+          } else if (p.slug) {
+            detailUrl = `product.html?slug=${encodeURIComponent(p.slug)}`;
+          } else if (p.id) {
+            detailUrl = `product.html?id=${encodeURIComponent(p.id)}`;
+          } else {
+            detailUrl = `product.html?slug=${encodeURIComponent(p_slug)}`;
+          }
 
           const isReverse = index % 2 !== 0 ? 'reverse' : '';
           const catLower = p_category.toLowerCase();
@@ -209,14 +222,14 @@
           const imageSrc = p.image_url || p.image || p.featured_image || fallbackImage;
 
           const imgHtml = `
-            <div class="category-image-wrap reveal scale-in revealed">
+            <a href="${detailUrl}" class="category-image-wrap reveal scale-in revealed" style="text-decoration:none;" aria-label="${p_name}">
               <img src="${imageSrc}" alt="${p_name}" onerror="this.onerror=null;this.src='${fallbackImage}'" loading="lazy" decoding="async" width="300" height="380">
-            </div>
+            </a>
           `;
           const contentHtml = `
             <div class="category-content reveal revealed">
               <span class="category-tag ${tagClass}">${p_category}</span>
-              <h2>${p_name}</h2>
+              <h2><a href="${detailUrl}" style="color:inherit; text-decoration:none;">${p_name}</a></h2>
               <div class="category-description">${p_desc}</div>
               <div class="category-meta">
                 <div class="category-meta-item">
@@ -232,7 +245,7 @@
                   <span class="product-card-meta-value">${p_mrp}</span>
                 </div>
               </div>
-              <a href="${p_slug ? p_slug + '.html' : '#'}" class="text-link">
+              <a href="${detailUrl}" class="text-link">
                 Explore ${p_name}
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>

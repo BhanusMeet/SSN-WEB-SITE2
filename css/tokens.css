@@ -96,10 +96,10 @@
   --space-40: 10rem;     /* 160px */
 
   /* ── Layout ── */
-  --container-max: 1280px;
-  --container-narrow: 960px;
-  --container-text: 720px;
-  --container-padding: var(--space-6);
+  --container-max: 1360px;
+  --container-narrow: 1040px;
+  --container-text: 820px;
+  --container-padding: clamp(1rem, 3vw, 2rem);
   --nav-height: 72px;
 
   /* ── Breakpoints (for reference, used in media queries) ── */
