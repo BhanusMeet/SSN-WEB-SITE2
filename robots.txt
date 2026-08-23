@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
-Disallow: /admin.backup.html
-Disallow: /api/
 Sitemap: https://ssnelite.com/sitemap.xml

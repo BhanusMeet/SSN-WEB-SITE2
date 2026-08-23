@@ -217,19 +217,15 @@
           const p_mrp = p.mrp || p.price || p.selling_price || '-';
           const p_desc = p.short_description || p.full_description || p.description || '';
           const p_size = p.serving_size || p.size || '-';
-          const staticPages = ['performance-whey', 'anabolic-monster-mass', 'tri-creatine', 'eaa-bcaa-glutamine'];
-          const p_slug = (p.slug || (p_name.toLowerCase().includes('whey') ? 'performance-whey' : p_name.toLowerCase().includes('mass') ? 'anabolic-monster-mass' : p_name.toLowerCase().includes('creatine') ? 'tri-creatine' : p_name.toLowerCase().includes('eaa') ? 'eaa-bcaa-glutamine' : p_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''))).trim();
+          const p_slug = (p.slug || (
+            p_name.toLowerCase().includes('whey') ? 'performance-whey' :
+            p_name.toLowerCase().includes('mass') ? 'anabolic-monster-mass' :
+            p_name.toLowerCase().includes('creatine') ? 'tri-creatine' :
+            p_name.toLowerCase().includes('eaa') ? 'eaa-bcaa-glutamine' :
+            p_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+          )).trim();
 
-          let detailUrl;
-          if (staticPages.includes(p_slug)) {
-            detailUrl = `${p_slug}.html`;
-          } else if (p.slug) {
-            detailUrl = `product.html?slug=${encodeURIComponent(p.slug)}`;
-          } else if (p.id) {
-            detailUrl = `product.html?id=${encodeURIComponent(p.id)}`;
-          } else {
-            detailUrl = `product.html?slug=${encodeURIComponent(p_slug)}`;
-          }
+          const detailUrl = `product.html?slug=${encodeURIComponent(p.slug || p_slug)}`;
 
           const isReverse = index % 2 !== 0 ? 'reverse' : '';
           const catLower = p_category.toLowerCase();

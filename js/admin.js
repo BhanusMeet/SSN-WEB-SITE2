@@ -187,9 +187,8 @@ function renderProductsTable() {
     const priceDisplay = (p.selling_price || p.price || '') + (p.mrp ? ` <span style="color:#8c9196; font-size:12px; text-decoration:line-through; margin-left:4px;">${esc(p.mrp)}</span>` : '');
     const img = p.image_url || p.main_image || '';
 
-    const staticPages = ['performance-whey', 'anabolic-monster-mass', 'tri-creatine', 'eaa-bcaa-glutamine'];
     const pSlug = (p.slug || p.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    const liveUrl = staticPages.includes(pSlug) ? `${pSlug}.html` : `product.html?slug=${encodeURIComponent(p.slug || pSlug)}`;
+    const liveUrl = `product.html?slug=${encodeURIComponent(p.slug || pSlug)}`;
 
     html += `<tr>
       <td>

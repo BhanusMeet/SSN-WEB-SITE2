@@ -303,169 +303,6 @@
   <script src="js/dna-scene.js"></script>
 
   <script>
-    // Fallback dictionary
-    const STATIC_FALLBACKS = {
-      'performance-whey': {
-        name: 'Performance Whey',
-        series: 'SSN Elite Series',
-        category: 'Lean Muscle',
-        tagline: 'High-Purity Whey Protein Concentrate',
-        price: '₹10,499',
-        mrp: '₹12,999',
-        discount: '20% OFF',
-        serving_size: '3 KG',
-        servings: '70 Servings',
-        protein_per_serving: '24g Protein',
-        badges: ['Strength Training', 'Muscle Recovery', 'Gluten Free'],
-        image_url: 'assets/images/products/performance-whey.webp',
-        gallery_images: ['assets/images/products/performance-whey.webp'],
-        product_intro: {
-          section_num: '02',
-          heading: 'What Is Performance Whey?',
-          tag: 'Educational',
-          content: 'Performance Whey is a whey protein-based nutritional supplement designed to help you meet your daily protein requirements. Protein is an essential macronutrient that supports muscle repair, recovery, and growth - especially important for people who train regularly or lead active lifestyles.'
-        },
-        key_metric: {
-          number: '24',
-          unit: 'G',
-          label: 'Protein Per Serving',
-          sublabel: 'Per scoop serving'
-        },
-        protein_source: {
-          heading: 'The Protein Source',
-          tag: 'Whey Protein Concentrate',
-          content: 'Whey Protein Concentrate (WPC) is derived from milk during the cheese-making process. It is filtered to retain valuable protein fractions and immune-boosting bioactive peptides.'
-        },
-        ingredients_accordion: [
-          { title: 'Whey Protein Concentrate', description: 'Primary protein source providing complete amino acid profile.', bullets: ['Ultra-filtered at low temperature', 'Preserves natural biological fractions'] },
-          { title: 'BCAA & Silk Amino Blend', description: 'Enhanced with L-Leucine, L-Isoleucine, and L-Valine for rapid muscle protein synthesis.', bullets: [] }
-        ],
-        nutrition_facts: [
-          { nutrient: 'Energy', amount: '138.04', unit: 'kcal' },
-          { nutrient: 'Protein', amount: '24', unit: 'g' },
-          { nutrient: 'Carbohydrates', amount: '3.2', unit: 'g' },
-          { nutrient: 'Fats', amount: '1.8', unit: 'g' }
-        ],
-        flavours: [
-          { name: 'Rich Chocolate', description: 'Deep Belgian cocoa with a smooth finish.', image: 'assets/images/products/performance-whey.webp' }
-        ],
-        how_to_use: [
-          { step: '01', title: 'Measure Scoop', description: 'Add 1 level scoop (approx. 33g) into your shaker cup.' },
-          { step: '02', title: 'Add Liquid', description: 'Pour in 180-200ml of cold water or your preferred beverage.' },
-          { step: '03', title: 'Shake & Enjoy', description: 'Shake vigorously for 25-30 seconds until fully dissolved.' }
-        ],
-        target_audience: [
-          { icon: '⚡', title: 'Strength Athletes', description: 'For bodybuilders and lifters aiming for muscle hypertrophy.' },
-          { icon: '🏃', title: 'Active Individuals', description: 'For anyone needing convenient, high-quality daily protein.' }
-        ],
-        storage_info: {
-          heading: 'Storage Instructions',
-          content: 'Store in a cool, dry place away from direct sunlight. Keep the lid tightly sealed after every use.'
-        },
-        important_notice: {
-          heading: 'Important Notice',
-          content: 'This product is a dietary supplement and is not intended to diagnose, treat, cure, or prevent any disease. Consult a healthcare professional before use if you have any pre-existing medical conditions.'
-        }
-      },
-      'anabolic-monster-mass': {
-        name: 'Anabolic Monster Mass',
-        series: 'SSN Elite Series',
-        category: 'Mass & Power',
-        tagline: 'High-Calorie Anabolic Mass Gainer',
-        price: '₹6,999',
-        mrp: '₹8,499',
-        discount: '18% OFF',
-        serving_size: '6 KG',
-        servings: '30 Servings',
-        protein_per_serving: '52g Protein',
-        badges: ['Mass Building', 'Complex Carbs', 'Digestive Enzymes'],
-        image_url: 'assets/images/products/anabolic-monster-mass.webp',
-        gallery_images: ['assets/images/products/anabolic-monster-mass.webp'],
-        product_intro: {
-          section_num: '02',
-          heading: 'What Is Anabolic Monster Mass?',
-          tag: 'Mass Formulation',
-          content: 'Anabolic Monster Mass is engineered for hardgainers and serious strength athletes who require a high-density caloric intake alongside premium protein and complex carbohydrates.'
-        },
-        key_metric: { number: '52', unit: 'G', label: 'Protein Per Full Serving', sublabel: 'Multi-stage release' },
-        protein_source: { heading: 'Protein Matrix', tag: 'Whey & Casein Blend', content: 'Dual-phase release providing immediate and sustained amino acid delivery.' },
-        ingredients_accordion: [
-          { title: 'Complex Carbohydrate Matrix', description: 'Oat flour, maltodextrin, and cluster dextrin for sustained glycogen replenishment.', bullets: [] },
-          { title: 'Digestive Enzymes', description: 'Protease and lactase to ensure efficient assimilation without digestive discomfort.', bullets: [] }
-        ],
-        nutrition_facts: [
-          { nutrient: 'Energy', amount: '680', unit: 'kcal' },
-          { nutrient: 'Protein', amount: '52', unit: 'g' },
-          { nutrient: 'Carbohydrates', amount: '110', unit: 'g' }
-        ],
-        flavours: [{ name: 'Dutch Chocolate', description: 'Rich creamy cocoa.', image: 'assets/images/products/anabolic-monster-mass.webp' }],
-        how_to_use: [{ step: '01', title: 'Blend', description: 'Mix 2 scoops into 400ml milk or water post-workout or between meals.' }],
-        target_audience: [{ icon: '🏋️', title: 'Hardgainers', description: 'Athletes seeking to add dense muscular size.' }],
-        storage_info: { heading: 'Storage', content: 'Store in a cool, dry place.' },
-        important_notice: { heading: 'Notice', content: 'Dietary supplement for weight training athletes.' }
-      },
-      'tri-creatine': {
-        name: 'Tri Creatine',
-        series: 'SSN Elite Series',
-        category: 'Strength & Power',
-        tagline: 'Multi-Phase Creatine Matrix',
-        price: '₹2,499',
-        mrp: '₹3,199',
-        discount: '22% OFF',
-        serving_size: '300 G',
-        servings: '60 Servings',
-        protein_per_serving: '5g Creatine Matrix',
-        badges: ['Unmatched Power', 'ATP Regeneration', 'Zero Sugar'],
-        image_url: 'assets/images/products/tri-creatine.webp',
-        gallery_images: ['assets/images/products/tri-creatine.webp'],
-        product_intro: {
-          section_num: '02',
-          heading: 'What Is Tri Creatine?',
-          tag: 'ATP Enhancement',
-          content: 'Tri Creatine combines Monohydrate, HCL, and Nitrate to maximize intracellular phosphocreatine resynthesis and explosive power.'
-        },
-        key_metric: { number: '5', unit: 'G', label: 'Creatine Per Scoop', sublabel: 'Triple source blend' },
-        protein_source: { heading: 'Creatine Complex', tag: 'Micro-pure Matrix', content: 'Ultra-micronized for instant absorption and zero bloating.' },
-        ingredients_accordion: [{ title: 'Triple Creatine Formula', description: 'Monohydrate, HCL, and Nitrate.', bullets: [] }],
-        nutrition_facts: [{ nutrient: 'Creatine Matrix', amount: '5000', unit: 'mg' }],
-        flavours: [{ name: 'Unflavoured Pure', description: 'Stacks easily with any pre/post workout shake.', image: 'assets/images/products/tri-creatine.webp' }],
-        how_to_use: [{ step: '01', title: 'Mix', description: 'Mix 1 scoop with 200ml cold water before or after training.' }],
-        target_audience: [{ icon: '⚡', title: 'Power Athletes', description: 'Sprinters, powerlifters, and high-intensity trainees.' }],
-        storage_info: { heading: 'Storage', content: 'Keep tightly sealed in a dry environment.' },
-        important_notice: { heading: 'Notice', content: 'Maintain adequate hydration while supplementing with creatine.' }
-      },
-      'eaa-bcaa-glutamine': {
-        name: 'EAA + BCAA + Glutamine',
-        series: 'SSN Elite Series',
-        category: 'Intra-Workout & Recovery',
-        tagline: 'Full Spectrum Essential Amino Acids & Electrolytes',
-        price: '₹2,799',
-        mrp: '₹3,499',
-        discount: '20% OFF',
-        serving_size: '300 G',
-        servings: '30 Servings',
-        protein_per_serving: '10g Intra Matrix',
-        badges: ['Rapid Recovery', 'Electrolyte Loaded', 'Zero Sugar'],
-        image_url: 'assets/images/products/eaa-bcaa-glutamine.webp',
-        gallery_images: ['assets/images/products/eaa-bcaa-glutamine.webp'],
-        product_intro: {
-          section_num: '02',
-          heading: 'What Is EAA + BCAA + Glutamine?',
-          tag: 'Intra-Workout Performance',
-          content: 'Delivers all 9 essential amino acids alongside fermented BCAAs, L-Glutamine, and coconut water powder for uninterrupted training endurance.'
-        },
-        key_metric: { number: '10', unit: 'G', label: 'Aminos & Hydrators', sublabel: 'Per intra-workout serving' },
-        protein_source: { heading: 'Fermented Amino Matrix', tag: 'Vegan Sourced', content: 'Naturally fermented amino acids for instantaneous bloodstream uptake.' },
-        ingredients_accordion: [{ title: 'Full Spectrum EAA Complex', description: 'Provides all 9 essential amino acids in optimal clinical ratios.', bullets: [] }],
-        nutrition_facts: [{ nutrient: 'Total EAA/BCAA', amount: '8000', unit: 'mg' }, { nutrient: 'L-Glutamine', amount: '2000', unit: 'mg' }],
-        flavours: [{ name: 'Blue Raspberry', description: 'Crisp, refreshing berry profile.', image: 'assets/images/products/eaa-bcaa-glutamine.webp' }],
-        how_to_use: [{ step: '01', title: 'Sip', description: 'Mix 1 scoop in 400-500ml ice cold water and sip during intense training sessions.' }],
-        target_audience: [{ icon: '💧', title: 'Endurance & Lifting Athletes', description: 'Anyone looking to prevent intra-workout catabolism.' }],
-        storage_info: { heading: 'Storage', content: 'Store below 25°C in a dry place.' },
-        important_notice: { heading: 'Notice', content: 'Dietary intra-workout supplement.' }
-      }
-    };
-
     function esc(str) {
       if (str === null || str === undefined) return '';
       const d = document.createElement('div');
@@ -501,7 +338,7 @@
         console.warn('[SSN Product] Supabase fetch warning:', err);
       }
 
-      // 2. Also check localStorage directly
+      // 2. Also check localStorage directly for newly saved items
       try {
         const local = JSON.parse(localStorage.getItem('ssn_local_products') || '[]');
         if (Array.isArray(local)) {
@@ -534,11 +371,6 @@
                    cleanParam.includes(pCleanName);
           });
         }
-      }
-
-      // 4. Fallback Dictionary
-      if (!product && slugParam && STATIC_FALLBACKS[slugParam]) {
-        product = STATIC_FALLBACKS[slugParam];
       }
 
       if (!product) {
