@@ -6,8 +6,6 @@
 // Zero secrets exposed to frontend. 100% Hostinger compatible.
 // ============================================================
 
-/// <reference path="../types.d.ts" />
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -84,25 +82,25 @@ serve(async (req: Request) => {
       results.telegram.attempted = true;
       try {
         const telegramText = 
-`🔔 *NEW SSN ELITE ENQUIRY*
+`🔔 <b>NEW SSN ELITE ENQUIRY</b>
 
-*Name:*
-${escapeMarkdown(customerName)}
+<b>Name:</b>
+${escapeHtml(customerName)}
 
-*Email:*
-${escapeMarkdown(customerEmail)}
+<b>Email:</b>
+${escapeHtml(customerEmail)}
 
-*Phone:*
-${escapeMarkdown(customerPhone)}
+<b>Phone:</b>
+${escapeHtml(customerPhone)}
 
-*Address:*
-${escapeMarkdown(customerAddress)}
+<b>Address:</b>
+${escapeHtml(customerAddress)}
 
-*Message:*
-${escapeMarkdown(customerMessage)}
+<b>Message:</b>
+${escapeHtml(customerMessage)}
 
-*Submitted:*
-${escapeMarkdown(submittedAt)}`;
+<b>Submitted:</b>
+${escapeHtml(submittedAt)}`;
 
         const telegramRes = await fetch(
           `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -112,7 +110,7 @@ ${escapeMarkdown(submittedAt)}`;
             body: JSON.stringify({
               chat_id: TELEGRAM_CHAT_ID,
               text: telegramText,
-              parse_mode: "Markdown"
+              parse_mode: "HTML"
             })
           }
         );

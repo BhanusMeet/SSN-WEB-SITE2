@@ -696,16 +696,18 @@
       btn.textContent = 'Submitting...';
       btn.disabled = true;
 
+      const contactVal = document.getElementById('enquiry-contact').value.trim();
+      const isEmail = contactVal.includes('@');
       const payload = {
-        name: document.getElementById('enquiry-name').value.trim(),
-        email: document.getElementById('enquiry-contact').value.trim(),
-        message: `Product Enquiry for ${document.getElementById('enquiry-product-name').value}: ${document.getElementById('enquiry-message').value.trim()}`,
-        product_interest: document.getElementById('enquiry-product-name').value,
-        type: 'product_enquiry'
+        full_name: document.getElementById('enquiry-name').value.trim(),
+        email: isEmail ? contactVal : '',
+        phone: !isEmail ? contactVal : '',
+        address: 'Product Page Enquiry',
+        message: `Product Enquiry for ${document.getElementById('enquiry-product-name').value}: ${document.getElementById('enquiry-message').value.trim()}`
       };
 
-      if (typeof submitContactEnquiry === 'function') {
-        await submitContactEnquiry(payload);
+      if (typeof saveUserSubmission === 'function') {
+        await saveUserSubmission(payload);
       }
       alert('Thank you! Your enquiry has been received. Our team will contact you shortly.');
       closeEnquiryModal();

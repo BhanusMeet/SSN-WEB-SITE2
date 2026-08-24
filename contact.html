@@ -279,6 +279,8 @@
         return;
       }
 
+      console.log('[SSN] Contact form submitted:', formData);
+
       try {
         const result = await saveUserSubmission(formData);
         if (result.error) {

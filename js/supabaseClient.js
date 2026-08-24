@@ -92,18 +92,39 @@ async function saveUserSubmission(formData) {
     return { data: null, error };
   }
 
-  // 2. Non-blocking Edge Function notification trigger (Zero frontend secrets)
+  console.log('[SSN] enquiry insert succeeded');
+
+  // 2. Edge Function notification trigger (Zero frontend secrets)
   // Customer success is NEVER blocked even if notification service is delayed or offline
+  const notifPayload = { record: { ...payload, created_at: new Date().toISOString() } };
+  const config = (window.SSN_CONFIG && window.SSN_CONFIG.supabase) || {};
+  const notifUrl = (config.url || 'https://pnxnwtrozxxqoofxutci.supabase.co') + '/functions/v1/notify-enquiry';
+  const anonKey = config.anonKey || 'sb_publishable_QH1WF8LiQIxdNbOym0oCIw_gDZn28x0';
+
+  console.log('[SSN] invoking notify-enquiry');
+
   try {
-    if (sb.functions && typeof sb.functions.invoke === 'function') {
-      sb.functions.invoke('notify-enquiry', {
-        body: { record: { ...payload, created_at: new Date().toISOString() } }
-      }).catch(err => {
-        console.warn('[SSN Notifier] Background notification notice (enquiry is safely stored):', err);
-      });
-    }
+    fetch(notifUrl, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': anonKey,
+        'Authorization': 'Bearer ' + anonKey
+      },
+      body: JSON.stringify(notifPayload)
+    }).then(async res => {
+      const resData = await res.json().catch(() => ({}));
+      if (res.ok) {
+        console.log('[SSN] notify-enquiry returned:', resData);
+      } else {
+        console.warn(`[SSN] notify-enquiry invocation failed with status ${res.status}:`, resData);
+      }
+    }).catch(err => {
+      console.warn('[SSN] notify-enquiry invocation failed:', err);
+    });
   } catch (notifErr) {
-    console.warn('[SSN Notifier] Trigger non-fatal notice:', notifErr);
+    console.warn('[SSN] notify-enquiry invocation failed:', notifErr);
   }
 
   return { data: { success: true }, error: null };

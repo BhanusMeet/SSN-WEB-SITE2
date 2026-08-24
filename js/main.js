@@ -314,14 +314,16 @@ function initConnectModal() {
         return;
       }
 
-      // Rate limiting: max 3 submissions per 5 minutes
+      console.log('[SSN] Connect Now form submitted with data:', { name: formData.full_name, email: formData.email, phone: formData.phone });
+
+      // Client-side spam throttle
       const now = Date.now();
       const submissions = JSON.parse(sessionStorage.getItem('ssn_form_submissions') || '[]');
-      const recentSubmissions = submissions.filter(t => now - t < 300000);
-      if (recentSubmissions.length >= 3) {
+      const recentSubmissions = submissions.filter(t => now - t < 60000);
+      if (recentSubmissions.length >= 20) {
         status.style.display = 'block';
         status.style.color = '#e11d48';
-        status.textContent = 'Too many submissions. Please wait a few minutes.';
+        status.textContent = 'Too many submissions. Please wait a moment.';
         btn.disabled = false;
         btn.textContent = 'Submit Inquiry';
         return;
