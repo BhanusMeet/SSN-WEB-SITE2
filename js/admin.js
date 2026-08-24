@@ -532,7 +532,12 @@ function updateLivePreview() {
             <div class="live-flavour-pill ${i === 0 ? 'active' : ''}">${esc(f.name || 'Flavour')}</div>
           `).join('')}
         </div>
-        <p style="font-size:12px; color:#637381; margin-top:6px;">${esc(currentFlavourItems[0]?.description || '')}</p>
+        <p style="font-size:12px; color:#637381; margin-top:8px;">${esc(currentFlavourItems[0]?.description || '')}</p>
+        ${(currentFlavourItems[0]?.image || currentFlavourItems[0]?.image_url) ? `
+          <div style="margin-top:10px; text-align:center;">
+            <img src="${esc(currentFlavourItems[0].image || currentFlavourItems[0].image_url)}" alt="${esc(currentFlavourItems[0].name)}" style="max-height:100px; object-fit:contain;">
+          </div>
+        ` : ''}
       </div>
     ` : ''}
 
@@ -740,8 +745,9 @@ function renderFlavourItems() {
       <div class="repeatable-item-content">
         <div class="admin-form-row">
           <input type="text" class="admin-form-input" placeholder="Flavour Name (e.g. Chocolate Brownie)" value="${esc(f.name)}" oninput="currentFlavourItems[${i}].name=this.value; updateLivePreview()">
-          <input type="text" class="admin-form-input" placeholder="Description / Profile" value="${esc(f.description)}" oninput="currentFlavourItems[${i}].description=this.value; updateLivePreview()">
+          <input type="text" class="admin-form-input" placeholder="Image URL / Path (e.g. assets/images/flavours/blueberry.png)" value="${esc(f.image || f.image_url || '')}" oninput="currentFlavourItems[${i}].image=this.value; currentFlavourItems[${i}].image_url=this.value; updateLivePreview()">
         </div>
+        <input type="text" class="admin-form-input" placeholder="Description / Flavour Profile..." value="${esc(f.description || '')}" oninput="currentFlavourItems[${i}].description=this.value; updateLivePreview()">
       </div>
       <div class="repeatable-item-actions">
         <button type="button" class="repeatable-btn-icon repeatable-btn-danger" onclick="removeFlavourItem(${i})">&times;</button>

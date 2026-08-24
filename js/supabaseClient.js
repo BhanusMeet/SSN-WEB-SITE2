@@ -303,12 +303,12 @@ const DEFAULT_SSN_PRODUCTS = [
       { nutrient: 'Fats', unit: 'g', amount: '2.50' }
     ],
     flavours: [
-      { name: 'Chocolate Brownie', description: 'Rich chocolate brownie flavour profile.' },
-      { name: 'Mawa Kulfi', description: 'Traditional Indian sweet delicacy with aromatic cardamom.' },
-      { name: 'Cookies & Cream', description: 'Classic sweet biscuit crumble with rich dairy cream.' },
-      { name: 'Coffee Latte', description: 'Smooth roasted espresso aroma for coffee lovers.' },
-      { name: 'Strawberry Ice Cream', description: 'Fresh summer berry notes with creamy milkshake body.' },
-      { name: 'Blueberry Ice Cream', description: 'Wild antioxidant-rich blueberry essence with subtle sweetness.' }
+      { name: 'Chocolate Brownie', description: 'Rich chocolate brownie flavour profile with deep cocoa notes.', image: 'assets/images/products/performance-whey.webp' },
+      { name: 'Mawa Kulfi', description: 'Traditional Indian sweet delicacy with aromatic cardamom.', image: 'assets/images/flavours/lychee.png' },
+      { name: 'Cookies & Cream', description: 'Classic sweet biscuit crumble with rich dairy cream.', image: 'assets/images/products/performance-whey.webp' },
+      { name: 'Coffee Latte', description: 'Smooth roasted espresso aroma for coffee lovers.', image: 'assets/images/products/performance-whey.webp' },
+      { name: 'Strawberry Ice Cream', description: 'Fresh summer berry notes with creamy milkshake body.', image: 'assets/images/flavours/berry.png' },
+      { name: 'Blueberry Ice Cream', description: 'Wild antioxidant-rich blueberry essence with subtle sweetness.', image: 'assets/images/flavours/blueberry.png' }
     ],
     how_to_use: [
       { step: '01', title: 'Measure', description: 'Take approximately 1 scoop of Performance Whey powder (delivers 24g protein per scoop).' },
@@ -370,8 +370,9 @@ const DEFAULT_SSN_PRODUCTS = [
       { nutrient: 'Fats', unit: 'g', amount: '7.50' }
     ],
     flavours: [
-      { name: 'Chocolate Fudge', description: 'Decadent dark cocoa profile with creamy finish.' },
-      { name: 'Vanilla Cream', description: 'Smooth French vanilla custard aroma.' }
+      { name: 'Chocolate Brownie', description: 'Decadent dark cocoa fudge profile designed for rich high-calorie shakes.', image: 'assets/images/products/anabolic-monster-mass.webp' },
+      { name: 'Cookies & Cream', description: 'Crunchy cookie biscuit notes layered over sweet cream for high-density caloric nutrition.', image: 'assets/images/products/anabolic-monster-mass.webp' },
+      { name: 'Strawberry Milk Shake', description: 'Creamy whole-milk strawberry milkshake profile for effortless high-calorie consumption.', image: 'assets/images/flavours/berry.png' }
     ],
     how_to_use: [
       { step: '01', title: 'Measure', description: 'Add 2-3 scoops into 400-500 ml of cold water or full-cream milk.' },
@@ -430,6 +431,12 @@ const DEFAULT_SSN_PRODUCTS = [
       { nutrient: 'Creatine Malate', unit: 'mg', amount: '500' },
       { nutrient: 'Creatine HCL', unit: 'mg', amount: '500' },
       { nutrient: 'Energy / Calories', unit: 'kcal', amount: '0' }
+    ],
+    flavours: [
+      { name: 'Orange Sluch', description: 'Zesty citrus orange slush flavour delivering refreshing cellular hydration.', image: 'assets/images/flavours/mango.png' },
+      { name: 'Watermelon', description: 'Crisp and juicy summer watermelon flavour engineered for rapid dissolution and clean taste.', image: 'assets/images/flavours/watermelon.png' },
+      { name: 'Pineapple', description: 'Tropical tangy pineapple profile with smooth solubility and clean finish.', image: 'assets/images/flavours/pineapple.png' },
+      { name: 'Lemon Lime', description: 'Electric citrus lemon-lime fusion designed for instant refreshing cellular uptake.', image: 'assets/images/flavours/lemon.png' }
     ],
     how_to_use: [
       { step: '01', title: 'Scoop', description: 'Mix 1 level scoop (3g) with 200-250 ml of water or fruit juice.' },
@@ -523,8 +530,12 @@ const DEFAULT_SSN_PRODUCTS = [
       { nutrient: 'Sugar / Carbs', unit: 'g', amount: '0' }
     ],
     flavours: [
-      { name: 'Watermelon Splash', description: 'Crisp, refreshing summer watermelon profile.' },
-      { name: 'Blue Raspberry', description: 'Sweet and tangy blue raspberry citrus finish.' }
+      { name: 'Orange Sluch', description: 'Bright, refreshing orange slush profile providing sustained intra-workout hydration.', image: 'assets/images/flavours/mango.png' },
+      { name: 'Watermelon', description: 'Crisp, thirst-quenching watermelon essence engineered for continuous sipping during intense training.', image: 'assets/images/flavours/watermelon.png' },
+      { name: 'Mixed Fruit', description: 'Exotic tropical fruit fusion combining berries, citrus, and melon for an energizing intra-workout drink.', image: 'assets/images/flavours/fusion_fruit.png' },
+      { name: 'Mojito', description: 'Cool garden mint and fresh lime zest profile delivering clean, crisp anti-catabolic recovery.', image: 'assets/images/flavours/mojito.png' },
+      { name: 'Pineapple', description: 'Sweet and tangy tropical pineapple notes with optimal electrolyte balance.', image: 'assets/images/flavours/pineapple.png' },
+      { name: 'Green Apple', description: 'Crisp tart green apple burst providing maximum refreshment and endurance output.', image: 'assets/images/flavours/green_mango.png' }
     ],
     how_to_use: [
       { step: '01', title: 'Measure', description: 'Mix 1 scoop (10g) in 350-400 ml of ice-cold water.' },

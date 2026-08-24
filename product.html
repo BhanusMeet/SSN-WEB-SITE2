@@ -333,6 +333,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/siteConfig.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/main.js"></script>
@@ -717,24 +718,22 @@
 
               <div class="flavour-selector" id="flavour-pills-wrap">
                 ${flavours.map((f, idx) => `
-                  <button type="button" class="flavour-pill ${idx === 0 ? 'active' : ''}" onclick="selectProductFlavour(${idx}, this)" data-flavour="${esc(f.name)}" data-desc="${esc(f.description || '')}" data-img="${esc(f.image || '')}">
+                  <button type="button" class="flavour-pill ${idx === 0 ? 'active' : ''}" onclick="selectProductFlavour(${idx}, this)" data-flavour="${esc(f.name)}" data-desc="${esc(f.description || '')}" data-img="${esc(f.image || f.image_url || '')}">
                     ${esc(f.name)}
                   </button>
                 `).join('')}
               </div>
 
               <div class="flavour-active-box" id="flavour-display-box">
-                <h3 class="flavour-active-name" id="active-flavour-title" style="font-size:clamp(1.5rem, 3vw, 2rem); font-weight:700; margin:0 0 8px;">
+                <h3 class="flavour-active-name" id="active-flavour-title" style="font-size:clamp(1.5rem, 3vw, 2.25rem); font-weight:700; margin:0 0 8px; transition:opacity 0.2s ease, transform 0.2s ease;">
                   ${esc(flavours[0].name)}
                 </h3>
-                <p id="active-flavour-desc" style="font-size:var(--text-body); color:var(--text-secondary); margin:0; line-height:1.6;">
+                <p id="active-flavour-desc" style="font-size:var(--text-body); color:var(--text-secondary); margin:0; line-height:1.6; transition:opacity 0.2s ease, transform 0.2s ease;">
                   ${esc(flavours[0].description || `${flavours[0].name} flavour profile.`)}
                 </p>
-                ${flavours[0].image ? `
-                  <div style="margin-top:20px; text-align:center;">
-                    <img id="active-flavour-img" src="${esc(flavours[0].image)}" alt="${esc(flavours[0].name)}" style="max-height:220px; object-fit:contain;">
-                  </div>
-                ` : ''}
+                <div id="active-flavour-img-wrap" style="margin-top:24px; text-align:center; min-height:220px; display:${(flavours[0].image || flavours[0].image_url) ? 'flex' : 'none'}; align-items:center; justify-content:center;">
+                  <img id="active-flavour-img" src="${esc(flavours[0].image || flavours[0].image_url || '')}" alt="${esc(flavours[0].name)}" style="max-height:260px; max-width:100%; object-fit:contain; filter:drop-shadow(0 15px 35px rgba(0,0,0,0.12)); transition:opacity 0.25s ease, transform 0.25s ease;">
+                </div>
               </div>
             </div>
           </section>
@@ -873,12 +872,17 @@
     }
 
     function selectProductFlavour(index, btnEl) {
-      document.querySelectorAll('.flavour-pill').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
+      if (!btnEl) return;
+      const pillsWrap = btnEl.closest('.flavour-selector') || document.getElementById('flavour-pills-wrap');
+      if (pillsWrap) {
+        pillsWrap.querySelectorAll('.flavour-pill').forEach(b => b.classList.remove('active'));
+      }
+      btnEl.classList.add('active');
 
       const titleEl = document.getElementById('active-flavour-title');
       const descEl = document.getElementById('active-flavour-desc');
       const imgEl = document.getElementById('active-flavour-img');
+      const imgWrap = document.getElementById('active-flavour-img-wrap');
 
       const name = btnEl.getAttribute('data-flavour') || '';
       const desc = btnEl.getAttribute('data-desc') || `${name} flavour profile.`;
@@ -886,26 +890,42 @@
 
       if (titleEl) {
         titleEl.style.opacity = '0';
+        titleEl.style.transform = 'translateY(4px)';
         setTimeout(() => {
           titleEl.textContent = name;
           titleEl.style.opacity = '1';
+          titleEl.style.transform = 'translateY(0)';
         }, 120);
       }
 
       if (descEl) {
         descEl.style.opacity = '0';
+        descEl.style.transform = 'translateY(4px)';
         setTimeout(() => {
           descEl.textContent = desc;
           descEl.style.opacity = '1';
+          descEl.style.transform = 'translateY(0)';
         }, 120);
       }
 
-      if (imgEl) {
+      if (imgEl && imgWrap) {
         if (img) {
-          imgEl.src = img;
-          imgEl.style.display = 'block';
+          imgEl.style.opacity = '0';
+          imgEl.style.transform = 'scale(0.94)';
+          setTimeout(() => {
+            imgEl.src = img;
+            imgEl.alt = name;
+            imgWrap.style.display = 'flex';
+            imgEl.style.display = 'inline-block';
+            imgEl.onload = () => {
+              imgEl.style.opacity = '1';
+              imgEl.style.transform = 'scale(1)';
+            };
+            imgEl.style.opacity = '1';
+            imgEl.style.transform = 'scale(1)';
+          }, 120);
         } else {
-          imgEl.style.display = 'none';
+          imgWrap.style.display = 'none';
         }
       }
     }

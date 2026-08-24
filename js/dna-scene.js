@@ -5,6 +5,7 @@
 
 class SSNDNAScene {
   constructor() {
+    if (typeof THREE === 'undefined') return;
     this.canvas = document.getElementById('dna-canvas');
     if (!this.canvas) return;
 

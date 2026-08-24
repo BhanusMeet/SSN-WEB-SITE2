@@ -254,10 +254,32 @@
 }
 
 
-/* ── Flavour Display ── */
+/* ── Flavour Display & Active Box ── */
 .flavour-display {
   text-align: center;
   padding: var(--space-8);
+}
+
+.flavour-active-box {
+  background: var(--surface-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: clamp(var(--space-6), 4vw, var(--space-10));
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--space-6);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.flavour-active-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ssn-blue), #3b82f6, var(--ssn-blue));
 }
 
 .flavour-active-name {
@@ -265,8 +287,8 @@
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-tight);
   color: var(--text-primary);
-  margin-top: var(--space-6);
-  transition: opacity var(--duration-normal) var(--ease-out);
+  margin-top: 0;
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 
