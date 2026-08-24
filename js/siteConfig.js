@@ -18,7 +18,7 @@ window.SSN_CONFIG = {
     hours: 'Monday – Saturday: 09:00 – 18:00 IST'
   }),
   social: {
-    instagram: { enabled: true, url: 'https://instagram.com/ssnelite' },
+    instagram: { enabled: true, url: 'https://www.instagram.com/ssnindiaelite/' },
     facebook: { enabled: true, url: 'https://facebook.com/ssnelite' },
     linkedin: { enabled: true, url: 'https://linkedin.com/company/ssnelite' }
   },

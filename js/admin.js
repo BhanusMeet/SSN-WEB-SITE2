@@ -1382,8 +1382,13 @@ function renderSubmissionsTable(data) {
   
   data.forEach(s => {
     const d = s.created_at ? new Date(s.created_at).toLocaleDateString() : '-';
+    const notifStatus = s.notification_status ? `<span style="display:inline-block; font-size:10px; padding:2px 6px; border-radius:4px; margin-top:4px; ${s.notification_status === 'completed' || s.notification_status === 'sent' ? 'background:#e3f1df; color:#008060;' : 'background:#f4f6f8; color:#637381;'}">${esc(s.notification_status)}</span>` : '';
+
     html += `<tr>
-      <td><span style="font-weight:600;">${esc(s.full_name)}</span></td>
+      <td>
+        <span style="font-weight:600; display:block;">${esc(s.full_name)}</span>
+        ${notifStatus}
+      </td>
       <td>
         <div><a href="mailto:${esc(s.email)}" style="color:#008060; text-decoration:none;">${esc(s.email)}</a></div>
         <div style="font-size:12px; color:#637381; margin-top:2px;">${esc(s.phone)}</div>

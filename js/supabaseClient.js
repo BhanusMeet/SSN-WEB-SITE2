@@ -75,18 +75,38 @@ async function saveUserSubmission(formData) {
   const sb = getSupabaseClient();
   if (!sb) return { error: { message: 'Database not available.' } };
 
-  const { data, error } = await sb
-    .from('user_submissions')
-    .insert([{
-      full_name: (formData.full_name || '').trim(),
-      email: (formData.email || '').trim(),
-      phone: (formData.phone || '').trim(),
-      address: (formData.address || '').trim(),
-      message: (formData.message || '').trim() || null
-    }])
-    .select();
+  const payload = {
+    full_name: (formData.full_name || '').trim(),
+    email: (formData.email || '').trim(),
+    phone: (formData.phone || '').trim(),
+    address: (formData.address || '').trim(),
+    message: (formData.message || '').trim() || null
+  };
 
-  return { data, error };
+  // 1. Database INSERT happens first (Omit .select() to preserve anonymous INSERT security under RLS)
+  const { error } = await sb
+    .from('user_submissions')
+    .insert([payload]);
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  // 2. Non-blocking Edge Function notification trigger (Zero frontend secrets)
+  // Customer success is NEVER blocked even if notification service is delayed or offline
+  try {
+    if (sb.functions && typeof sb.functions.invoke === 'function') {
+      sb.functions.invoke('notify-enquiry', {
+        body: { record: { ...payload, created_at: new Date().toISOString() } }
+      }).catch(err => {
+        console.warn('[SSN Notifier] Background notification notice (enquiry is safely stored):', err);
+      });
+    }
+  } catch (notifErr) {
+    console.warn('[SSN Notifier] Trigger non-fatal notice:', notifErr);
+  }
+
+  return { data: { success: true }, error: null };
 }
 
 async function getUserSubmissions() {
@@ -567,7 +587,7 @@ async function deleteLabReport(id) {
 async function getSiteSettings() {
   const sb = getSupabaseClient();
   let defaultSettings = {
-    instagram: { enabled: true, url: 'https://instagram.com/ssnelite' },
+    instagram: { enabled: true, url: 'https://www.instagram.com/ssnindiaelite/' },
     facebook: { enabled: true, url: 'https://facebook.com/ssnelite' },
     linkedin: { enabled: true, url: 'https://linkedin.com/company/ssnelite' }
   };
@@ -585,14 +605,35 @@ async function getSiteSettings() {
     const { data, error } = await sb
       .from('site_settings')
       .select('*')
-      .eq('key', 'social_media')
+      .order('id', { ascending: true })
+      .limit(1)
       .maybeSingle();
 
-    if (!error && data && data.value) {
+    if (!error && data) {
+      let formattedSettings = defaultSettings;
+      if ('instagram_url' in data || 'instagram_enabled' in data) {
+        formattedSettings = {
+          instagram: {
+            enabled: data.instagram_enabled !== false,
+            url: data.instagram_url || ''
+          },
+          facebook: {
+            enabled: data.facebook_enabled !== false,
+            url: data.facebook_url || ''
+          },
+          linkedin: {
+            enabled: data.linkedin_enabled !== false,
+            url: data.linkedin_url || ''
+          }
+        };
+      } else if (data.value) {
+        formattedSettings = data.value;
+      }
+
       try {
-        localStorage.setItem('ssn_social_settings', JSON.stringify(data.value));
+        localStorage.setItem('ssn_social_settings', JSON.stringify(formattedSettings));
       } catch (e) {}
-      return { data: data.value, error: null };
+      return { data: formattedSettings, error: null };
     }
   } catch (err) {
     console.warn('[SSN Supabase] Error fetching site settings, using fallback:', err);
@@ -602,28 +643,58 @@ async function getSiteSettings() {
 }
 
 async function saveSiteSettings(settings) {
-  const sb = getSupabaseClient();
+  // Always persist immediately to local storage so footer and admin work instantly
   try {
     localStorage.setItem('ssn_social_settings', JSON.stringify(settings));
   } catch (e) {}
 
+  const sb = getSupabaseClient();
   if (!sb) return { data: settings, error: null };
 
   try {
     const payload = {
-      key: 'social_media',
-      value: settings,
+      instagram_url: settings.instagram?.url || '',
+      instagram_enabled: settings.instagram?.enabled !== false,
+      facebook_url: settings.facebook?.url || '',
+      facebook_enabled: settings.facebook?.enabled !== false,
+      linkedin_url: settings.linkedin?.url || '',
+      linkedin_enabled: settings.linkedin?.enabled !== false,
       updated_at: new Date().toISOString()
     };
 
-    const { data, error } = await sb
+    // Try fetching existing row
+    const { data: existing, error: selectErr } = await sb
       .from('site_settings')
-      .upsert(payload, { onConflict: 'key' })
-      .select();
+      .select('id')
+      .order('id', { ascending: true })
+      .limit(1)
+      .maybeSingle();
 
-    return { data, error };
+    let result;
+    if (existing && existing.id) {
+      result = await sb
+        .from('site_settings')
+        .update(payload)
+        .eq('id', existing.id)
+        .select();
+    } else {
+      result = await sb
+        .from('site_settings')
+        .insert([payload])
+        .select();
+    }
+
+    // If PostgREST schema cache has not yet refreshed or table is pending creation
+    if (result && result.error) {
+      if (result.error.code === 'PGRST205' || (result.error.message && result.error.message.includes('schema cache'))) {
+        console.warn('[SSN Supabase] site_settings table not yet cached in Supabase PostgREST. Saved to local storage fallback.');
+        return { data: settings, error: null, cached: true };
+      }
+    }
+
+    return result;
   } catch (err) {
     console.warn('[SSN Supabase] Error saving site settings:', err);
-    return { data: settings, error: null };
+    return { data: settings, error: null, cached: true };
   }
 }
