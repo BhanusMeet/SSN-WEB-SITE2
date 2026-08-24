@@ -206,6 +206,64 @@
 }
 
 
+/* ── Standard Button Styles ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 8px);
+  font-family: inherit;
+  font-size: var(--text-xs, 12px);
+  font-weight: var(--weight-semibold, 600);
+  letter-spacing: var(--tracking-wider, 0.08em);
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--duration-normal, 0.25s) var(--ease-out, ease);
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: var(--ssn-blue, #0A2FFF);
+  color: #FFFFFF !important;
+  border-color: var(--ssn-blue, #0A2FFF);
+  box-shadow: 0 4px 16px rgba(10, 47, 255, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--ssn-blue-deep, #001FD1);
+  border-color: var(--ssn-blue-deep, #001FD1);
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 24px rgba(10, 47, 255, 0.4);
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  color: var(--text-primary, #0A0A0A) !important;
+  border: 1.5px solid rgba(10, 47, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.btn-secondary:hover {
+  background: var(--ssn-blue-surface, rgba(10, 47, 255, 0.04));
+  color: var(--ssn-blue, #0A2FFF) !important;
+  border-color: var(--ssn-blue, #0A2FFF);
+  box-shadow: 0 4px 16px rgba(10, 47, 255, 0.15);
+}
+
+.btn-sm {
+  padding: 10px 20px;
+  font-size: 11px;
+}
+
 /* ── CTA Button ── */
 .cta-button {
   display: inline-flex;
