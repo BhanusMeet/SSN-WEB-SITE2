@@ -446,11 +446,11 @@
       const metric = p.key_metric || {};
       const metricNum = metric.number || '';
       const metricUnit = metric.unit || 'G';
-      const metricLabel = metric.label || 'PROTEIN PER SERVING';
-      const metricSublabel = metric.sublabel || 'Per scoop serving';
+      const metricLabel = metric.label || '';
+      const metricSublabel = metric.sublabel || '';
 
       const source = p.protein_source || {};
-      const sourceHeading = source.heading || (category.toLowerCase().includes('whey') ? 'The Protein Source' : 'The Ingredient Source');
+      const sourceHeading = source.heading || (category.toLowerCase().includes('whey') ? 'The Protein Source' : 'The Active Source');
       const sourceTag = source.tag || '';
       const sourceLabel = source.label || 'EDUCATIONAL';
       const sourceContent = source.content || '';
@@ -482,6 +482,20 @@
         ? p.goal_badges 
         : ['STRENGTH TRAINING', 'SPORTS', 'ACTIVE LIFESTYLE'];
 
+      // Deduplicate hero spec badges (Single Source of Truth)
+      const specBadges = [];
+      if (size) specBadges.push(size);
+      if (servings && !specBadges.includes(servings)) specBadges.push(servings);
+      if (proteinPerServing && !specBadges.includes(proteinPerServing)) specBadges.push(proteinPerServing);
+      badges.forEach(b => {
+        if (b && typeof b === 'string') {
+          const trimmed = b.trim();
+          if (trimmed && !specBadges.some(s => s.toLowerCase() === trimmed.toLowerCase())) {
+            specBadges.push(trimmed);
+          }
+        }
+      });
+
       // Update Page SEO Title and Meta
       document.title = `${name} | SSN Elite`;
       const metaDesc = document.getElementById('page-meta-desc');
@@ -499,10 +513,7 @@
                 <h1 class="product-hero-name reveal reveal-delay-1">${esc(name)}</h1>
                 
                 <div class="product-hero-specs reveal reveal-delay-2" style="display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;">
-                  ${size ? `<span class="product-spec-badge">${esc(size)}</span>` : ''}
-                  ${servings ? `<span class="product-spec-badge">${esc(servings)}</span>` : ''}
-                  ${proteinPerServing ? `<span class="product-spec-badge">${esc(proteinPerServing)}</span>` : ''}
-                  ${badges.map(b => `<span class="product-spec-badge">${esc(b)}</span>`).join('')}
+                  ${specBadges.map(b => `<span class="product-spec-badge">${esc(b)}</span>`).join('')}
                 </div>
 
                 <div class="reveal reveal-delay-3" style="margin-top:16px;">

@@ -252,14 +252,14 @@ const DEFAULT_SSN_PRODUCTS = [
     product_intro: {
       tag: 'EDUCATIONAL',
       heading: 'What Is Performance Whey?',
-      content: 'Performance Whey is a whey protein-based nutritional supplement designed to help you meet your daily protein requirements. Protein is an essential macronutrient that supports muscle repair, recovery, and growth — especially important for people who train regularly or lead active lifestyles.\n\nRather than rely solely on whole food sources to meet elevated protein needs, a whey protein supplement provides a convenient, concentrated way to intake consistent portions daily. Quick mixing is formulated to remove tedious quantity in preference a form that can be easily mixed and consumed.\n\nSSN Elite Performance Whey uses Whey Protein Concentrate (WPC) as its primary protein source, supplemented by a BCAA + Silk Amino Acid blend, additional EAAs, glutamine, and a digestive enzyme blend to support absorption.'
+      content: 'Performance Whey is a whey protein-based nutritional supplement designed to help you meet your daily protein requirements. Protein is an essential macronutrient that supports muscle repair, recovery, and growth — especially important for people who train regularly or lead active lifestyles.\n\nRather than rely solely on whole food sources to meet elevated protein needs, a whey protein supplement provides a convenient, concentrated way to intake consistent portions daily. Quick mixing is formulated to remove tedious quantity in preference a form that can be easily mixed and consumed.\n\nSSN Elite Performance Whey uses Whey Protein Concentrate (WPC) as its primary protein source, delivering 24g of protein per scoop, supplemented by a BCAA + Silk Amino Acid blend, additional EAAs, glutamine, and a digestive enzyme blend to support absorption.'
     },
-    key_metric: { number: '24', unit: 'G', label: 'PROTEIN PER SERVING', sublabel: 'Per scoop serving' },
+    key_metric: { number: '24', unit: 'G', label: 'PROTEIN PER SERVING', sublabel: 'Per scoop (34g) serving' },
     protein_source: {
       tag: 'WPC (WHEY PROTEIN CONCENTRATE)',
       label: 'EDUCATIONAL',
       heading: 'The Protein Source',
-      content: 'Whey Protein Concentrate (WPC) is derived from milk during the cheese-making process. When milk is processed, it separates into curds (used for cheese) and a liquid called whey. This liquid whey is then filtered and dried to create whey protein concentrate.\n\nWPC retains more of the naturally-occurring nutrients found in whey compared to more heavily processed forms. It typically contains a high percentage of protein along with small amounts of fat, carbohydrates, and bioactive compounds that are naturally present in whey.\n\nAs a protein source, WPC provides a complete amino acid profile — meaning it contains all nine essential amino acids that the body cannot produce on its own and must obtain through diet.'
+      content: 'Whey Protein Concentrate (WPC) is derived from milk during the cheese-making process. When milk is processed, it separates into curds (used for cheese) and a liquid called whey. This liquid whey is then filtered and dried to create whey protein concentrate.\n\nWPC retains more of the naturally-occurring nutrients found in whey compared to more heavily processed forms. It typically contains a high percentage of protein along with small amounts of fat, carbohydrates, and bioactive compounds that are naturally present in whey.\n\nAs a protein source, WPC provides a complete amino acid profile delivering 24g protein per serving — meaning it contains all nine essential amino acids that the body cannot produce on its own and must obtain through diet.'
     },
     amino_acid_profile: {
       title: 'The Amino Acid Profile',
@@ -289,7 +289,7 @@ const DEFAULT_SSN_PRODUCTS = [
       ]
     },
     ingredients_accordion: [
-      { title: 'Whey Protein Concentrate', description: 'Primary protein source providing complete amino acid spectrum and maximum bioavailability.' },
+      { title: 'Whey Protein Concentrate', description: 'Primary protein source providing 24g complete protein per serving with maximum bioavailability.' },
       { title: 'BCAA + Silk Amino Acid Blend', description: 'Branched-chain amino acids (Leucine, Isoleucine, Valine) combined with specialty silk amino acids.' },
       { title: 'Flavour & Additives', description: 'Precision formulated flavouring system for clean mixability and taste.' },
       { title: 'Digestive Enzyme Blend', description: 'Multi-enzyme complex designed to optimize protein breakdown and digestive comfort.' },
@@ -337,35 +337,35 @@ const DEFAULT_SSN_PRODUCTS = [
     discount: '',
     serving_size: '4 KG',
     servings: '25 Servings',
-    protein_per_serving: '55g Protein / Serving',
-    badges: ['4 KG', '25 Servings', '55g Protein / Serving', 'Caloric Surplus Matrix'],
+    protein_per_serving: '28g Protein / Serving',
+    badges: ['4 KG', '25 Servings', '28g Protein / Serving', 'Caloric Surplus Matrix'],
     goal_badges: ['MASS GAIN', 'HYPERTROPHY', 'HIGH CALORIE'],
     image_url: 'assets/images/products/anabolic-monster-mass.webp',
     main_image: 'assets/images/products/anabolic-monster-mass.webp',
     gallery_images: ['assets/images/products/anabolic-monster-mass.webp'],
-    short_description: 'A calorie-dense mass gainer formulated to support strength and muscle growth.',
+    short_description: 'A high-density mass gainer formulated with 28g protein per serving to support strength and caloric surplus.',
     status: 'Active',
     product_intro: {
       tag: 'EDUCATIONAL',
       heading: 'What Is Anabolic Monster Mass?',
-      content: 'Anabolic Monster Mass is a high-density caloric and protein matrix engineered for athletes, hardgainers, and strength competitors seeking substantial increases in muscle volume and body mass.\n\nFormulated with multi-phase carbohydrates and fast-and-slow digesting protein fractions, it delivers sustained amino acid and glycogen replenishment without unnecessary sugar spikes.'
+      content: 'Anabolic Monster Mass is a high-density caloric and protein matrix engineered for athletes, hardgainers, and strength competitors seeking substantial increases in muscle volume and body mass.\n\nFormulated with multi-phase carbohydrates and delivering 28g of protein per serving, it ensures sustained amino acid delivery and glycogen replenishment to fuel intensive workouts and progressive weight gain without unnecessary sugar spikes.'
     },
-    key_metric: { number: '55', unit: 'G', label: 'PROTEIN & COMPLEX MATRIX', sublabel: 'Per full mass gainer serving' },
+    key_metric: { number: '28', unit: 'G', label: 'PROTEIN PER SERVING', sublabel: 'Per mass gainer serving' },
     protein_source: {
       tag: 'MULTI-STAGE PROTEIN & COMPLEX CARBS',
       label: 'EDUCATIONAL',
       heading: 'The Mass Blend Source',
-      content: 'Precision blend of Whey Protein Concentrate, Micellar Casein, and complex oat/maltodextrin carbohydrate sources engineered for progressive caloric surplus.'
+      content: 'Precision blend of Whey Protein Concentrate, Micellar Casein, and complex carbohydrate sources engineered for progressive caloric surplus and sustained 28g protein delivery.'
     },
     ingredients_accordion: [
-      { title: 'Multi-Phase Protein Matrix', description: 'Whey protein concentrate, milk protein isolate, and micellar casein for immediate and prolonged amino release.' },
+      { title: 'Multi-Phase Protein Matrix', description: 'Delivering 28g protein per serving from whey protein concentrate and micellar casein for immediate and prolonged amino release.' },
       { title: 'Complex Carbohydrate Blend', description: 'Low-GI complex carbohydrates ensuring steady insulin response and sustained glycogen replenishment.' },
       { title: 'MCT & Healthy Lipid Complex', description: 'Medium-chain triglycerides providing clean, dense energy for intensive training output.' },
       { title: 'Digestive Enzymes', description: 'Enzyme blend to enhance nutrient assimilation across high-volume caloric intakes.' }
     ],
     nutrition_facts: [
       { nutrient: 'Energy', unit: 'kcal', amount: '1120' },
-      { nutrient: 'Protein', unit: 'g', amount: '55.00' },
+      { nutrient: 'Protein', unit: 'g', amount: '28.00' },
       { nutrient: 'Carbohydrates', unit: 'g', amount: '210.00' },
       { nutrient: 'Fats', unit: 'g', amount: '7.50' }
     ],
@@ -375,7 +375,7 @@ const DEFAULT_SSN_PRODUCTS = [
       { name: 'Strawberry Milk Shake', description: 'Creamy whole-milk strawberry milkshake profile for effortless high-calorie consumption.', image: 'assets/images/flavours/strawberry.png' }
     ],
     how_to_use: [
-      { step: '01', title: 'Measure', description: 'Add 2-3 scoops into 400-500 ml of cold water or full-cream milk.' },
+      { step: '01', title: 'Measure', description: 'Add 2-3 scoops into 400-500 ml of cold water or full-cream milk (delivers 28g protein per serving).' },
       { step: '02', title: 'Blend', description: 'Blend for 45-60 seconds for maximum creaminess and texture.' },
       { step: '03', title: 'Consume', description: 'Drink between meals or immediately post-workout to support caloric surplus.' }
     ],
@@ -401,30 +401,30 @@ const DEFAULT_SSN_PRODUCTS = [
     discount: '',
     serving_size: '300 G',
     servings: '100 Servings',
-    protein_per_serving: '3g Creatine Matrix',
+    protein_per_serving: '',
     badges: ['300 G', '100 Servings', '3g Creatine / Serving', 'HPLC Tested'],
     goal_badges: ['EXPLOSIVE POWER', 'ATP SYNTHESIS', 'STRENGTH'],
     image_url: 'assets/images/products/tri-creatine.webp',
     main_image: 'assets/images/products/tri-creatine.webp',
     gallery_images: ['assets/images/products/tri-creatine.webp'],
-    short_description: 'A precision creatine blend designed to support power, strength, and training output.',
+    short_description: 'A precision creatine blend delivering 3g creatine per serving to support power, strength, and training output.',
     status: 'Active',
     product_intro: {
       tag: 'EDUCATIONAL',
       heading: 'What Is Tri Creatine?',
-      content: 'Tri Creatine is a multi-molecular creatine matrix engineered to maximize intracellular phosphocreatine stores, cellular hydration, and ATP re-synthesis during high-intensity training.\n\nCombines micronized creatine monohydrate, creatine malate, and creatine hydrochloride for rapid bioavailability without gastrointestinal distress.'
+      content: 'Tri Creatine is a multi-molecular creatine matrix delivering 3g pure creatine per serving, engineered to maximize intracellular phosphocreatine stores, cellular hydration, and ATP re-synthesis during high-intensity training.\n\nCombines micronized creatine monohydrate, creatine malate, and creatine hydrochloride for rapid bioavailability without gastrointestinal distress.'
     },
-    key_metric: { number: '3', unit: 'G', label: 'CREATINE MATRIX PER SERVING', sublabel: 'Ultra-pure micronized creatine blend' },
+    key_metric: { number: '3', unit: 'G', label: 'CREATINE PER SERVING', sublabel: 'Per level scoop (3g) serving' },
     protein_source: {
-      tag: '100% PURE MICRONIZED MATRIX',
+      tag: '100% PURE MICRONIZED CREATINE MATRIX',
       label: 'EDUCATIONAL',
       heading: 'The Creatine Source',
-      content: 'Pharmaceutical grade HPLC-tested micronized creatine sources manufactured under stringent ISO/IEC 17025 certification.'
+      content: 'Pharmaceutical grade HPLC-tested micronized creatine sources delivering 3g creatine per serving, manufactured under stringent ISO/IEC 17025 certification.'
     },
     ingredients_accordion: [
-      { title: 'Micronized Creatine Monohydrate', description: 'Micro-milled 200 mesh powder for rapid solution dispersion and enhanced gastric tolerance.' },
-      { title: 'Creatine Malate', description: 'Creatine bonded with malic acid to support the Krebs cycle and endurance capacity.' },
-      { title: 'Creatine HCL', description: 'Highly water-soluble creatine salt engineered for optimal bioavailability.' }
+      { title: 'Micronized Creatine Monohydrate', description: 'Micro-milled 200 mesh powder providing 2000mg for rapid solution dispersion and enhanced gastric tolerance.' },
+      { title: 'Creatine Malate', description: '500mg creatine bonded with malic acid to support the Krebs cycle and endurance capacity.' },
+      { title: 'Creatine HCL', description: '500mg highly water-soluble creatine salt engineered for optimal bioavailability.' }
     ],
     nutrition_facts: [
       { nutrient: 'Creatine Monohydrate', unit: 'mg', amount: '2000' },
@@ -439,9 +439,9 @@ const DEFAULT_SSN_PRODUCTS = [
       { name: 'Lemon Lime', description: 'Electric citrus lemon-lime fusion designed for instant refreshing cellular uptake.', image: 'assets/images/flavours/lemon.png' }
     ],
     how_to_use: [
-      { step: '01', title: 'Scoop', description: 'Mix 1 level scoop (3g) with 200-250 ml of water or fruit juice.' },
+      { step: '01', title: 'Scoop', description: 'Mix 1 level scoop (3g) with 200-250 ml of water or fruit juice (delivers 3g creatine per serving).' },
       { step: '02', title: 'Stir', description: 'Stir for 15-20 seconds until clear.' },
-      { step: '03', title: 'Drink', description: 'Consume daily pre-workout or post-workout with carbohydrate source.' }
+      { step: '03', title: 'Drink', description: 'Consume daily pre-workout or post-workout with a carbohydrate source.' }
     ],
     target_audience: [
       { icon: '🏋️', title: 'Powerlifters', description: 'Maximizes maximal 1-rep strength and explosive force output.' },
@@ -465,33 +465,33 @@ const DEFAULT_SSN_PRODUCTS = [
     discount: '',
     serving_size: '300 G',
     servings: '30 Servings',
-    protein_per_serving: '7g Amino Acid Matrix',
-    badges: ['300 G', '30 Servings', '7g Matrix / Serving', 'Zero Sugar'],
+    protein_per_serving: '',
+    badges: ['300 G', '30 Servings', '7.8g Amino Acids / 10g Serving', '4g EAA • 3g BCAA', '1g Glutamine • 1140mg Electrolytes'],
     goal_badges: ['INTRA-WORKOUT', 'RECOVERY', 'ANTI-CATABOLIC'],
     image_url: 'assets/images/products/eaa-bcaa-glutamine.webp',
     main_image: 'assets/images/products/eaa-bcaa-glutamine.webp',
     gallery_images: ['assets/images/products/eaa-bcaa-glutamine.webp'],
-    short_description: 'Essential amino acids, BCAAs, and glutamine to support recovery and performance.',
+    short_description: '7.8g amino acids per 10g serving (7g amino acid matrix, 4g EAA, 3g BCAA, 1g L-Glutamine, 1140mg electrolytes) for intra-workout recovery.',
     status: 'Active',
     product_intro: {
       tag: 'EDUCATIONAL',
       heading: 'What Is EAA + BCAA + Glutamine?',
-      content: 'A clinical-grade intra-workout amino acid formula delivering all 9 essential amino acids, instantized 2:1:1 BCAAs, and fermented L-glutamine to accelerate recovery and halt muscle breakdown during intense sessions.'
+      content: 'A clinical-grade intra-workout amino acid formula delivering 7.8g amino acids per 10g serving with a 7g amino acid matrix containing 4g EAA, 3g BCAA, 1g L-Glutamine, and 1140mg electrolytes to accelerate recovery and halt muscle breakdown during intense sessions.'
     },
-    key_metric: { number: '7', unit: 'G', label: 'AMINO ACID MATRIX PER SERVING', sublabel: 'Full spectrum intra-workout blend' },
+    key_metric: { number: '7.8', unit: 'G', label: 'AMINO ACIDS PER 10G SERVING', sublabel: '7g Amino Matrix • 4g EAA • 3g BCAA • 1g L-Glutamine • 1140mg Electrolytes' },
     protein_source: {
       tag: 'FERMENTED FREE-FORM AMINO ACIDS',
       label: 'EDUCATIONAL',
       heading: 'The Amino Acid Source',
-      content: 'Plant-fermented, instantized free-form amino acids engineered for zero-digestion direct cellular uptake.'
+      content: 'Plant-fermented, instantized free-form amino acids delivering 7.8g amino acids per 10g serving (4g EAA, 3g BCAA, 1g L-Glutamine, 1140mg electrolytes) engineered for zero-digestion direct cellular uptake.'
     },
     amino_acid_profile: {
       title: 'The Amino Acid Matrix',
       label: 'FROM PACKAGING',
-      description: 'Full spectrum 9 EAAs plus fermented L-Glutamine delivering immediate intracellular recovery.',
+      description: '7.8g amino acids per 10g serving containing full spectrum 4g EAAs, 3g BCAAs (2:1:1), 1g fermented L-Glutamine, and 1140mg electrolytes delivering immediate intracellular recovery.',
       groups: [
         {
-          title: 'BCAA Blend (2:1:1)',
+          title: 'BCAA Matrix (3g / 3000mg)',
           items: [
             { category: 'BCAA', name: 'L-Leucine (Instantized)' },
             { category: 'BCAA', name: 'L-Isoleucine' },
@@ -499,7 +499,7 @@ const DEFAULT_SSN_PRODUCTS = [
           ]
         },
         {
-          title: 'Essential Amino Acid Spectrum',
+          title: 'Essential Amino Acid Spectrum (4g / 4000mg)',
           items: [
             { category: 'EAA', name: 'L-Lysine' },
             { category: 'EAA', name: 'L-Threonine' },
@@ -510,23 +510,26 @@ const DEFAULT_SSN_PRODUCTS = [
           ]
         },
         {
-          title: 'Recovery & Cellular Hydration',
+          title: 'Recovery & Electrolytes (1g Glutamine + 1140mg Electrolytes)',
           items: [
-            { category: 'RECOVERY', name: 'Fermented L-Glutamine' },
-            { category: 'HYDRATION', name: 'Electrolyte Complex' }
+            { category: 'RECOVERY', name: 'Fermented L-Glutamine (1g)' },
+            { category: 'HYDRATION', name: 'Electrolyte Complex (1140mg)' }
           ]
         }
       ]
     },
     ingredients_accordion: [
-      { title: 'Instantized BCAA Complex (2:1:1)', description: 'Leucine, Isoleucine, and Valine formulated to stimulate mTOR and muscle protein synthesis.' },
-      { title: 'Complete EAA Matrix', description: 'The remaining 6 essential amino acids required for de novo protein synthesis.' },
-      { title: 'Fermented L-Glutamine', description: 'Supports intestinal barrier function and muscle glycogen resynthesis.' }
+      { title: 'Instantized BCAA Complex (3g / 3000mg)', description: '3g BCAAs (2:1:1 ratio: Leucine, Isoleucine, Valine) formulated to stimulate mTOR and muscle protein synthesis.' },
+      { title: 'Complete EAA Matrix (4g / 4000mg)', description: '4g Essential Amino Acids required for complete protein synthesis.' },
+      { title: 'Fermented L-Glutamine (1g / 1000mg)', description: '1g fermented L-Glutamine supporting intestinal barrier function and muscle glycogen resynthesis.' },
+      { title: 'Electrolyte Hydration Complex (1140mg)', description: '1140mg cellular hydration complex maintaining fluid balance and preventing cramping.' }
     ],
     nutrition_facts: [
-      { nutrient: 'BCAA Blend (2:1:1)', unit: 'mg', amount: '4000' },
-      { nutrient: 'EAA Blend', unit: 'mg', amount: '2000' },
-      { nutrient: 'L-Glutamine', unit: 'mg', amount: '1000' },
+      { nutrient: 'Amino Acid Matrix', unit: 'g', amount: '7.8' },
+      { nutrient: 'EAA Complex', unit: 'g', amount: '4.0' },
+      { nutrient: 'BCAA Blend (2:1:1)', unit: 'g', amount: '3.0' },
+      { nutrient: 'L-Glutamine', unit: 'g', amount: '1.0' },
+      { nutrient: 'Electrolyte Matrix', unit: 'mg', amount: '1140' },
       { nutrient: 'Sugar / Carbs', unit: 'g', amount: '0' }
     ],
     flavours: [
@@ -538,7 +541,7 @@ const DEFAULT_SSN_PRODUCTS = [
       { name: 'Green Apple', description: 'Crisp tart green apple burst providing maximum refreshment and endurance output.', image: 'assets/images/flavours/green_mango.png' }
     ],
     how_to_use: [
-      { step: '01', title: 'Measure', description: 'Mix 1 scoop (10g) in 350-400 ml of ice-cold water.' },
+      { step: '01', title: 'Measure', description: 'Mix 1 scoop (10g) in 350-400 ml of ice-cold water (delivers 7.8g amino acids per 10g serving).' },
       { step: '02', title: 'Shake', description: 'Shake for 20 seconds in your shaker bottle.' },
       { step: '03', title: 'Sip', description: 'Sip continuously throughout your workout session.' }
     ],
