@@ -485,19 +485,10 @@
         ? p.goal_badges 
         : ['STRENGTH TRAINING', 'SPORTS', 'ACTIVE LIFESTYLE'];
 
-      // Deduplicate hero spec badges (Single Source of Truth)
-      const specBadges = [];
-      if (size) specBadges.push(size);
-      if (servings && !specBadges.includes(servings)) specBadges.push(servings);
-      if (proteinPerServing && !specBadges.includes(proteinPerServing)) specBadges.push(proteinPerServing);
-      badges.forEach(b => {
-        if (b && typeof b === 'string') {
-          const trimmed = b.trim();
-          if (trimmed && !specBadges.some(s => s.toLowerCase() === trimmed.toLowerCase())) {
-            specBadges.push(trimmed);
-          }
-        }
-      });
+      // Hero Spec Badges (Single Source of Truth)
+      const specBadges = Array.isArray(p.badges) && p.badges.length > 0 
+        ? p.badges 
+        : [size, servings, proteinPerServing].filter(Boolean);
 
       // Update Page SEO Title and Meta
       document.title = `${name} | SSN Elite`;
