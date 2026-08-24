@@ -613,6 +613,85 @@ async function getProducts() {
     }
   } catch (e) {}
 
+function normalizeProductData(p) {
+  if (!p) return p;
+  const slug = (p.slug || '').toLowerCase();
+  const name = (p.name || p.title || '').toLowerCase();
+
+  // 1. ANABOLIC MONSTER MASS NORMALIZATION
+  if (slug.includes('monster-mass') || slug.includes('anabolic') || name.includes('monster mass')) {
+    p.protein_per_serving = '28g Protein / Serving';
+    if (p.serving_size && p.serving_size.includes('6 KG')) p.serving_size = '4 KG';
+    if (Array.isArray(p.badges)) {
+      p.badges = p.badges.filter(b => {
+        const bLower = String(b).toLowerCase();
+        return !bLower.includes('54g') && !bLower.includes('55g') && !bLower.includes('54 g') && !bLower.includes('55 g');
+      });
+      if (!p.badges.some(b => b.toLowerCase().includes('28g'))) {
+        p.badges.push('28g Protein / Serving');
+      }
+    }
+    p.key_metric = { number: '28', unit: 'G', label: 'PROTEIN PER SERVING', sublabel: 'Per mass gainer serving' };
+    if (Array.isArray(p.nutrition_facts)) {
+      p.nutrition_facts = p.nutrition_facts.map(n => {
+        if (n.nutrient && n.nutrient.toLowerCase() === 'protein') {
+          return { ...n, amount: '28.00' };
+        }
+        return n;
+      });
+    }
+  }
+
+  // 2. TRI CREATINE NORMALIZATION
+  else if (slug.includes('tri-creatine') || slug.includes('creatine') || name.includes('creatine')) {
+    p.protein_per_serving = ''; // No protein badge
+    if (Array.isArray(p.badges)) {
+      p.badges = p.badges.filter(b => {
+        const bLower = String(b).toLowerCase();
+        return !bLower.includes('5g') && !bLower.includes('5 g') && !bLower.includes('protein') && !bLower.includes('whey');
+      });
+      if (!p.badges.some(b => b.toLowerCase().includes('3g creatine'))) {
+        p.badges.push('3g Creatine / Serving');
+      }
+    }
+    p.key_metric = { number: '3', unit: 'G', label: 'CREATINE PER SERVING', sublabel: 'Per level scoop (3g) serving' };
+    if (Array.isArray(p.nutrition_facts)) {
+      p.nutrition_facts = p.nutrition_facts.filter(n => !(n.nutrient && n.nutrient.toLowerCase() === 'protein'));
+    }
+  }
+
+  // 3. EAA + BCAA + GLUTAMINE NORMALIZATION
+  else if (slug.includes('eaa') || slug.includes('bcaa') || name.includes('eaa') || name.includes('bcaa')) {
+    p.protein_per_serving = ''; // No protein badge
+    if (Array.isArray(p.badges)) {
+      p.badges = p.badges.filter(b => {
+        const bLower = String(b).toLowerCase();
+        return !bLower.includes('protein') && !bLower.includes('whey');
+      });
+      if (!p.badges.some(b => b.toLowerCase().includes('7.8g'))) {
+        p.badges.push('7.8g Amino Acids / 10g Serving');
+      }
+    }
+    p.key_metric = { number: '7.8', unit: 'G', label: 'AMINO ACIDS PER 10G SERVING', sublabel: '7g Amino Matrix • 4g EAA • 3g BCAA • 1g L-Glutamine • 1140mg Electrolytes' };
+  }
+
+  // 4. PERFORMANCE WHEY NORMALIZATION
+  else if (slug.includes('whey') || name.includes('performance whey')) {
+    p.protein_per_serving = '24g Protein / Serving';
+    p.key_metric = { number: '24', unit: 'G', label: 'PROTEIN PER SERVING', sublabel: 'Per scoop (34g) serving' };
+    if (Array.isArray(p.nutrition_facts)) {
+      p.nutrition_facts = p.nutrition_facts.map(n => {
+        if (n.nutrient && n.nutrient.toLowerCase() === 'protein') {
+          return { ...n, amount: '24.00' };
+        }
+        return n;
+      });
+    }
+  }
+
+  return p;
+}
+
   if (mergedProducts.length > 0) {
     mergedProducts.forEach(p => {
       const rawText = p.full_description || p.description || '';
@@ -629,6 +708,9 @@ async function getProducts() {
           if (p.description) p.description = p.description.replace(/<!--SSN_STRUCTURED_DATA:.*?-->/s, '').trim();
         } catch (e) {}
       }
+
+      // Apply Single Source of Truth canonical normalization
+      normalizeProductData(p);
     });
   }
 

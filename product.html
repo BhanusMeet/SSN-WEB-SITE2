@@ -423,6 +423,9 @@
     }
 
     function renderProductDetail(p) {
+      if (typeof normalizeProductData === 'function') {
+        p = normalizeProductData(p);
+      }
       const root = document.getElementById('product-root');
       const name = p.name || p.title || 'SSN Elite Supplement';
       const series = p.series || 'SSN ELITE SERIES';
