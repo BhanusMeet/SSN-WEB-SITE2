@@ -281,10 +281,30 @@ function initConnectModal() {
   const connectModalBackdrop = document.getElementById('connectModalBackdrop');
   const connectForm = document.getElementById('global-connect-form');
 
+  window.openConnectModal = function(productName) {
+    const modal = document.getElementById('connectModal');
+    if (modal) {
+      if (productName) {
+        const title = modal.querySelector('.connect-modal-title');
+        if (title) title.textContent = `Connect About ${productName}`;
+        const msg = modal.querySelector('textarea[name="message"]');
+        if (msg && (!msg.value || msg.value.includes('Enquiring about'))) {
+          msg.value = `Enquiring about ${productName}. Please share pricing and batch availability.`;
+        }
+      }
+      modal.classList.add('open');
+    }
+  };
+  window.openEnquiryModal = window.openConnectModal;
+  window.closeConnectModal = function() {
+    const modal = document.getElementById('connectModal');
+    if (modal) modal.classList.remove('open');
+  };
+
   if (connectFab && connectModal) {
-    connectFab.addEventListener('click', () => connectModal.classList.add('open'));
-    connectModalClose.addEventListener('click', () => connectModal.classList.remove('open'));
-    connectModalBackdrop.addEventListener('click', () => connectModal.classList.remove('open'));
+    connectFab.addEventListener('click', () => window.openConnectModal());
+    connectModalClose.addEventListener('click', () => window.closeConnectModal());
+    connectModalBackdrop.addEventListener('click', () => window.closeConnectModal());
   }
 
   if (connectForm) {
