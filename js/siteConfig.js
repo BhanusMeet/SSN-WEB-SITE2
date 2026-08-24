@@ -65,7 +65,7 @@ SSN_CONFIG.isSafeUrl = function(url) {
  */
 SSN_CONFIG.unifyHeader = function() {
   const currentPath = window.location.pathname.toLowerCase();
-  if (currentPath.includes('admin') || document.body.classList.contains('admin-body') || document.getElementById('admin-sidebar')) {
+  if (currentPath.includes('admin') || currentPath.includes('elite-control') || document.body.classList.contains('admin-body') || document.getElementById('admin-sidebar')) {
     return; // NEVER inject public header into admin pages
   }
   const currentHash = window.location.hash.toLowerCase();
@@ -227,7 +227,7 @@ SSN_CONFIG.renderFooterSocialAndCredit = function() {
  */
 SSN_CONFIG.injectConfig = function() {
   const currentPath = window.location.pathname.toLowerCase();
-  if (currentPath.includes('admin') || document.body.classList.contains('admin-body') || document.getElementById('admin-sidebar')) {
+  if (currentPath.includes('admin') || currentPath.includes('elite-control') || document.body.classList.contains('admin-body') || document.getElementById('admin-sidebar')) {
     return; // NEVER inject public header or footer into admin panel
   }
 

@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const isExcluded = window.location.pathname.toLowerCase().includes('admin') || 
+                     window.location.pathname.toLowerCase().includes('elite-control') ||
                      document.body.classList.contains('admin-body') || 
                      document.getElementById('admin-sidebar');
   if (isExcluded) return;
@@ -121,7 +122,7 @@ function initSmoothScroll() {
 /* ── Global Connect Modal ── */
 function initConnectModal() {
   // Don't inject if it's the admin page
-  if (window.location.pathname.includes('admin.html')) return;
+  if (window.location.pathname.includes('admin') || window.location.pathname.includes('elite-control')) return;
 
   const modalHtml = `
     <style>

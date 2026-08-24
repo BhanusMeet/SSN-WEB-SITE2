@@ -21,7 +21,8 @@ public_html/
 ├── product.html
 ├── lab-reports.html
 ├── verify.html
-├── admin.html
+├── elite-control/
+│   └── index.html
 ├── performance-whey.html (SEO redirect)
 ├── anabolic-monster-mass.html (SEO redirect)
 ├── tri-creatine.html (SEO redirect)
@@ -38,9 +39,10 @@ public_html/
 ---
 
 ## 2. Admin Panel & Supabase
-The Admin Panel is accessible at `https://YOUR-DOMAIN.com/admin.html`.
+The Admin Panel is accessible at `https://YOUR-DOMAIN.com/elite-control/`.
 - Authentication, product CRUD, blog publishing, lab report certificates, and customer inquiries connect directly to Supabase via `@supabase/supabase-js`.
-- Articles and products published in the Admin Panel appear dynamically and immediately on the live website without rebuilding or redeploying.
+- Access is protected by Supabase Auth and database RLS with `public.is_admin()`.
+- Legacy `/admin.html` path is permanently blocked with HTTP 404.
 
 ---
 
@@ -50,5 +52,5 @@ The Admin Panel is accessible at `https://YOUR-DOMAIN.com/admin.html`.
 3. Open `public_html`.
 4. Upload and Extract the ZIP file.
 5. Ensure `index.html` is directly inside `public_html` (not nested inside a subfolder).
-6. Ensure `.htaccess` is present in `public_html` for security headers and caching.
+6. Ensure `.htaccess` is present in `public_html` for security headers, clean URLs, and admin route protection.
 7. Verify that SSL (HTTPS) is enabled in Hostinger.

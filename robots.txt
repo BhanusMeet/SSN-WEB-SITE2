@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /elite-control/
 Disallow: /admin.html
 Sitemap: https://ssnelite.com/sitemap.xml
