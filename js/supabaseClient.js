@@ -1026,8 +1026,8 @@ async function getSiteSettings() {
   const sb = getSupabaseClient();
   let defaultSettings = {
     instagram: { enabled: true, url: 'https://www.instagram.com/ssnindiaelite/' },
-    facebook: { enabled: true, url: 'https://facebook.com/ssnelite' },
-    linkedin: { enabled: true, url: 'https://linkedin.com/company/ssnelite' }
+    facebook: { enabled: false, url: '' },
+    linkedin: { enabled: false, url: '' }
   };
 
   try {
