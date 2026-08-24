@@ -6,7 +6,7 @@
 // Zero secrets exposed to frontend. 100% Hostinger compatible.
 // ============================================================
 
-/// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
+/// <reference path="../types.d.ts" />
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -62,7 +62,7 @@ serve(async (req: Request) => {
     const TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN");
     const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-    const ADMIN_EMAIL = Deno.env.get("ADMIN_EMAIL") || "bhanusmeet@gmail.com";
+    const ADMIN_EMAIL = Deno.env.get("ADMIN_EMAIL") || "ssnindiaelite@gmail.com";
     
     let rawFromEmail = Deno.env.get("FROM_EMAIL") || "SSN Elite <onboarding@resend.dev>";
     // Resend rejects unverified public mail domains as the sender
@@ -213,6 +213,7 @@ ${submittedAt}`;
           body: JSON.stringify({
             from: FROM_EMAIL,
             to: [ADMIN_EMAIL],
+            reply_to: (customerEmail && customerEmail.includes("@")) ? customerEmail : ADMIN_EMAIL,
             subject: emailSubject,
             text: emailBodyText,
             html: emailBodyHtml
