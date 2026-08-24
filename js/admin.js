@@ -188,7 +188,7 @@ function renderProductsTable() {
     const img = p.image_url || p.main_image || '';
 
     const pSlug = (p.slug || p.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    const liveUrl = `product.html?slug=${encodeURIComponent(p.slug || pSlug)}`;
+    const liveUrl = `../product.html?slug=${encodeURIComponent(p.slug || pSlug)}`;
 
     html += `<tr>
       <td>

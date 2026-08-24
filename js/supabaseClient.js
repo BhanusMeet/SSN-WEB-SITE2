@@ -227,6 +227,321 @@ async function uploadFileToStorage(folder, file) {
    PRODUCTS — CRUD Operations with Schema Resilience
    ══════════════════════════════════════════════ */
 
+const DEFAULT_SSN_PRODUCTS = [
+  {
+    id: 'prod-pw-01',
+    name: 'SSN Elite Performance Whey',
+    title: 'SSN Elite Performance Whey',
+    slug: 'performance-whey',
+    series: 'SSN ELITE SERIES',
+    category: 'Lean Muscle',
+    selling_price: '₹10,499',
+    price: '₹10,499',
+    mrp: '₹10,499',
+    discount: '',
+    serving_size: '3 KG',
+    servings: '70 Servings',
+    protein_per_serving: '24g Protein / Serving',
+    badges: ['3 KG', '70 Servings', '24g Protein / Serving', 'Gluten Free'],
+    goal_badges: ['STRENGTH TRAINING', 'SPORTS', 'ACTIVE LIFESTYLE'],
+    image_url: 'assets/images/products/performance-whey.webp',
+    main_image: 'assets/images/products/performance-whey.webp',
+    gallery_images: ['assets/images/products/performance-whey.webp'],
+    short_description: 'Whey protein concentrate with a complete amino acid profile for daily performance nutrition.',
+    status: 'Active',
+    product_intro: {
+      tag: 'EDUCATIONAL',
+      heading: 'What Is Performance Whey?',
+      content: 'Performance Whey is a whey protein-based nutritional supplement designed to help you meet your daily protein requirements. Protein is an essential macronutrient that supports muscle repair, recovery, and growth — especially important for people who train regularly or lead active lifestyles.\n\nRather than rely solely on whole food sources to meet elevated protein needs, a whey protein supplement provides a convenient, concentrated way to intake consistent portions daily. Quick mixing is formulated to remove tedious quantity in preference a form that can be easily mixed and consumed.\n\nSSN Elite Performance Whey uses Whey Protein Concentrate (WPC) as its primary protein source, supplemented by a BCAA + Silk Amino Acid blend, additional EAAs, glutamine, and a digestive enzyme blend to support absorption.'
+    },
+    key_metric: { number: '24', unit: 'G', label: 'PROTEIN PER SERVING', sublabel: 'Per scoop serving' },
+    protein_source: {
+      tag: 'WPC (WHEY PROTEIN CONCENTRATE)',
+      label: 'EDUCATIONAL',
+      heading: 'The Protein Source',
+      content: 'Whey Protein Concentrate (WPC) is derived from milk during the cheese-making process. When milk is processed, it separates into curds (used for cheese) and a liquid called whey. This liquid whey is then filtered and dried to create whey protein concentrate.\n\nWPC retains more of the naturally-occurring nutrients found in whey compared to more heavily processed forms. It typically contains a high percentage of protein along with small amounts of fat, carbohydrates, and bioactive compounds that are naturally present in whey.\n\nAs a protein source, WPC provides a complete amino acid profile — meaning it contains all nine essential amino acids that the body cannot produce on its own and must obtain through diet.'
+    },
+    amino_acid_profile: {
+      title: 'The Amino Acid Profile',
+      label: 'FROM PACKAGING',
+      description: 'Performance Whey includes a BCAA + Silk Amino Acid blend along with additional essential amino acids and glutamine. The following amino acids are listed on the product packaging:',
+      groups: [
+        {
+          title: 'BCAA + Silk Amino Acid Blend',
+          items: [
+            { category: 'BCAA', name: 'L-Leucine' },
+            { category: 'BCAA', name: 'L-Isoleucine' },
+            { category: 'BCAA', name: 'L-Valine' },
+            { category: 'AMINO ACID', name: 'L-Glycine' },
+            { category: 'AMINO ACID', name: 'L-Alanine' },
+            { category: 'AMINO ACID', name: 'L-Serine' },
+            { category: 'AMINO ACID', name: 'L-Threonine' }
+          ]
+        },
+        {
+          title: 'Additional Components',
+          items: [
+            { category: 'RECOVERY', name: 'Glutamine' },
+            { category: 'AMINO ACIDS', name: 'AAKG (L-Arginine)' },
+            { category: 'SPECIALTY', name: 'Silk Amino Acids' }
+          ]
+        }
+      ]
+    },
+    ingredients_accordion: [
+      { title: 'Whey Protein Concentrate', description: 'Primary protein source providing complete amino acid spectrum and maximum bioavailability.' },
+      { title: 'BCAA + Silk Amino Acid Blend', description: 'Branched-chain amino acids (Leucine, Isoleucine, Valine) combined with specialty silk amino acids.' },
+      { title: 'Flavour & Additives', description: 'Precision formulated flavouring system for clean mixability and taste.' },
+      { title: 'Digestive Enzyme Blend', description: 'Multi-enzyme complex designed to optimize protein breakdown and digestive comfort.' },
+      { title: 'Glutamine', description: 'Essential conditionally-amino acid supporting muscle tissue repair and immune balance.' },
+      { title: 'Silk Amino Acids', description: 'Targeted amino acid sequence supporting stamina and cellular recovery.' }
+    ],
+    nutrition_facts: [
+      { nutrient: 'Energy', unit: 'kcal', amount: '138.04' },
+      { nutrient: 'Protein', unit: 'g', amount: '24.00' },
+      { nutrient: 'Carbohydrates', unit: 'g', amount: '4.80' },
+      { nutrient: 'Fats', unit: 'g', amount: '2.50' }
+    ],
+    flavours: [
+      { name: 'Chocolate Brownie', description: 'Rich chocolate brownie flavour profile.' },
+      { name: 'Mawa Kulfi', description: 'Traditional Indian sweet delicacy with aromatic cardamom.' },
+      { name: 'Cookies & Cream', description: 'Classic sweet biscuit crumble with rich dairy cream.' },
+      { name: 'Coffee Latte', description: 'Smooth roasted espresso aroma for coffee lovers.' },
+      { name: 'Strawberry Ice Cream', description: 'Fresh summer berry notes with creamy milkshake body.' },
+      { name: 'Blueberry Ice Cream', description: 'Wild antioxidant-rich blueberry essence with subtle sweetness.' }
+    ],
+    how_to_use: [
+      { step: '01', title: 'Measure', description: 'Take approximately 1 scoop of Performance Whey powder (delivers 24g protein per scoop).' },
+      { step: '02', title: 'Mix', description: 'Add to 180-200 ml of cold water, milk, or preferred beverage of your choice.' },
+      { step: '03', title: 'Shake', description: 'Shake or stir with a spoon for approximately 30 seconds until fully dispersed.' }
+    ],
+    target_audience: [
+      { icon: '🏋️', title: 'Strength Training', description: 'For muscle repair and growth after resistance training.' },
+      { icon: '⚡', title: 'Sports & Athletics', description: 'To support athletic recovery and muscle maintenance.' },
+      { icon: '🏃', title: 'Active Lifestyle', description: 'To meet daily protein goals alongside regular physical activity.' },
+      { icon: '🎯', title: 'Daily Protein Goals', description: 'For individuals seeking a reliable, high-quality supplemental protein source.' }
+    ],
+    storage_info: { heading: 'STORAGE', content: 'Store in a cool, dry place away from direct sunlight. Keep the container tightly closed after use. Keep away from children.' },
+    important_notice: { heading: 'IMPORTANT NOTICE', content: 'This product is a dietary supplement and is not intended to be a substitute for a varied diet. Consult a healthcare professional before use, especially if you have a medical condition or are taking medication.' }
+  },
+  {
+    id: 'prod-amm-02',
+    name: 'SSN Elite Anabolic Monster Mass',
+    title: 'SSN Elite Anabolic Monster Mass',
+    slug: 'anabolic-monster-mass',
+    series: 'SSN ELITE SERIES',
+    category: 'Size & Strength',
+    selling_price: '₹6,999',
+    price: '₹6,999',
+    mrp: '₹6,999',
+    discount: '',
+    serving_size: '4 KG',
+    servings: '25 Servings',
+    protein_per_serving: '55g Protein / Serving',
+    badges: ['4 KG', '25 Servings', '55g Protein / Serving', 'Caloric Surplus Matrix'],
+    goal_badges: ['MASS GAIN', 'HYPERTROPHY', 'HIGH CALORIE'],
+    image_url: 'assets/images/products/anabolic-monster-mass.webp',
+    main_image: 'assets/images/products/anabolic-monster-mass.webp',
+    gallery_images: ['assets/images/products/anabolic-monster-mass.webp'],
+    short_description: 'A calorie-dense mass gainer formulated to support strength and muscle growth.',
+    status: 'Active',
+    product_intro: {
+      tag: 'EDUCATIONAL',
+      heading: 'What Is Anabolic Monster Mass?',
+      content: 'Anabolic Monster Mass is a high-density caloric and protein matrix engineered for athletes, hardgainers, and strength competitors seeking substantial increases in muscle volume and body mass.\n\nFormulated with multi-phase carbohydrates and fast-and-slow digesting protein fractions, it delivers sustained amino acid and glycogen replenishment without unnecessary sugar spikes.'
+    },
+    key_metric: { number: '55', unit: 'G', label: 'PROTEIN & COMPLEX MATRIX', sublabel: 'Per full mass gainer serving' },
+    protein_source: {
+      tag: 'MULTI-STAGE PROTEIN & COMPLEX CARBS',
+      label: 'EDUCATIONAL',
+      heading: 'The Mass Blend Source',
+      content: 'Precision blend of Whey Protein Concentrate, Micellar Casein, and complex oat/maltodextrin carbohydrate sources engineered for progressive caloric surplus.'
+    },
+    ingredients_accordion: [
+      { title: 'Multi-Phase Protein Matrix', description: 'Whey protein concentrate, milk protein isolate, and micellar casein for immediate and prolonged amino release.' },
+      { title: 'Complex Carbohydrate Blend', description: 'Low-GI complex carbohydrates ensuring steady insulin response and sustained glycogen replenishment.' },
+      { title: 'MCT & Healthy Lipid Complex', description: 'Medium-chain triglycerides providing clean, dense energy for intensive training output.' },
+      { title: 'Digestive Enzymes', description: 'Enzyme blend to enhance nutrient assimilation across high-volume caloric intakes.' }
+    ],
+    nutrition_facts: [
+      { nutrient: 'Energy', unit: 'kcal', amount: '1120' },
+      { nutrient: 'Protein', unit: 'g', amount: '55.00' },
+      { nutrient: 'Carbohydrates', unit: 'g', amount: '210.00' },
+      { nutrient: 'Fats', unit: 'g', amount: '7.50' }
+    ],
+    flavours: [
+      { name: 'Chocolate Fudge', description: 'Decadent dark cocoa profile with creamy finish.' },
+      { name: 'Vanilla Cream', description: 'Smooth French vanilla custard aroma.' }
+    ],
+    how_to_use: [
+      { step: '01', title: 'Measure', description: 'Add 2-3 scoops into 400-500 ml of cold water or full-cream milk.' },
+      { step: '02', title: 'Blend', description: 'Blend for 45-60 seconds for maximum creaminess and texture.' },
+      { step: '03', title: 'Consume', description: 'Drink between meals or immediately post-workout to support caloric surplus.' }
+    ],
+    target_audience: [
+      { icon: '🏋️', title: 'Hardgainers', description: 'Individuals struggling to consume adequate calories through whole food alone.' },
+      { icon: '⚡', title: 'Strength Competitors', description: 'Powerlifters and strongmen needing dense energy during heavy training blocks.' },
+      { icon: '🏃', title: 'High Volume Athletes', description: 'Athletes burning extreme calories during multi-hour daily training sessions.' },
+      { icon: '🎯', title: 'Hypertrophy Phases', description: 'Bodybuilders in dedicated off-season muscle accretion cycles.' }
+    ],
+    storage_info: { heading: 'STORAGE', content: 'Store in a cool, dry place away from direct sunlight. Keep tightly sealed.' },
+    important_notice: { heading: 'IMPORTANT NOTICE', content: 'Dietary supplement. Consult your health professional before use.' }
+  },
+  {
+    id: 'prod-tc-03',
+    name: 'SSN Elite Tri Creatine',
+    title: 'SSN Elite Tri Creatine',
+    slug: 'tri-creatine',
+    series: 'SSN ELITE SERIES',
+    category: 'Strength / Performance',
+    selling_price: '₹2,499',
+    price: '₹2,499',
+    mrp: '₹2,499',
+    discount: '',
+    serving_size: '300 G',
+    servings: '100 Servings',
+    protein_per_serving: '3g Creatine Matrix',
+    badges: ['300 G', '100 Servings', '3g Creatine / Serving', 'HPLC Tested'],
+    goal_badges: ['EXPLOSIVE POWER', 'ATP SYNTHESIS', 'STRENGTH'],
+    image_url: 'assets/images/products/tri-creatine.webp',
+    main_image: 'assets/images/products/tri-creatine.webp',
+    gallery_images: ['assets/images/products/tri-creatine.webp'],
+    short_description: 'A precision creatine blend designed to support power, strength, and training output.',
+    status: 'Active',
+    product_intro: {
+      tag: 'EDUCATIONAL',
+      heading: 'What Is Tri Creatine?',
+      content: 'Tri Creatine is a multi-molecular creatine matrix engineered to maximize intracellular phosphocreatine stores, cellular hydration, and ATP re-synthesis during high-intensity training.\n\nCombines micronized creatine monohydrate, creatine malate, and creatine hydrochloride for rapid bioavailability without gastrointestinal distress.'
+    },
+    key_metric: { number: '3', unit: 'G', label: 'CREATINE MATRIX PER SERVING', sublabel: 'Ultra-pure micronized creatine blend' },
+    protein_source: {
+      tag: '100% PURE MICRONIZED MATRIX',
+      label: 'EDUCATIONAL',
+      heading: 'The Creatine Source',
+      content: 'Pharmaceutical grade HPLC-tested micronized creatine sources manufactured under stringent ISO/IEC 17025 certification.'
+    },
+    ingredients_accordion: [
+      { title: 'Micronized Creatine Monohydrate', description: 'Micro-milled 200 mesh powder for rapid solution dispersion and enhanced gastric tolerance.' },
+      { title: 'Creatine Malate', description: 'Creatine bonded with malic acid to support the Krebs cycle and endurance capacity.' },
+      { title: 'Creatine HCL', description: 'Highly water-soluble creatine salt engineered for optimal bioavailability.' }
+    ],
+    nutrition_facts: [
+      { nutrient: 'Creatine Monohydrate', unit: 'mg', amount: '2000' },
+      { nutrient: 'Creatine Malate', unit: 'mg', amount: '500' },
+      { nutrient: 'Creatine HCL', unit: 'mg', amount: '500' },
+      { nutrient: 'Energy / Calories', unit: 'kcal', amount: '0' }
+    ],
+    how_to_use: [
+      { step: '01', title: 'Scoop', description: 'Mix 1 level scoop (3g) with 200-250 ml of water or fruit juice.' },
+      { step: '02', title: 'Stir', description: 'Stir for 15-20 seconds until clear.' },
+      { step: '03', title: 'Drink', description: 'Consume daily pre-workout or post-workout with carbohydrate source.' }
+    ],
+    target_audience: [
+      { icon: '🏋️', title: 'Powerlifters', description: 'Maximizes maximal 1-rep strength and explosive force output.' },
+      { icon: '⚡', title: 'Sprinters & Field Athletes', description: 'Enhances repeated sprint ability and short-duration power output.' },
+      { icon: '🏃', title: 'Combat Sports', description: 'Supports explosive grappling and striking power bursts.' },
+      { icon: '🎯', title: 'Hypertrophy Training', description: 'Increases intracellular water volume to stimulate muscle protein synthesis.' }
+    ],
+    storage_info: { heading: 'STORAGE', content: 'Store in a cool, dry place. Keep sealed.' },
+    important_notice: { heading: 'IMPORTANT NOTICE', content: 'Ensure adequate daily water intake when supplementing with creatine.' }
+  },
+  {
+    id: 'prod-eaa-04',
+    name: 'SSN Elite EAA + BCAA + Glutamine',
+    title: 'SSN Elite EAA + BCAA + Glutamine',
+    slug: 'eaa-bcaa-glutamine',
+    series: 'SSN ELITE SERIES',
+    category: 'Amino Acids / Recovery',
+    selling_price: '₹2,799',
+    price: '₹2,799',
+    mrp: '₹2,799',
+    discount: '',
+    serving_size: '300 G',
+    servings: '30 Servings',
+    protein_per_serving: '7g Amino Acid Matrix',
+    badges: ['300 G', '30 Servings', '7g Matrix / Serving', 'Zero Sugar'],
+    goal_badges: ['INTRA-WORKOUT', 'RECOVERY', 'ANTI-CATABOLIC'],
+    image_url: 'assets/images/products/eaa-bcaa-glutamine.webp',
+    main_image: 'assets/images/products/eaa-bcaa-glutamine.webp',
+    gallery_images: ['assets/images/products/eaa-bcaa-glutamine.webp'],
+    short_description: 'Essential amino acids, BCAAs, and glutamine to support recovery and performance.',
+    status: 'Active',
+    product_intro: {
+      tag: 'EDUCATIONAL',
+      heading: 'What Is EAA + BCAA + Glutamine?',
+      content: 'A clinical-grade intra-workout amino acid formula delivering all 9 essential amino acids, instantized 2:1:1 BCAAs, and fermented L-glutamine to accelerate recovery and halt muscle breakdown during intense sessions.'
+    },
+    key_metric: { number: '7', unit: 'G', label: 'AMINO ACID MATRIX PER SERVING', sublabel: 'Full spectrum intra-workout blend' },
+    protein_source: {
+      tag: 'FERMENTED FREE-FORM AMINO ACIDS',
+      label: 'EDUCATIONAL',
+      heading: 'The Amino Acid Source',
+      content: 'Plant-fermented, instantized free-form amino acids engineered for zero-digestion direct cellular uptake.'
+    },
+    amino_acid_profile: {
+      title: 'The Amino Acid Matrix',
+      label: 'FROM PACKAGING',
+      description: 'Full spectrum 9 EAAs plus fermented L-Glutamine delivering immediate intracellular recovery.',
+      groups: [
+        {
+          title: 'BCAA Blend (2:1:1)',
+          items: [
+            { category: 'BCAA', name: 'L-Leucine (Instantized)' },
+            { category: 'BCAA', name: 'L-Isoleucine' },
+            { category: 'BCAA', name: 'L-Valine' }
+          ]
+        },
+        {
+          title: 'Essential Amino Acid Spectrum',
+          items: [
+            { category: 'EAA', name: 'L-Lysine' },
+            { category: 'EAA', name: 'L-Threonine' },
+            { category: 'EAA', name: 'L-Phenylalanine' },
+            { category: 'EAA', name: 'L-Methionine' },
+            { category: 'EAA', name: 'L-Histidine' },
+            { category: 'EAA', name: 'L-Tryptophan' }
+          ]
+        },
+        {
+          title: 'Recovery & Cellular Hydration',
+          items: [
+            { category: 'RECOVERY', name: 'Fermented L-Glutamine' },
+            { category: 'HYDRATION', name: 'Electrolyte Complex' }
+          ]
+        }
+      ]
+    },
+    ingredients_accordion: [
+      { title: 'Instantized BCAA Complex (2:1:1)', description: 'Leucine, Isoleucine, and Valine formulated to stimulate mTOR and muscle protein synthesis.' },
+      { title: 'Complete EAA Matrix', description: 'The remaining 6 essential amino acids required for de novo protein synthesis.' },
+      { title: 'Fermented L-Glutamine', description: 'Supports intestinal barrier function and muscle glycogen resynthesis.' }
+    ],
+    nutrition_facts: [
+      { nutrient: 'BCAA Blend (2:1:1)', unit: 'mg', amount: '4000' },
+      { nutrient: 'EAA Blend', unit: 'mg', amount: '2000' },
+      { nutrient: 'L-Glutamine', unit: 'mg', amount: '1000' },
+      { nutrient: 'Sugar / Carbs', unit: 'g', amount: '0' }
+    ],
+    flavours: [
+      { name: 'Watermelon Splash', description: 'Crisp, refreshing summer watermelon profile.' },
+      { name: 'Blue Raspberry', description: 'Sweet and tangy blue raspberry citrus finish.' }
+    ],
+    how_to_use: [
+      { step: '01', title: 'Measure', description: 'Mix 1 scoop (10g) in 350-400 ml of ice-cold water.' },
+      { step: '02', title: 'Shake', description: 'Shake for 20 seconds in your shaker bottle.' },
+      { step: '03', title: 'Sip', description: 'Sip continuously throughout your workout session.' }
+    ],
+    target_audience: [
+      { icon: '🏋️', title: 'Endurance Athletes', description: 'Prevents central nervous system fatigue during long endurance sessions.' },
+      { icon: '⚡', title: 'Fasted Training', description: 'Prevents muscle catabolism when training in a calorie deficit or morning fasted state.' },
+      { icon: '🏃', title: 'High-Volume Lifters', description: 'Reduces delayed onset muscle soreness (DOMS) across frequent training days.' },
+      { icon: '🎯', title: 'Intra-Workout Hydration', description: 'Maintains electrolyte balance and cellular hydration under heat and exertion.' }
+    ],
+    storage_info: { heading: 'STORAGE', content: 'Store in a cool dry place. Keep sealed.' },
+    important_notice: { heading: 'IMPORTANT NOTICE', content: 'Dietary supplement. Keep out of reach of children.' }
+  }
+];
+
 async function getProducts() {
   const sb = getSupabaseClient();
   let dbProducts = [];
@@ -246,24 +561,46 @@ async function getProducts() {
     }
   }
 
-  // Merge with locally stored products to ensure newly created products are immediately accessible
+  // Combine default product specifications with database records and local storage
+  let mergedProducts = [...DEFAULT_SSN_PRODUCTS];
+
+  if (dbProducts.length > 0) {
+    dbProducts.forEach(dbItem => {
+      const dbSlug = (dbItem.slug || '').trim().toLowerCase();
+      const dbName = (dbItem.name || dbItem.title || '').trim().toLowerCase();
+
+      const matchIdx = mergedProducts.findIndex(m => {
+        const mSlug = (m.slug || '').trim().toLowerCase();
+        const mName = (m.name || m.title || '').trim().toLowerCase();
+        return (dbSlug && mSlug === dbSlug) || (dbName && mName === dbName) || (dbItem.id && m.id === dbItem.id);
+      });
+
+      if (matchIdx >= 0) {
+        // Deep merge so custom updates take priority over default spec
+        mergedProducts[matchIdx] = { ...mergedProducts[matchIdx], ...dbItem };
+      } else {
+        mergedProducts.push(dbItem);
+      }
+    });
+  }
+
+  // Merge with locally stored products to ensure newly created products in Admin are immediately accessible
   try {
     const local = JSON.parse(localStorage.getItem('ssn_local_products') || '[]');
     if (Array.isArray(local) && local.length > 0) {
       local.forEach(lp => {
-        const matchIdx = dbProducts.findIndex(dp => (lp.id && dp.id === lp.id) || (dp.name && lp.name && dp.name.toLowerCase() === lp.name.toLowerCase()));
+        const matchIdx = mergedProducts.findIndex(dp => (lp.id && dp.id === lp.id) || (dp.name && lp.name && dp.name.toLowerCase() === lp.name.toLowerCase()));
         if (matchIdx >= 0) {
-          dbProducts[matchIdx] = { ...dbProducts[matchIdx], ...lp };
+          mergedProducts[matchIdx] = { ...mergedProducts[matchIdx], ...lp };
         } else {
-          dbProducts.unshift(lp);
+          mergedProducts.unshift(lp);
         }
       });
     }
   } catch (e) {}
 
-  if (dbProducts.length > 0) {
-    dbProducts.forEach(p => {
-      // Check for embedded structured data trailer in description or full_description
+  if (mergedProducts.length > 0) {
+    mergedProducts.forEach(p => {
       const rawText = p.full_description || p.description || '';
       const match = rawText.match(/<!--SSN_STRUCTURED_DATA:(.*?)-->/s);
       if (match && match[1]) {
@@ -281,7 +618,7 @@ async function getProducts() {
     });
   }
 
-  return { data: dbProducts, error: null };
+  return { data: mergedProducts, error: null };
 }
 
 async function saveProduct(product) {
